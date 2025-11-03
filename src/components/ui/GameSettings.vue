@@ -49,20 +49,21 @@
         <TabComponent 
           :tabs="getSettingsTabsForConfig(config)"
           @tab-changed="onTabChanged"
+          :default-tab="activeTab"
         >
           <template #default="{ activeTab }">
             <!-- Game Settings Table -->
-            <div v-if="activeTab === 'game' && getFlattenedGameSettings(config).length > 0">
+            <div v-if="activeTab === 'game'">
               <PropertiesTable :data="getFlattenedGameSettings(config)" :key-prefix="`game-${index}`" />
             </div>
             
             <!-- Steam Deck Settings Table -->
-            <div v-if="activeTab === 'steamdeck' && getFlattenedSteamDeckSettings(config).length > 0">
+            <div v-if="activeTab === 'steamdeck'">
               <PropertiesTable :data="getFlattenedSteamDeckSettings(config)" :key-prefix="`steamdeck-${index}`" />
             </div>
 
             <!-- Battery Performance Table -->
-            <div v-if="activeTab === 'battery' && getFlattenedBatteryPerformance(config).length > 0">
+            <div v-if="activeTab === 'battery'">
               <PropertiesTable :data="getFlattenedBatteryPerformance(config)" :key-prefix="`battery-${index}`" />
             </div>
           </template>
@@ -119,6 +120,7 @@ export default {
   data() {
     return {
       selectedHardware: 'lcd',
+      activeTab: 'game',
       tabLabels: {
         game: 'Game Settings',
         steamdeck: 'SteamOS Settings',
@@ -209,6 +211,7 @@ export default {
     },
     
     onTabChanged(tabId) {
+      this.activeTab = tabId
       trackTabClick(tabId, this.tabLabels[tabId], 'game_settings', {
         game_id: this.results?.game_id,
         game_name: this.results?.game_name,
@@ -256,21 +259,22 @@ export default {
           label: this.tabLabels.game,
           icon: Gamepad2,
           count: gameSettings.length,
-          hidden: gameSettings.length === 0
+          // For now, we want to show the tabs even if there are no settings
+          // hidden: gameSettings.length === 0
         },
         {
           id: 'steamdeck',
           label: this.tabLabels.steamdeck,
           icon: Monitor,
           count: steamdeckSettings.length,
-          hidden: steamdeckSettings.length === 0
+          // hidden: steamdeckSettings.length === 0
         },
         {
           id: 'battery',
           label: this.tabLabels.battery,
           icon: Battery,
           count: batteryPerformance.length,
-          hidden: batteryPerformance.length === 0
+          // hidden: batteryPerformance.length === 0
         }
       ]
     }

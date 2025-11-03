@@ -8,7 +8,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="row in filteredData" :key="keyPrefix + '-' + row.key">
+        <tr v-if="filteredData.length === 0">
+          <td colspan="2" class="no-data-cell">No properties to display.</td>
+        </tr>
+        <tr v-if="filteredData.length > 0" v-for="row in filteredData" :key="keyPrefix + '-' + row.key">
           <td class="property-cell">{{ formatKey(row.key) }}</td>
           <td class="value-cell">
             <span v-if="typeof row.value === 'boolean'" :class="row.value ? 'boolean-true' : 'boolean-false'">
@@ -140,6 +143,13 @@ export default {
 .null-value {
   color: #9ca3af;
   font-style: italic;
+}
+
+.no-data-cell {
+  text-align: center;
+  color: #9ca3af;
+  font-style: italic;
+  padding: 32px 16px;
 }
 
 @media (max-width: 768px) {

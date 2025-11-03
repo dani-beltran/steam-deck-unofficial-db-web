@@ -58,7 +58,7 @@ export default {
     
     // Computed properties
     const availableTabs = computed(() => {
-      return props.tabs.filter(tab => !tab.hidden && (tab.count === undefined || tab.count > 0))
+      return props.tabs.filter(tab => !tab.hidden)
     })
     
     // Tab management methods
