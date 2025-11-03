@@ -36,38 +36,60 @@
           </button>
         </div>
       </div>
-      
-      <div v-for="(config, index) in filteredSettings" :key="index" class="settings-config">
-        <div v-if="filteredSettings.length > 1" class="config-header">
-          <h4>Configuration {{ index + 1 }}</h4>
+
+      <div v-if="currentConfig" class="settings-config">
+        <div class="config-header">
           <div class="config-meta">
-            <span v-if="config.steamdeck_hardware" class="hardware-badge">{{ config.steamdeck_hardware.toUpperCase() }}</span>
-            <span v-if="config.posted_at" class="date-badge">{{ formatDate(config.posted_at) }}</span>
+            <span v-if="currentConfig.steamdeck_hardware" class="hardware-badge">{{ currentConfig.steamdeck_hardware.toUpperCase() }}</span>
+            <span v-if="currentConfig.posted_at" class="date-badge">{{ formatDate(currentConfig.posted_at) }}</span>
           </div>
         </div>
         
         <TabComponent 
-          :tabs="getSettingsTabsForConfig(config)"
+          :tabs="getSettingsTabsForConfig(currentConfig)"
           @tab-changed="onTabChanged"
           :default-tab="activeTab"
         >
           <template #default="{ activeTab }">
             <!-- Game Settings Table -->
             <div v-if="activeTab === 'game'">
-              <PropertiesTable :data="getFlattenedGameSettings(config)" :key-prefix="`game-${index}`" />
+              <PropertiesTable :data="getFlattenedGameSettings(currentConfig)" :key-prefix="`game-${currentPage}`" />
             </div>
             
             <!-- Steam Deck Settings Table -->
             <div v-if="activeTab === 'steamdeck'">
-              <PropertiesTable :data="getFlattenedSteamDeckSettings(config)" :key-prefix="`steamdeck-${index}`" />
+              <PropertiesTable :data="getFlattenedSteamDeckSettings(currentConfig)" :key-prefix="`steamdeck-${currentPage}`" />
             </div>
 
             <!-- Battery Performance Table -->
             <div v-if="activeTab === 'battery'">
-              <PropertiesTable :data="getFlattenedBatteryPerformance(config)" :key-prefix="`battery-${index}`" />
+              <PropertiesTable :data="getFlattenedBatteryPerformance(currentConfig)" :key-prefix="`battery-${currentPage}`" />
             </div>
           </template>
         </TabComponent>
+      </div>
+
+      <!-- Pagination Controls -->
+      <div v-if="filteredSettings.length > 1" class="pagination-controls">
+        <button 
+          class="pagination-btn" 
+          @click="previousConfig" 
+          :disabled="currentPage === 1"
+          aria-label="Previous configuration"
+        >
+          ← Previous
+        </button>
+        <span class="pagination-info">
+          Configuration {{ currentPage }} of {{ totalPages }}
+        </span>
+        <button 
+          class="pagination-btn" 
+          @click="nextConfig" 
+          :disabled="currentPage === totalPages"
+          aria-label="Next configuration"
+        >
+          Next →
+        </button>
       </div>
     </section>
 
@@ -121,6 +143,7 @@ export default {
     return {
       selectedHardware: 'lcd',
       activeTab: 'game',
+      currentPage: 1,
       tabLabels: {
         game: 'Game Settings',
         steamdeck: 'SteamOS Settings',
@@ -170,8 +193,7 @@ export default {
           const nSettingsB = b.game_settings ? Object.keys(b.game_settings).length : 0
           return nSettingsB - nSettingsA
         })
-        const mostRelevantConfig = sortedConfigs[0] 
-        result.push(mostRelevantConfig)
+        result.push(...sortedConfigs)
       })
       return result
     },
@@ -193,19 +215,45 @@ export default {
         return hardware === 'oled'
       })
     },
+
+    totalPages() {
+      return this.filteredSettings.length
+    },
+
+    currentConfig() {
+      if (this.filteredSettings.length === 0) return null
+      return this.filteredSettings[this.currentPage - 1]
+    },
   },
   watch: {
     results: {
       handler() {
         // Reset filter when new results are loaded
         this.selectedHardware = this.hasLcdSettings ? 'lcd' : (this.hasOledSettings ? 'oled' : null)
+        this.currentPage = 1
       },
       immediate: true
+    },
+    selectedHardware() {
+      // Reset to first page when filter changes
+      this.currentPage = 1
     }
   },
   methods: {
     filterByHardware(hardware) {
       this.selectedHardware = hardware
+    },
+
+    nextConfig() {
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++
+      }
+    },
+
+    previousConfig() {
+      if (this.currentPage > 1) {
+        this.currentPage--
+      }
     },
     
     onTabChanged(tabId) {
@@ -364,6 +412,49 @@ export default {
   border-color: #0891b2;
 }
 
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #f9fafb;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.pagination-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid #d1d5db;
+  background: white;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  color: #374151;
+  font-size: 0.875rem;
+  font-weight: 500;
+  min-width: 150px;
+  text-align: center;
+}
+
 .settings-config {
   margin-bottom: 30px;
   border: 1px solid #e5e7eb;
@@ -430,6 +521,21 @@ export default {
   .hardware-filter {
     align-self: stretch;
     justify-content: flex-start;
+  }
+
+  .pagination-controls {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .pagination-btn {
+    flex: 1;
+    min-width: 100px;
+  }
+
+  .pagination-info {
+    width: 100%;
+    order: -1;
   }
   
   .config-header {
