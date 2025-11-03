@@ -148,7 +148,7 @@ export default {
         return hardware === this.selectedHardware
       })
       
-      // Group by hardware type and keep only the most recent for each
+      // Group by hardware type and keep only the most relevant
       const hardwareGroups = new Map()
       
       // Unknown or null hardware goes to 'lcd' group
@@ -162,19 +162,17 @@ export default {
         hardwareGroups.get(hardware).push(config)
       })
       
-      // For each hardware group, keep only the most recent configuration
+      // For each hardware group, keep only the most complete configuration
       const result = []
       hardwareGroups.forEach(configs => {
-        // Sort by posted_at date (most recent first) and take the first one
         const sortedConfigs = configs.sort((a, b) => {
-          const dateA = a.posted_at ? new Date(a.posted_at) : new Date(0)
-          const dateB = b.posted_at ? new Date(b.posted_at) : new Date(0)
-          return dateB - dateA // Descending order (most recent first)
+          const nSettingsA = a.game_settings ? Object.keys(a.game_settings).length : 0
+          const nSettingsB = b.game_settings ? Object.keys(b.game_settings).length : 0
+          return nSettingsB - nSettingsA
         })
-        const mostRecentConfig = sortedConfigs[0] 
-        result.push(mostRecentConfig)
+        const mostRelevantConfig = sortedConfigs[0] 
+        result.push(mostRelevantConfig)
       })
-      
       return result
     },
 
