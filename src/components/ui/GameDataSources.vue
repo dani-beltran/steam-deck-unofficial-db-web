@@ -1,9 +1,9 @@
 <template>
-  <div v-if="deckuGame?.data_sources?.length" class="game-data-sources">
+  <div v-if="deckuGame?.settings?.length" class="game-data-sources">
     <span class="label">Sources:</span>
     <div class="sources-list">
       <a
-        v-for="source in deckuGame.data_sources"
+        v-for="source in sources"
         :key="source"
         :href="getSourceLink(source)"
         target="_blank"
@@ -24,6 +24,13 @@ export default {
     deckuGame: {
       type: Object,
       required: false
+    }
+  },
+  computed: {
+    sources() {
+      const sources = this.deckuGame?.settings?.map(setting => setting.source) || [];
+      const uniqueSources = [...new Set(sources)];
+      return uniqueSources;
     }
   },
   methods: {
