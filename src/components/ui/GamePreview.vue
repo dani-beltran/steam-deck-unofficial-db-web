@@ -49,8 +49,11 @@ export default {
                 this.showTrailer = true;
                 // Resume video playback when mouse enters
                 this.$nextTick(() => {
-                    if (this.$refs.videoElement) {
-                        this.$refs.videoElement.play();
+                    try {
+                        this.$refs.videoElement?.play();
+                    } catch (error) {
+                        this.showTrailer = false;
+                        console.error("Error playing video:", error);
                     }
                 });
             }
@@ -58,9 +61,7 @@ export default {
 
         onMouseLeave() {
             // Pause video before hiding
-            if (this.$refs.videoElement) {
-                this.$refs.videoElement.pause();
-            }
+            this.$refs.videoElement?.pause();
             this.showTrailer = false;
         },
     },
