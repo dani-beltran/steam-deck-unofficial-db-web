@@ -18,15 +18,17 @@
         <h3 id="recommended-settings">Recommended Settings</h3>
         
         <!-- Hardware Filter Badges -->
-        <div v-if="hasMultipleHardwareTypes" class="hardware-filter">
+        <div class="hardware-filter">
           <span class="filter-label">Filter by Steam Deck:</span>
           <button 
+            v-if="hasLcdSettings"
             :class="['hardware-filter-badge', 'lcd', { active: selectedHardware === 'lcd' }]"
             @click="filterByHardware('lcd')"
           >
             LCD
           </button>
           <button 
+            v-if="hasOledSettings"
             :class="['hardware-filter-badge', 'oled', { active: selectedHardware === 'oled' }]"
             @click="filterByHardware('oled')"
           >
@@ -173,24 +175,30 @@ export default {
       
       return result
     },
-    
-    hasMultipleHardwareTypes() {
+
+    hasLcdSettings() {
       if (!this.results || !this.results.settings) return false
       
-      const hardwareTypes = new Set(
-        this.results.settings
-          .map(config => config.steamdeck_hardware?.toLowerCase())
-          .filter(type => type === 'lcd' || type === 'oled')
-      )
-      
-      return hardwareTypes.size > 1
-    }
+      return this.results.settings.some(config => {
+        const hardware = config.steamdeck_hardware?.toLowerCase()
+        return hardware === 'lcd' || !hardware
+      })
+    },
+
+    hasOledSettings() {
+      if (!this.results || !this.results.settings) return false
+
+      return this.results.settings.some(config => {
+        const hardware = config.steamdeck_hardware?.toLowerCase()
+        return hardware === 'oled'
+      })
+    },
   },
   watch: {
     results: {
       handler() {
         // Reset filter when new results are loaded
-        this.selectedHardware = 'lcd'
+        this.selectedHardware = this.hasLcdSettings ? 'lcd' : (this.hasOledSettings ? 'oled' : null)
       },
       immediate: true
     }
