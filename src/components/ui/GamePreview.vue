@@ -49,12 +49,10 @@ export default {
                 this.showTrailer = true;
                 // Resume video playback when mouse enters
                 this.$nextTick(() => {
-                    try {
-                        this.$refs.videoElement?.play();
-                    } catch (error) {
-                        this.showTrailer = false;
+                    this.$refs.videoElement?.play().catch((error) => {
                         console.error("Error playing video:", error);
-                    }
+                        this.showTrailer = false;
+                    });
                 });
             }
         },
