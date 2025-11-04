@@ -20,7 +20,7 @@
         :show="showSuggestions"
         :loading="suggestionsLoading"
         :selected-index="selectedSuggestionIndex"
-        title="Game Suggestions"
+        :title="showRecentGames ? 'Recent Games Searched' : 'Game Suggestions'"
         @select-suggestion="selectSuggestion"
         @update-selected-index="selectedSuggestionIndex = $event"
         @close-suggestions="closeSuggestions"
@@ -112,6 +112,7 @@ export default {
       gameSearchSubmitted: false,
       selectedGameId: null,
       showAllResults: false,
+      showRecentGames: false,
       INITIAL_RESULTS_COUNT: 4,
       suggestions: [],
       suggestionsLoading: false,
@@ -158,10 +159,12 @@ export default {
         this.suggestions = await this.getRecentGames()
         this.showSuggestions = this.suggestions.length > 0
         this.selectedSuggestionIndex = -1
+        this.showRecentGames = true
       } catch (e) {
         console.warn('Error fetching recent games by IDs:', e)
         this.suggestions = []
         this.showSuggestions = false
+        this.showRecentGames = false
       }
     },
 
@@ -258,6 +261,7 @@ export default {
 
     onGameNameInput() {
       this.gameSearchSubmitted = false
+      this.showRecentGames = false
 
       // Clear previous search results when user starts typing
       if (this.gameSearchResults.length > 0) {
@@ -306,10 +310,8 @@ export default {
 
     async fetchSuggestions() {
       if (!this.gameName.trim() || this.gameName.trim().length < 2) {
-        this.suggestions = await this.getRecentGames()
-        this.showSuggestions = this.suggestions.length > 0
-        this.selectedSuggestionIndex = -1
-        return
+        await this.showRecentGamesAsSuggestions();
+        return;
       }
 
       this.suggestionsLoading = true
@@ -341,6 +343,7 @@ export default {
       this.suggestions = []
       this.showSuggestions = false
       this.selectedSuggestionIndex = -1
+      this.showRecentGames = false
     },
 
     hideSuggestions() {
