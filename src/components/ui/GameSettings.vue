@@ -17,6 +17,11 @@
           <!-- Hardware Filter Badges -->
           <div class="hardware-filter">
             <span class="filter-label">Filter by Steam Deck:</span>
+            <button
+              :class="['hardware-filter-badge', 'all', { active: selectedHardware === 'all' }]"
+              @click="filterByHardware('all')">
+              All
+            </button>
             <button v-if="hasLcdSettings"
               :class="['hardware-filter-badge', 'lcd', { active: selectedHardware === 'lcd' }]"
               @click="filterByHardware('lcd')">
@@ -137,7 +142,7 @@ export default {
   },
   data() {
     return {
-      selectedHardware: 'lcd',
+      selectedHardware: 'all',
       activeTab: 'game',
       currentPage: 1,
       tabLabels: {
@@ -158,12 +163,9 @@ export default {
       // First filter by hardware type
       const hardwareFiltered = this.game.settings.filter((config) => {
         const hardware = config.steamdeck_hardware?.toLowerCase()
-
-        if (this.selectedHardware === 'lcd') {
-          // Show LCD configurations and those with null/undefined hardware
-          return hardware === 'lcd' || !hardware
+        if (this.selectedHardware === 'all') {
+          return true 
         }
-
         return hardware === this.selectedHardware
       })
 
@@ -224,8 +226,8 @@ export default {
   watch: {
     game: {
       handler(newGame) {
-        // Reset filter when new results are loaded
-        this.selectedHardware = this.hasLcdSettings ? 'lcd' : this.hasOledSettings ? 'oled' : null
+        // Reset filter when new results are loaded - default to 'all'
+        this.selectedHardware = 'all'
         // If the game changes, reset to first page
         if (this.game?.game_id !== newGame?.game_id) {
           this.currentPage = 1
@@ -412,6 +414,11 @@ export default {
 .hardware-filter-badge.lcd.active {
   background: #06b6d4;
   border-color: #0891b2;
+}
+
+.hardware-filter-badge.all.active {
+  background: #10b981;
+  border-color: #059669;
 }
 
 .pagination-section {
