@@ -3,7 +3,7 @@
     <div class="logo-container">
       <img src="@assets/decku-logo-text.png" alt="Decku Logo" class="logo" />
     </div>
-    <h1 class="title">Steam Deck Unnoficial Database</h1>
+    <h1 class="title">Steam Deck Unofficial Database</h1>
     <p class="subtitle">The definitive Steam Deck configuration database! Optimize every game for best performance on the Deck.</p>
   </header>
 </template>

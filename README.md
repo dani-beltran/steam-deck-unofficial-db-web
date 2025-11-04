@@ -83,7 +83,7 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## 🎮 Community
 
-Join the Steam Deck Unnoficial DB community:
+Join the Steam Deck Unofficial DB community:
 - [Discord Server](https://discord.gg/e5q4QqfVQx)
 
 ---
