@@ -78,7 +78,9 @@
       </div>
 
       <!-- Pagination Controls -->
-      <div v-if="filteredSettings.length > 1" class="pagination-controls">
+      <div v-if="filteredSettings.length > 1" class="pagination-section">
+        <div class="pagination-label">Not working as you expected? Try another configuration:</div>
+        <div class="pagination-controls">
         <button 
           class="pagination-btn" 
           @click="previousConfig" 
@@ -87,9 +89,7 @@
         >
           ← Previous
         </button>
-        <span class="pagination-info">
-          Configuration {{ currentPage }} of {{ totalPages }}
-        </span>
+        <span class="pagination-info">{{ currentPage }} / {{ totalPages }}</span>
         <button 
           class="pagination-btn" 
           @click="nextConfig" 
@@ -98,6 +98,7 @@
         >
           Next →
         </button>
+      </div>
       </div>
     </section>
 
@@ -432,16 +433,26 @@ export default {
   border-color: #0891b2;
 }
 
-.pagination-controls {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
+.pagination-section {
   margin-bottom: 20px;
   padding: 15px;
   background: #f9fafb;
   border-radius: 12px;
   border: 1px solid #e5e7eb;
+}
+
+.pagination-label {
+  color: #374151;
+  font-size: 1rem;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px; 
 }
 
 .pagination-btn {
@@ -567,6 +578,10 @@ export default {
   .pagination-info {
     width: 100%;
     order: -1;
+  }
+  
+  .pagination-label {
+    font-size: 0.9rem;
   }
 }
 </style>
