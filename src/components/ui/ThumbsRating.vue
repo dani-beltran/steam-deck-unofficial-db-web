@@ -1,42 +1,32 @@
-
 <template>
-  <div>
-    <div style="margin-bottom: 0.5em; font-weight: 500;">
-      <template v-if="user">Were the recommendations useful?</template>
-      <template v-else>Sign in to provide feedback</template>
-    </div>
-    <div class="thumbs-rating">
-    <button
-      class="thumb-btn up"
-      :class="{ active: userVote === 'up' }"
-      @click="vote('up')"
-      aria-label="Thumbs up"
-      :disabled="!user"
-    >
-      <ThumbsUp class="icon" />
-      <span class="count">{{ thumbsUp }}</span>
-    </button>
-    <button
-      class="thumb-btn down"
-      :class="{ active: userVote === 'down' }"
-      @click="vote('down')"
-      aria-label="Thumbs down"
-      :disabled="!user"
-    >
-      <ThumbsDown class="icon" />
-      <span class="count">{{ thumbsDown }}</span>
-    </button>
-    </div>
+  <div class="thumbs-rating">
+    <Tooltip :text="user ? '' : 'Sign in to provide feedback'" position="left">
+      <button class="thumb-btn up" :class="{ active: userVote === 'up' }" @click="vote('up')" aria-label="Thumbs up"
+        :disabled="!user">
+        <ThumbsUp class="icon" />
+        <span class="count">{{ thumbsUp }}</span>
+      </button>
+    </Tooltip>
+    <Tooltip :text="user ? '' : 'Sign in to provide feedback'" position="left">
+      <button class="thumb-btn down" :class="{ active: userVote === 'down' }" @click="vote('down')"
+        aria-label="Thumbs down" :disabled="!user">
+        <ThumbsDown class="icon" />
+        <span class="count">{{ thumbsDown }}</span>
+      </button>
+    </Tooltip>
   </div>
+
 </template>
 
 <script>
 import { ThumbsUp, ThumbsDown } from 'lucide-vue-next';
+import Tooltip from '@/components/base/Tooltip.vue';
 export default {
   name: 'ThumbsRating',
   components: {
     ThumbsUp,
-    ThumbsDown
+    ThumbsDown,
+    Tooltip
   },
   data() {
     return {
@@ -49,50 +39,36 @@ export default {
       type: Object,
       default: null
     },
-    game: {
+    gameSettings: {
       type: Object,
       required: true
     }
   },
   computed: {
     userVote() {
-      if (!this.user || !this.user.deckuProfile || !this.user.deckuProfile.votes) {
+      if (!this.user || !this.user.deckuProfile || !this.user.deckuProfile.votes || !this.gameSettings) {
         return null;
       }
-      console.log("user votes:", this.user.deckuProfile.votes);
-      
-      return this.user.deckuProfile.votes.find(vote => vote.game_id === this.game.game_id)?.vote_type || null;
+      return this.user.deckuProfile.votes.find(vote => vote.game_settings_id === this.gameSettings._id)?.vote_type || null;
     },
   },
   watch: {
-    game: {
+    gameSettings: {
       immediate: true,
       handler() {
-        this.thumbsUp = this.game.thumbs_up ?? 0;
-        this.thumbsDown = this.game.thumbs_down ?? 0;
+        this.thumbsUp = this.gameSettings.thumbs_up ?? 0;
+        this.thumbsDown = this.gameSettings.thumbs_down ?? 0;
       }
     }
   },
   emits: ['vote'],
   methods: {
     vote(type) {
+      if (!this.user) { return; }
       const previousVote = this.userVote;
       // if the same vote is clicked, remove the vote passing null
       const vote = previousVote === type ? null : type;
-      this.updateVoteCount(previousVote, vote);
       this.$emit('vote', vote);
-    },
-    updateVoteCount(previousVote, vote) {
-      if (vote === 'up') {
-        this.thumbsUp += 1;
-      } else if (vote === 'down') {
-        this.thumbsDown += 1;
-      }
-      if (previousVote === 'up') {
-        this.thumbsUp -= 1;
-      } else if (previousVote === 'down') {
-        this.thumbsDown -= 1;
-      }
     }
   }
 };
@@ -102,8 +78,9 @@ export default {
 .thumbs-rating {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
+
 .thumb-btn {
   display: flex;
   align-items: center;
@@ -123,22 +100,26 @@ export default {
   background: #f5f5f5;
   color: #b0b0b0;
 }
+
 .thumb-btn .icon {
   width: 24px;
   height: 24px;
   margin-right: 6px;
   fill: currentColor;
 }
+
 .thumb-btn.up.active,
 .thumb-btn.up:hover {
   background: #e8f0fe;
   color: #1967d2;
 }
+
 .thumb-btn.down.active,
 .thumb-btn.down:hover {
   background: #fbe9e7;
   color: #d23f31;
 }
+
 .count {
   min-width: 24px;
   text-align: right;

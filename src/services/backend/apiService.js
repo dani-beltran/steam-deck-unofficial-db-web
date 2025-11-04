@@ -119,17 +119,17 @@ class ApiService {
     window.location.href = `${this.baseUrl}/auth/logout`;
   }
 
-  submitVote(gameId, voteType) {
+  async submitVote(gameSettingId, voteType) {
     try {
-      if (!gameId) {
+      if (!gameSettingId) {
         throw new Error('Game ID is required to submit a vote')
       }
       if (!['up', 'down'].includes(voteType)) {
         throw new Error('Invalid vote type. Must be "up" or "down"')
       }
 
-      return axios.post(
-        `${this.baseUrl}/games/${gameId}/vote`,
+      await axios.post(
+        `${this.baseUrl}/games/${gameSettingId}/vote`,
         { vote: voteType },
         { withCredentials: true }
       )
@@ -138,13 +138,13 @@ class ApiService {
     }
   }
 
-  removeVote(gameId) {
+  async removeVote(gameSettingId) {
     try {
-      if (!gameId) {
+      if (!gameSettingId) {
         throw new Error('Game ID is required to remove a vote')
       }
-      return axios.delete(
-        `${this.baseUrl}/games/${gameId}/vote`,
+      await axios.delete(
+        `${this.baseUrl}/games/${gameSettingId}/vote`,
         { withCredentials: true }
       )
     } catch (err) {

@@ -3,17 +3,17 @@
   <div class="game-settings">
     <!-- Game Performance Summary -->
     <CollapsibleCard
-      v-if="results && results.game_performance_summary && !loading"
+      v-if="game && game.game_performance_summary && !loading"
       title="Performance Analysis"
       card-class="performance-summary-section"
       aria-label="Game performance summary"
       toggle-aria-label="Toggle performance summary visibility"
     >
-      <p>{{ results.game_performance_summary }}</p>
+      <p>{{ game.game_performance_summary }}</p>
     </CollapsibleCard>
 
     <!-- Settings Configurations -->
-    <section v-if="results && results.settings && results.settings.length > 0 && !loading" class="settings-section" aria-label="Game settings configurations">
+    <section v-if="game && game.settings && game.settings.length > 0 && !loading" class="settings-section" aria-label="Game settings configurations">
       <div class="settings-header">
         <h3 id="recommended-settings">Recommended Settings</h3>
         
@@ -42,6 +42,14 @@
           <div class="config-meta">
             <span v-if="currentConfig.steamdeck_hardware" class="hardware-badge">{{ currentConfig.steamdeck_hardware.toUpperCase() }}</span>
             <span v-if="currentConfig.posted_at" class="date-badge">{{ formatDate(currentConfig.posted_at) }}</span>
+          </div>
+          <div class="thumbs-rating">
+          <ThumbsRating
+            v-if="currentConfig"
+            :user="user"
+            :gameSettings="currentConfig"
+            @vote="submitVote"
+          />
           </div>
         </div>
         
@@ -95,7 +103,7 @@
 
 
     <!-- No Settings Data -->
-    <div v-if="searchPerformed && !results?.settings?.length && !loading && !error && !processingWarning" class="no-results">
+    <div v-if="searchPerformed && !game?.settings?.length && !loading && !error && !processingWarning" class="no-results">
       <p>No optimization settings available for {{ gameTitle }}</p>
     </div>
   </div>
@@ -109,16 +117,22 @@ import CollapsibleCard from '../common/CollapsibleCard.vue'
 import { flattenObject } from '../../utils/objectUtils.js'
 import { trackTabClick } from '../../services/analytics'
 import { Gamepad2, Monitor, Battery } from 'lucide-vue-next'
+import ThumbsRating from './ThumbsRating.vue'
 
 export default {
   name: 'GameSettings',
   components: {
     PropertiesTable,
     TabComponent,
-    CollapsibleCard
+    CollapsibleCard,
+    ThumbsRating
   },
   props: {
-    results: {
+    game: {
+      type: Object,
+      default: null
+    },
+    user: {
       type: Object,
       default: null
     },
@@ -153,14 +167,14 @@ export default {
   },
   computed: {
     gameTitle() {
-      return this.results.game_name || `Game ID: ${this.results.game_id}`
+      return this.game.game_name || `Game ID: ${this.game.game_id}`
     },
     
     filteredSettings() {
-      if (!this.results || !this.results.settings) return []
+      if (!this.game || !this.game.settings) return []
       
       // First filter by hardware type
-      const hardwareFiltered = this.results.settings.filter(config => {
+      const hardwareFiltered = this.game.settings.filter(config => {
         const hardware = config.steamdeck_hardware?.toLowerCase()
         
         if (this.selectedHardware === 'lcd') {
@@ -199,18 +213,18 @@ export default {
     },
 
     hasLcdSettings() {
-      if (!this.results || !this.results.settings) return false
+      if (!this.game || !this.game.settings) return false
       
-      return this.results.settings.some(config => {
+      return this.game.settings.some(config => {
         const hardware = config.steamdeck_hardware?.toLowerCase()
         return hardware === 'lcd' || !hardware
       })
     },
 
     hasOledSettings() {
-      if (!this.results || !this.results.settings) return false
+      if (!this.game || !this.game.settings) return false
 
-      return this.results.settings.some(config => {
+      return this.game.settings.some(config => {
         const hardware = config.steamdeck_hardware?.toLowerCase()
         return hardware === 'oled'
       })
@@ -226,11 +240,14 @@ export default {
     },
   },
   watch: {
-    results: {
-      handler() {
+    game: {
+      handler(newGame) {
         // Reset filter when new results are loaded
         this.selectedHardware = this.hasLcdSettings ? 'lcd' : (this.hasOledSettings ? 'oled' : null)
-        this.currentPage = 1
+        // If the game changes, reset to first page
+        if (this.game?.game_id !== newGame?.game_id) {
+          this.currentPage = 1
+        }
       },
       immediate: true
     },
@@ -259,11 +276,10 @@ export default {
     onTabChanged(tabId) {
       this.activeTab = tabId
       trackTabClick(tabId, this.tabLabels[tabId], 'game_settings', {
-        game_id: this.results?.game_id,
-        game_name: this.results?.game_name,
+        game_id: this.game?.game_id,
+        game_name: this.game?.game_name,
         hardware_filter: this.selectedHardware
       })
-      console.log('Tab changed to:', tabId)
     },
 
     formatDate(dateString) {
@@ -323,6 +339,10 @@ export default {
           // hidden: batteryPerformance.length === 0
         }
       ]
+    },
+
+    async submitVote(type) {
+      this.$emit('submit-vote', this.currentConfig._id, type);
     }
   }
 }
@@ -460,6 +480,7 @@ export default {
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   overflow: hidden;
+  max-width: 100%;
 }
 
 .config-header {
@@ -469,6 +490,10 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .config-header h4 {
@@ -480,7 +505,10 @@ export default {
 
 .config-meta {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
+  overflow: hidden;
+  max-width: 100%;
 }
 
 .hardware-badge, .date-badge {
@@ -488,6 +516,9 @@ export default {
   border-radius: 12px;
   font-size: 0.75rem;
   font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .hardware-badge {
@@ -536,17 +567,6 @@ export default {
   .pagination-info {
     width: 100%;
     order: -1;
-  }
-  
-  .config-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-  
-  .config-meta {
-    align-self: stretch;
-    justify-content: flex-start;
   }
 }
 </style>

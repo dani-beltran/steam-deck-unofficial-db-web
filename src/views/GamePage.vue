@@ -19,18 +19,11 @@
 
     <!-- Quick link to settings -->
     <QuickLink v-if="deckuGame" class="quick-links-only-mobile" target-id="settings-section" text="Check the Settings" />
-    
-    <GameSettings id="settings-section" :results="deckuGame" :loading="loading" :error="error" :search-performed="searchPerformed"
-      :processing-warning="processingWarning" @clear-processing-warning="clearProcessingWarning" />
+
+    <GameSettings id="settings-section" :game="deckuGame" :user="user" :loading="loading" :error="error" :search-performed="searchPerformed"
+      :processing-warning="processingWarning" @clear-processing-warning="clearProcessingWarning" @submit-vote="handleVoteSubmit" />
 
     <GameDataSources class="game-data-sources" :deckuGame="deckuGame" />
-
-    <ThumbsRating
-      v-if="deckuGame"
-      :user="user"
-      :game="deckuGame"
-      @vote="submitVote"
-    />
 
     <!-- Processing game view -->
     <ProcessingWarning v-if="processingWarning" :game-name="gameTitle" @dismiss="clearProcessingWarning" />
@@ -106,6 +99,16 @@ export default {
     document.removeEventListener('keydown', this.handleKeydown)
   },
   methods: {
+    async handleVoteSubmit(gameSettingsId, type) {
+      if (type === null ){
+        await apiService.removeVote(gameSettingsId);
+      } else {
+        await apiService.submitVote(gameSettingsId, type);
+      }
+      // Refresh user and game data to reflect updated votes
+      this.user = await apiService.fetchAuthUser();
+      this.deckuGame = (await apiService.fetchGame(this.gameId)).game;
+    },
     handleRefresh() {
       window.location.reload();
     },
@@ -175,15 +178,6 @@ export default {
         this.loading = false
       }
     },
-
-    async submitVote(type) {
-      if (type === null ){
-        await apiService.removeVote(this.deckuGame.game_id);
-      } else {
-        await apiService.submitVote(this.deckuGame.game_id, type);
-      }
-      this.user = await apiService.fetchAuthUser();
-    }
   }
 }
 </script>
