@@ -5,7 +5,7 @@
     <section aria-label="Game Search" class="search-section">
       <GameSearch @game-selected="onGameSelected" />
     </section>
-    
+
     <!-- Popular Games Carousel Section -->
     <section aria-label="Popular Games" class="popular-section">
       <PopularGames @game-selected="onGameSelected" />
@@ -55,5 +55,4 @@ export default {
   margin-bottom: 20px;
   max-width: 100%;
 }
-
 </style>

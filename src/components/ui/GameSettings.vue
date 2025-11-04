@@ -1,113 +1,94 @@
 <template>
   <section aria-label="Game Settings" class="settings-section">
-  <div class="game-settings">
-    <!-- Game Performance Summary -->
-    <CollapsibleCard
-      v-if="game && game.game_performance_summary && !loading"
-      title="Performance Analysis"
-      card-class="performance-summary-section"
-      aria-label="Game performance summary"
-      toggle-aria-label="Toggle performance summary visibility"
-    >
-      <p>{{ game.game_performance_summary }}</p>
-    </CollapsibleCard>
+    <div class="game-settings">
+      <!-- Game Performance Summary -->
+      <CollapsibleCard v-if="game && game.game_performance_summary && !loading" title="Performance Analysis"
+        card-class="performance-summary-section" aria-label="Game performance summary"
+        toggle-aria-label="Toggle performance summary visibility">
+        <p>{{ game.game_performance_summary }}</p>
+      </CollapsibleCard>
 
-    <!-- Settings Configurations -->
-    <section v-if="game && game.settings && game.settings.length > 0 && !loading" class="settings-section" aria-label="Game settings configurations">
-      <div class="settings-header">
-        <h3 id="recommended-settings">Recommended Settings</h3>
-        
-        <!-- Hardware Filter Badges -->
-        <div class="hardware-filter">
-          <span class="filter-label">Filter by Steam Deck:</span>
-          <button 
-            v-if="hasLcdSettings"
-            :class="['hardware-filter-badge', 'lcd', { active: selectedHardware === 'lcd' }]"
-            @click="filterByHardware('lcd')"
-          >
-            LCD
-          </button>
-          <button 
-            v-if="hasOledSettings"
-            :class="['hardware-filter-badge', 'oled', { active: selectedHardware === 'oled' }]"
-            @click="filterByHardware('oled')"
-          >
-            OLED
-          </button>
-        </div>
-      </div>
+      <!-- Settings Configurations -->
+      <section v-if="game && game.settings && game.settings.length > 0 && !loading" class="settings-section"
+        aria-label="Game settings configurations">
+        <div class="settings-header">
+          <h3 id="recommended-settings">Recommended Settings</h3>
 
-      <div v-if="currentConfig" class="settings-config">
-        <div class="config-header">
-          <div class="config-meta">
-            <span v-if="currentConfig.steamdeck_hardware" class="hardware-badge">{{ currentConfig.steamdeck_hardware.toUpperCase() }}</span>
-            <span v-if="currentConfig.posted_at" class="date-badge">{{ formatDate(currentConfig.posted_at) }}</span>
-          </div>
-          <div class="thumbs-rating">
-          <ThumbsRating
-            v-if="currentConfig"
-            :user="user"
-            :gameSettings="currentConfig"
-            @vote="submitVote"
-          />
+          <!-- Hardware Filter Badges -->
+          <div class="hardware-filter">
+            <span class="filter-label">Filter by Steam Deck:</span>
+            <button v-if="hasLcdSettings"
+              :class="['hardware-filter-badge', 'lcd', { active: selectedHardware === 'lcd' }]"
+              @click="filterByHardware('lcd')">
+              LCD
+            </button>
+            <button v-if="hasOledSettings"
+              :class="['hardware-filter-badge', 'oled', { active: selectedHardware === 'oled' }]"
+              @click="filterByHardware('oled')">
+              OLED
+            </button>
           </div>
         </div>
-        
-        <TabComponent 
-          :tabs="getSettingsTabsForConfig(currentConfig)"
-          @tab-changed="onTabChanged"
-          :default-tab="activeTab"
-        >
-          <template #default="{ activeTab }">
-            <!-- Game Settings Table -->
-            <div v-if="activeTab === 'game'">
-              <PropertiesTable :data="getFlattenedGameSettings(currentConfig)" :key-prefix="`game-${currentPage}`" />
+
+        <div v-if="currentConfig" class="settings-config">
+          <div class="config-header">
+            <div class="config-meta">
+              <span v-if="currentConfig.steamdeck_hardware" class="hardware-badge">{{
+                currentConfig.steamdeck_hardware.toUpperCase() }}</span>
+              <span v-if="currentConfig.posted_at" class="date-badge">{{ formatDate(currentConfig.posted_at) }}</span>
             </div>
-            
-            <!-- Steam Deck Settings Table -->
-            <div v-if="activeTab === 'steamdeck'">
-              <PropertiesTable :data="getFlattenedSteamDeckSettings(currentConfig)" :key-prefix="`steamdeck-${currentPage}`" />
+            <div class="thumbs-rating">
+              <ThumbsRating v-if="currentConfig" :user="user" :gameSettings="currentConfig" @vote="submitVote" />
             </div>
+          </div>
 
-            <!-- Battery Performance Table -->
-            <div v-if="activeTab === 'battery'">
-              <PropertiesTable :data="getFlattenedBatteryPerformance(currentConfig)" :key-prefix="`battery-${currentPage}`" />
-            </div>
-          </template>
-        </TabComponent>
+          <TabComponent :tabs="getSettingsTabsForConfig(currentConfig)" @tab-changed="onTabChanged"
+            :default-tab="activeTab">
+            <template #default="{ activeTab }">
+              <!-- Game Settings Table -->
+              <div v-if="activeTab === 'game'">
+                <PropertiesTable :data="getFlattenedGameSettings(currentConfig)" :key-prefix="`game-${currentPage}`" />
+              </div>
+
+              <!-- Steam Deck Settings Table -->
+              <div v-if="activeTab === 'steamdeck'">
+                <PropertiesTable :data="getFlattenedSteamDeckSettings(currentConfig)"
+                  :key-prefix="`steamdeck-${currentPage}`" />
+              </div>
+
+              <!-- Battery Performance Table -->
+              <div v-if="activeTab === 'battery'">
+                <PropertiesTable :data="getFlattenedBatteryPerformance(currentConfig)"
+                  :key-prefix="`battery-${currentPage}`" />
+              </div>
+            </template>
+          </TabComponent>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div v-if="filteredSettings.length > 1" class="pagination-section">
+          <div class="pagination-label">Not working as you expected? Try another configuration:</div>
+          <div class="pagination-controls">
+            <button class="pagination-btn" @click="previousConfig" :disabled="currentPage === 1"
+              aria-label="Previous configuration">
+              ← Previous
+            </button>
+            <span class="pagination-info">{{ currentPage }} / {{ totalPages }}</span>
+            <button class="pagination-btn" @click="nextConfig" :disabled="currentPage === totalPages"
+              aria-label="Next configuration">
+              Next →
+            </button>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- No Settings Data -->
+      <div v-if="searchPerformed && !game?.settings?.length && !loading && !error && !processingWarning"
+        class="no-results">
+        <p>No optimization settings available for {{ gameTitle }}</p>
       </div>
-
-      <!-- Pagination Controls -->
-      <div v-if="filteredSettings.length > 1" class="pagination-section">
-        <div class="pagination-label">Not working as you expected? Try another configuration:</div>
-        <div class="pagination-controls">
-        <button 
-          class="pagination-btn" 
-          @click="previousConfig" 
-          :disabled="currentPage === 1"
-          aria-label="Previous configuration"
-        >
-          ← Previous
-        </button>
-        <span class="pagination-info">{{ currentPage }} / {{ totalPages }}</span>
-        <button 
-          class="pagination-btn" 
-          @click="nextConfig" 
-          :disabled="currentPage === totalPages"
-          aria-label="Next configuration"
-        >
-          Next →
-        </button>
-      </div>
-      </div>
-    </section>
-
-
-    <!-- No Settings Data -->
-    <div v-if="searchPerformed && !game?.settings?.length && !loading && !error && !processingWarning" class="no-results">
-      <p>No optimization settings available for {{ gameTitle }}</p>
     </div>
-  </div>
   </section>
 </template>
 
@@ -170,25 +151,25 @@ export default {
     gameTitle() {
       return this.game.game_name || `Game ID: ${this.game.game_id}`
     },
-    
+
     filteredSettings() {
       if (!this.game || !this.game.settings) return []
-      
+
       // First filter by hardware type
       const hardwareFiltered = this.game.settings.filter(config => {
         const hardware = config.steamdeck_hardware?.toLowerCase()
-        
+
         if (this.selectedHardware === 'lcd') {
           // Show LCD configurations and those with null/undefined hardware
           return hardware === 'lcd' || !hardware
         }
-        
+
         return hardware === this.selectedHardware
       })
-      
+
       // Group by hardware type and keep only the most relevant
       const hardwareGroups = new Map()
-      
+
       // Unknown or null hardware goes to 'lcd' group
       hardwareFiltered.forEach(config => {
         let hardware = config.steamdeck_hardware?.toLowerCase()
@@ -199,7 +180,7 @@ export default {
         }
         hardwareGroups.get(hardware).push(config)
       })
-      
+
       // For each hardware group, keep only the most complete configuration
       const result = []
       hardwareGroups.forEach(configs => {
@@ -215,7 +196,7 @@ export default {
 
     hasLcdSettings() {
       if (!this.game || !this.game.settings) return false
-      
+
       return this.game.settings.some(config => {
         const hardware = config.steamdeck_hardware?.toLowerCase()
         return hardware === 'lcd' || !hardware
@@ -273,7 +254,7 @@ export default {
         this.currentPage--
       }
     },
-    
+
     onTabChanged(tabId) {
       this.activeTab = tabId
       trackTabClick(tabId, this.tabLabels[tabId], 'game_settings', {
@@ -286,10 +267,10 @@ export default {
     formatDate(dateString) {
       try {
         const date = new Date(dateString)
-        return date.toLocaleDateString('en-US', { 
-          year: 'numeric', 
-          month: 'short', 
-          day: 'numeric' 
+        return date.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
         })
       } catch {
         return dateString
@@ -315,7 +296,7 @@ export default {
       const gameSettings = this.getFlattenedGameSettings(config)
       const steamdeckSettings = this.getFlattenedSteamDeckSettings(config)
       const batteryPerformance = this.getFlattenedBatteryPerformance(config)
-      
+
       return [
         {
           id: 'game',
@@ -362,7 +343,7 @@ export default {
   margin-top: 30px;
 }
 
-.settings-section > h3 {
+.settings-section>h3 {
   color: #374151;
   margin-bottom: 20px;
   font-size: 1.3rem;
@@ -452,7 +433,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 20px; 
+  gap: 20px;
 }
 
 .pagination-btn {
@@ -522,7 +503,8 @@ export default {
   max-width: 100%;
 }
 
-.hardware-badge, .date-badge {
+.hardware-badge,
+.date-badge {
   padding: 4px 8px;
   border-radius: 12px;
   font-size: 0.75rem;
@@ -559,7 +541,7 @@ export default {
     align-items: flex-start;
     gap: 15px;
   }
-  
+
   .hardware-filter {
     align-self: stretch;
     justify-content: flex-start;
@@ -579,7 +561,7 @@ export default {
     width: 100%;
     order: -1;
   }
-  
+
   .pagination-label {
     font-size: 0.9rem;
   }

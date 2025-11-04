@@ -18,10 +18,12 @@
     <GameDescription :game-data="deckuGame" :steam-game-details="steamGameDetails" :loading="loading" />
 
     <!-- Quick link to settings -->
-    <QuickLink v-if="deckuGame" class="quick-links-only-mobile" target-id="settings-section" text="Check the Settings" />
+    <QuickLink v-if="deckuGame" class="quick-links-only-mobile" target-id="settings-section"
+      text="Check the Settings" />
 
-    <GameSettings id="settings-section" :game="deckuGame" :user="user" :loading="loading" :error="error" :search-performed="searchPerformed"
-      :processing-warning="processingWarning" @clear-processing-warning="clearProcessingWarning" @submit-vote="handleVoteSubmit" />
+    <GameSettings id="settings-section" :game="deckuGame" :user="user" :loading="loading" :error="error"
+      :search-performed="searchPerformed" :processing-warning="processingWarning"
+      @clear-processing-warning="clearProcessingWarning" @submit-vote="handleVoteSubmit" />
 
     <GameDataSources class="game-data-sources" :deckuGame="deckuGame" />
 
@@ -29,7 +31,7 @@
     <ProcessingWarning v-if="processingWarning" :game-name="gameTitle" @dismiss="clearProcessingWarning" />
     <RandomArt v-if="processingWarning" />
     <div v-if="processingWarning" style="margin-top: 24px; text-align: center;">
-      <RefreshButton @refresh="handleRefresh" :countdown-start="60"/>
+      <RefreshButton @refresh="handleRefresh" :countdown-start="60" />
     </div>
   </div>
 </template>
@@ -100,7 +102,7 @@ export default {
   },
   methods: {
     async handleVoteSubmit(gameSettingsId, type) {
-      if (type === null ){
+      if (type === null) {
         await apiService.removeVote(gameSettingsId);
       } else {
         await apiService.submitVote(gameSettingsId, type);
