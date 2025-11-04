@@ -117,4 +117,15 @@ export default {
   transition: transform 0.2s ease;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
+
+.user-profile:hover {
+  transform: translateY(-1px);
+  transition: transform 0.2s ease;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.logout-btn:hover {
+  transform: translateY(-1px);
+  transition: transform 0.2s ease;
+}
 </style>
