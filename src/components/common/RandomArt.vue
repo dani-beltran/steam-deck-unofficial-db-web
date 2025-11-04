@@ -62,7 +62,7 @@ const artImageUrl = computed(() => `/art/${selectedArt.file}`)
   max-width: 600px;
   margin-top: 1rem;
   font-size: 1.1rem;
-  color: #444;
+  color: var(--text-primary);
   text-align: center;
 }
 

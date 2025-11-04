@@ -53,10 +53,10 @@ export default {
 
 <style scoped>
 .game-card {
-  background: white;
+  background: var(--bg-card);
   border-radius: 12px;
   padding: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
   cursor: pointer;
   transition: all 0.2s ease;
   border: 2px solid transparent;
@@ -105,7 +105,7 @@ export default {
   margin: 0 0 4px 0;
   font-size: 1rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   word-wrap: break-word;
@@ -122,7 +122,7 @@ export default {
 .game-id {
   margin: 0 0 8px 0;
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
   white-space: nowrap;
   overflow: hidden;
@@ -139,8 +139,8 @@ export default {
 }
 
 .platform {
-  background: #f3f4f6;
-  color: #374151;
+  background: var(--secondary-bg-hover);
+  color: var(--secondary-text-color);
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 0.75rem;
@@ -152,14 +152,29 @@ export default {
   color: #1d4ed8;
 }
 
+.dark-mode .platform:nth-child(1) {
+  background: #1e3a8a;
+  color: #93c5fd;
+}
+
 .platform:nth-child(2) {
   background: #dcfce7;
   color: #166534;
 }
 
+.dark-mode .platform:nth-child(2) {
+  background: #14532d;
+  color: #86efac;
+}
+
 .platform:nth-child(3) {
   background: #fef3c7;
   color: #92400e;
+}
+
+.dark-mode .platform:nth-child(3) {
+  background: #78350f;
+  color: #fde68a;
 }
 
 @media (max-width: 768px) {

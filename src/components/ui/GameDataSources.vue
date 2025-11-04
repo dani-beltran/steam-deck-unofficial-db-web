@@ -83,7 +83,7 @@ export default {
 
 .source-badge {
   background: #f3f4f6;
-  color: #374151;
+  color: var(--secondary-text-color);
   padding: 4px 12px;
   border-radius: 16px;
   font-size: 0.75rem;
@@ -94,7 +94,7 @@ export default {
 }
 
 .source-badge:hover {
-  background: var(--primary-color);
+  background: var(--primary-color-gradient);
   color: white;
   transform: translateY(-1px);
   box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);

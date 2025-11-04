@@ -38,7 +38,7 @@ export default {
   font-weight: 700;
   color: #1a1a1a;
   margin: 0;
-  background: var(--primary-color);
+  background: var(--primary-color-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -47,7 +47,7 @@ export default {
 .subtitle {
   font-size: 1.2rem;
   font-weight: 400;
-  color: #666;
+  color: var(--text-secondary);
   margin: 10px 0 0 0;
   opacity: 0.8;
 }

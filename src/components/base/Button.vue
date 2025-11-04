@@ -75,7 +75,7 @@ export default {
 
 /* Variants */
 .btn-primary {
-  background: var(--primary-color);
+  background: var(--primary-color-gradient);
   color: var(--primary-text-color);
   border-radius: 8px;
 }
@@ -90,7 +90,7 @@ export default {
 }
 
 .btn-search {
-  background: var(--primary-color);
+  background: var(--primary-color-gradient);
   color: white;
   border-radius: 0 12px 12px 0;
 }

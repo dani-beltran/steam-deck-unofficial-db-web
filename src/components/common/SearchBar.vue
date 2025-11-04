@@ -100,7 +100,7 @@ export default {
 .input-wrapper {
   display: flex;
   position: relative;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-md);
   border-radius: 12px;
   overflow: hidden;
 }
@@ -108,7 +108,9 @@ export default {
 .search-input {
   flex: 1;
   padding: 20px 24px;
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--secondary-border-color);
+  background: var(--bg-card);
+  color: var(--text-primary);
   font-size: 1.1rem;
   outline: none;
   transition: all 0.2s ease;
@@ -117,12 +119,12 @@ export default {
 }
 
 .search-input:focus {
-  border-color: var(--primary-color-start);
+  border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .search-input::placeholder {
-  color: #9ca3af;
+  color: var(--text-tertiary);
 }
 
 .search-icon {

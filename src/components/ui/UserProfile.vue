@@ -58,7 +58,7 @@ export default {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  background: var(--primary-color-start, #222c37);
+  background: var(--primary-color-gradient);
   border-radius: 8px;
   padding: 6px 12px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.07);
@@ -90,7 +90,7 @@ export default {
   height: 36px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid var(--primary-color-end, #66c0f4);
+  border: 2px solid var(--primary-color);
 }
 
 .user-display-name {

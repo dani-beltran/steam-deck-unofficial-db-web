@@ -286,7 +286,7 @@ export default {
 .section-title {
     font-size: 2rem;
     font-weight: 700;
-    color: #1f2937;
+    color: var(--text-primary);
     margin-bottom: 30px;
     text-align: center;
 }
@@ -299,14 +299,14 @@ export default {
 
 .loading-container p,
 .error-container p {
-    color: #6b7280;
+    color: var(--text-secondary);
     font-size: 1rem;
     margin-bottom: 16px;
 }
 
 .retry-button {
-    background: var(--primary-color-start);
-    color: white;
+    background: var(--primary-color);
+    color: var(--bg-card);
     border: none;
     border-radius: 8px;
     padding: 10px 20px;
@@ -328,8 +328,8 @@ export default {
 }
 
 .carousel-button {
-    background: white;
-    border: 2px solid #e5e7eb;
+    background: var(--bg-card);
+    border: 2px solid var(--secondary-border-color);
     border-radius: 50%;
     width: 48px;
     height: 48px;
@@ -337,7 +337,7 @@ export default {
     align-items: center;
     justify-content: center;
     font-size: 2rem;
-    color: #374151;
+    color: var(--secondary-text-color);
     cursor: pointer;
     transition: all 0.2s ease;
     flex-shrink: 0;
@@ -345,9 +345,9 @@ export default {
 }
 
 .carousel-button:hover:not(:disabled) {
-    background: var(--primary-color-start);
-    color: white;
-    border-color: var(--primary-color-start);
+    background: var(--primary-color);
+    color: var(--bg-card);
+    border-color: var(--primary-color);
     transform: scale(1.1);
 }
 
@@ -386,7 +386,7 @@ export default {
 }
 
 .popular-game-card {
-    background: white;
+    background: var(--bg-card);
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -399,7 +399,7 @@ export default {
 .popular-game-card:hover {
     transform: translateY(-8px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    border-color: var(--primary-color-start);
+    border-color: var(--primary-color);
 }
 
 .game-image-wrapper {
@@ -433,7 +433,7 @@ export default {
     justify-content: center;
     font-size: 4rem;
     font-weight: bold;
-    color: white;
+    color: var(--bg-card);
 }
 
 .popular-game-info {
@@ -444,7 +444,7 @@ export default {
     margin: 0 0 8px 0;
     font-size: 1.1rem;
     font-weight: 600;
-    color: #1f2937;
+    color: var(--text-primary);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -453,7 +453,7 @@ export default {
 .game-steam-id {
     margin: 0;
     font-size: 0.875rem;
-    color: #6b7280;
+    color: var(--text-secondary);
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
 }
 
@@ -476,11 +476,11 @@ export default {
 }
 
 .indicator-dot:hover {
-    background: #9ca3af;
+    background: var(--text-tertiary);
 }
 
 .indicator-dot.active {
-    background: var(--primary-color-start);
+    background: var(--primary-color);
     width: 30px;
     border-radius: 5px;
 }

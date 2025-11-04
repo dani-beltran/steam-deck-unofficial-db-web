@@ -77,7 +77,7 @@ export default {
   margin: 0 auto 2rem;
   width: 80px;
   height: 80px;
-  color: var(--primary-color-start);
+  color: var(--primary-color);
   opacity: 0.8;
 }
 
@@ -90,7 +90,7 @@ export default {
   font-size: 6rem;
   font-weight: 700;
   margin: 0 0 1rem 0;
-  background: var(--primary-color);
+  background: var(--primary-color-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -135,7 +135,7 @@ export default {
 }
 
 .btn-primary {
-  background: var(--primary-color);
+  background: var(--primary-color-gradient);
   color: var(--primary-text-color);
   box-shadow: 0 4px 12px rgba(3, 112, 190, 0.3);
 }

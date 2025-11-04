@@ -101,7 +101,7 @@ export default {
 }
 
 .steam-title-link {
-  color: #374151;
+  color: var(--secondary-text-color);
   text-decoration: none;
   transition: color 0.2s ease;
 }
@@ -117,7 +117,7 @@ export default {
 }
 
 .game-title {
-  color: #374151;
+  color: var(--secondary-text-color);
   margin: 0 0 20px 0;
   font-size: 1.5rem;
   line-height: 1.3;
@@ -147,8 +147,8 @@ export default {
 }
 
 .rating-badge.rating-platinum {
-  background: linear-gradient(135deg, #e5e7eb, #f3f4f6);
-  color: #374151;
+  background: linear-gradient(135deg, var(--secondary-border-color), #f3f4f6);
+  color: var(--secondary-text-color);
 }
 
 .rating-badge.rating-native {
@@ -173,20 +173,20 @@ export default {
 
 .summary-section {
   padding: 20px;
-  background: #f9fafb;
+  background: var(--bg-secondary);
   border-radius: 12px;
   border-left: 4px solid #6366f1;
 }
 
 .summary-section h3 {
-  color: #374151;
+  color: var(--secondary-text-color);
   margin: 0 0 12px 0;
   font-size: 1.1rem;
   font-weight: 600;
 }
 
 .summary-text {
-  color: #6b7280;
+  color: var(--text-secondary);
   line-height: 1.6;
   margin: 0;
 }

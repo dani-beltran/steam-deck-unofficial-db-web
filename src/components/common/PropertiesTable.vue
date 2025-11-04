@@ -70,18 +70,18 @@ export default {
 .table-container {
   overflow-x: auto;
   border-radius: 12px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
 }
 
 .properties-table {
   width: 100%;
   border-collapse: collapse;
-  background: white;
+  background: var(--bg-card);
   table-layout: fixed;
 }
 
 .properties-table th {
-  background: var(--primary-color);
+  background: var(--primary-color-gradient);
   color: white;
   padding: 16px;
   text-align: left;
@@ -103,26 +103,26 @@ export default {
 
 .properties-table td {
   padding: 16px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--secondary-border-color);
 }
 
 .properties-table tr:nth-child(even) {
-  background: #f9fafb;
+  background: var(--bg-secondary);
 }
 
 .properties-table tr:hover {
-  background: #f3f4f6;
+  background: var(--secondary-bg-hover);
 }
 
 .property-cell {
   font-weight: 600;
-  color: #374151;
+  color: var(--text-primary);
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
   overflow-wrap: break-word;
 }
 
 .value-cell {
-  color: #6b7280;
+  color: var(--text-secondary);
   word-break: break-all;
   overflow-wrap: break-word;
 }
@@ -132,9 +132,17 @@ export default {
   font-weight: 600;
 }
 
+.dark-mode .boolean-true {
+  color: #34d399;
+}
+
 .boolean-false {
   color: #dc2626;
   font-weight: 600;
+}
+
+.dark-mode .boolean-false {
+  color: #f87171;
 }
 
 .number-value {
@@ -142,14 +150,18 @@ export default {
   font-weight: 600;
 }
 
+.dark-mode .number-value {
+  color: #a78bfa;
+}
+
 .null-value {
-  color: #9ca3af;
+  color: var(--text-tertiary);
   font-style: italic;
 }
 
 .no-data-cell {
   text-align: center;
-  color: #9ca3af;
+  color: var(--text-tertiary);
   font-style: italic;
   padding: 32px 16px;
 }

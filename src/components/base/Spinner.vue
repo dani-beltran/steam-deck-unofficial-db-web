@@ -26,7 +26,7 @@ export default {
 .spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid #f3f4f6;
+  border: 4px solid var(--bg-card-hover);
   border-top: 4px solid var(--primary-color-start);
   border-radius: 50%;
   animation: spin 1s linear infinite;

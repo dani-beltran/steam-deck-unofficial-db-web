@@ -435,7 +435,7 @@ export default {
 }
 
 .search-title {
-  color: #374151;
+  color: var(--secondary-text-color);
   margin-bottom: 20px;
   font-size: 1.5rem;
   font-weight: 600;
@@ -455,7 +455,7 @@ export default {
 }
 
 .game-results h3 {
-  color: #374151;
+  color: var(--secondary-text-color);
   margin-bottom: 20px;
   font-size: 1.2rem;
 }

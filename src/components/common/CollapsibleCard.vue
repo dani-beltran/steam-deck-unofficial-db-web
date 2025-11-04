@@ -70,8 +70,8 @@ export default {
 .collapsible-card {
   margin-bottom: 30px;
   padding: 20px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--secondary-border-color);
   border-radius: 12px;
 }
 
@@ -84,7 +84,7 @@ export default {
 
 .collapsible-header h3 {
   margin: 0;
-  color: #374151;
+  color: var(--text-primary);
   font-size: 1.3rem;
   font-weight: 600;
   display: flex;
@@ -98,7 +98,7 @@ export default {
   cursor: pointer;
   padding: 4px;
   border-radius: 4px;
-  color: #6b7280;
+  color: var(--text-secondary);
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
@@ -107,12 +107,12 @@ export default {
 }
 
 .collapse-toggle:hover {
-  background: #f3f4f6;
-  color: #374151;
+  background: var(--secondary-bg-hover);
+  color: var(--text-primary);
 }
 
 .collapse-toggle:focus {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid var(--primary-color-start);
   outline-offset: 2px;
 }
 
@@ -125,7 +125,7 @@ export default {
 }
 
 .collapsible-content {
-  color: #4b5563;
+  color: var(--text-secondary);
   line-height: 1.6;
   font-size: 1rem;
 }

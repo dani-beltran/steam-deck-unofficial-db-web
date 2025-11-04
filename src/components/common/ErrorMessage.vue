@@ -33,6 +33,12 @@ export default {
   margin-bottom: 20px;
 }
 
+.dark-mode .error {
+  background: #7f1d1d;
+  border: 1px solid #991b1b;
+  color: #fca5a5;
+}
+
 .error-dismiss {
   background: #dc2626;
   color: white;
@@ -46,5 +52,13 @@ export default {
 
 .error-dismiss:hover {
   background: #b91c1c;
+}
+
+.dark-mode .error-dismiss {
+  background: #b91c1c;
+}
+
+.dark-mode .error-dismiss:hover {
+  background: #991b1b;
 }
 </style>

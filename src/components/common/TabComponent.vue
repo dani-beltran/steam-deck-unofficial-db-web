@@ -109,8 +109,7 @@ export default {
 .tab-navigation {
   display: flex;
   margin-bottom: 20px;
-  border-bottom: 2px solid #e5e7eb;
-  gap: 4px;
+  border-bottom: 2px solid var(--secondary-border-color);
 }
 
 .tab-button {
@@ -120,7 +119,7 @@ export default {
   cursor: pointer;
   font-size: 0.95rem;
   font-weight: 500;
-  color: #6b7280;
+  color: var(--text-secondary);
   border-bottom: 3px solid transparent;
   transition: all 0.2s ease;
   white-space: nowrap;
@@ -134,19 +133,19 @@ export default {
 }
 
 .tab-button:hover {
-  color: #374151;
-  background: #f9fafb;
+  color: var(--secondary-text-color);
+  background: var(--bg-secondary);
 }
 
 .tab-button.active {
-  color: var(--primary-color-start);
-  border-bottom-color: var(--primary-color-start);
-  background: #f8faff;
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+  background: var(--primary-bg-active);
 }
 
 .tab-count {
-  background: #e5e7eb;
-  color: #6b7280;
+  background: var(--secondary-border-color);
+  color: var(--text-secondary);
   font-size: 0.75rem;
   padding: 2px 6px;
   border-radius: 10px;
@@ -154,7 +153,7 @@ export default {
 }
 
 .tab-button.active .tab-count {
-  background: var(--primary-color-start);
+  background: var(--primary-color);
   color: white;
 }
 
@@ -180,7 +179,6 @@ export default {
 @media (max-width: 768px) {
   .tab-navigation {
     flex-wrap: wrap;
-    gap: 2px;
   }
 
   .tab-button {

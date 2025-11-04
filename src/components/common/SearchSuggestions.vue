@@ -114,8 +114,8 @@ export default {
   top: 100%;
   left: 0;
   right: 0;
-  background: white;
-  border: 2px solid #e5e7eb;
+  background: var(--bg-card);
+  border: 2px solid var(--secondary-border-color);
   border-top: none;
   border-radius: 0 0 12px 12px;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
@@ -126,8 +126,8 @@ export default {
 
 .suggestions-header {
   padding: 12px 16px;
-  border-bottom: 1px solid #f3f4f6;
-  background: #f9fafb;
+  border-bottom: 1px solid var(--bg-card-hover);
+  background: var(--bg-secondary);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -136,14 +136,14 @@ export default {
 .suggestions-title {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .suggestions-loading {
   font-size: 0.75rem;
-  color: #9ca3af;
+  color: var(--text-tertiary);
   font-style: italic;
 }
 
@@ -157,7 +157,7 @@ export default {
   padding: 12px 16px;
   cursor: pointer;
   transition: background-color 0.15s ease;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid var(--bg-card-hover);
 }
 
 .suggestion-item:last-child {
@@ -166,7 +166,7 @@ export default {
 
 .suggestion-item:hover,
 .suggestion-item.selected {
-  background-color: #f3f4f6;
+  background-color: var(--bg-card-hover);
 }
 
 .suggestion-content {
@@ -190,7 +190,7 @@ export default {
 
 .suggestion-name {
   font-weight: 500;
-  color: #374151;
+  color: var(--secondary-text-color);
   margin-bottom: 2px;
   white-space: nowrap;
   overflow: hidden;
@@ -199,7 +199,7 @@ export default {
 
 .suggestion-meta {
   font-size: 0.75rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

@@ -346,7 +346,7 @@ export default {
 }
 
 .settings-section>h3 {
-  color: #374151;
+  color: var(--secondary-text-color);
   margin-bottom: 20px;
   font-size: 1.3rem;
   font-weight: 600;
@@ -363,7 +363,7 @@ export default {
 
 .settings-header h3 {
   margin: 0;
-  color: #374151;
+  color: var(--secondary-text-color);
   font-size: 1.3rem;
   font-weight: 600;
 }
@@ -376,7 +376,7 @@ export default {
 }
 
 .filter-label {
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 0.875rem;
   font-weight: 500;
   margin-right: 4px;
@@ -388,20 +388,20 @@ export default {
   font-size: 0.875rem;
   font-weight: 500;
   border: 2px solid transparent;
-  background: #f3f4f6;
-  color: #6b7280;
+  background: var(--bg-card);
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s ease;
   outline: none;
 }
 
 .hardware-filter-badge:hover {
-  background: #e5e7eb;
-  color: #374151;
+  background: var(--secondary-border-color);
+  color: var(--secondary-text-color);
 }
 
 .hardware-filter-badge.active {
-  background: #3b82f6;
+  background: var(--primary-color);
   color: white;
   border-color: #2563eb;
 }
@@ -424,13 +424,13 @@ export default {
 .pagination-section {
   margin-bottom: 20px;
   padding: 15px;
-  background: #f9fafb;
+  background: var(--bg-secondary);
   border-radius: 12px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--secondary-border-color);
 }
 
 .pagination-label {
-  color: #374151;
+  color: var(--secondary-text-color);
   font-size: 1rem;
   margin-bottom: 15px;
   text-align: center;
@@ -449,16 +449,16 @@ export default {
   font-size: 0.875rem;
   font-weight: 500;
   border: 1px solid #d1d5db;
-  background: white;
-  color: #374151;
+  background: var(--bg-card);
+  color: var(--secondary-text-color);
   cursor: pointer;
   transition: all 0.2s ease;
   outline: none;
 }
 
 .pagination-btn:hover:not(:disabled) {
-  background: #f3f4f6;
-  border-color: #9ca3af;
+  background: var(---secondary-bg-hover);
+  border-color: var(--text-tertiary);
 }
 
 .pagination-btn:disabled {
@@ -467,7 +467,7 @@ export default {
 }
 
 .pagination-info {
-  color: #374151;
+  color: var(--secondary-text-color);
   font-size: 0.875rem;
   font-weight: 500;
   min-width: 150px;
@@ -476,16 +476,16 @@ export default {
 
 .settings-config {
   margin-bottom: 30px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--secondary-border-color);
   border-radius: 12px;
   overflow: hidden;
   max-width: 100%;
 }
 
 .config-header {
-  background: #f9fafb;
+  background: var(--bg-secondary);
   padding: 15px 20px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--secondary-border-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -496,7 +496,7 @@ export default {
 }
 
 .config-header h4 {
-  color: #374151;
+  color: var(--secondary-text-color);
   margin: 0;
   font-size: 1.1rem;
   font-weight: 600;
@@ -534,7 +534,7 @@ export default {
 .no-results {
   text-align: center;
   padding: 40px;
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 1.1rem;
 }
 
