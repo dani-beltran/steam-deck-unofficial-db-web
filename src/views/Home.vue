@@ -23,7 +23,7 @@ export default {
   components: {
     GameSearch,
     HomeHeader,
-    PopularGames
+    PopularGames,
   },
   created() {
     // Set document title for home page
@@ -35,10 +35,10 @@ export default {
       this.$router.push({
         name: 'Game',
         params: { gameId: game.steam_appid ?? game.id },
-        query: searchTerm ? { q: searchTerm } : {}
+        query: searchTerm ? { q: searchTerm } : {},
       })
-    }
-  }
+    },
+  },
 }
 </script>
 

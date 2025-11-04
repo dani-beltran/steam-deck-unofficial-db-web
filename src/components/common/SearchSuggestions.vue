@@ -40,55 +40,51 @@ export default {
   props: {
     suggestions: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     show: {
       type: Boolean,
-      default: false
+      default: false,
     },
     loading: {
       type: Boolean,
-      default: false
+      default: false,
     },
     selectedIndex: {
       type: Number,
-      default: -1
+      default: -1,
     },
     title: {
       type: String,
-      default: 'Suggestions'
-    }
+      default: 'Suggestions',
+    },
   },
   emits: ['select-suggestion', 'update-selected-index', 'close-suggestions'],
   methods: {
     selectSuggestion(suggestion, index) {
       this.$emit('select-suggestion', suggestion, index)
     },
-    
+
     updateSelectedIndex(index) {
       this.$emit('update-selected-index', index)
     },
-    
+
     handleKeyDown(event) {
       if (!this.show || this.suggestions.length === 0) return
-      
+
       switch (event.key) {
-        case 'ArrowDown':
+        case 'ArrowDown': {
           event.preventDefault()
-          const nextIndex = Math.min(
-            this.selectedIndex + 1,
-            this.suggestions.length - 1
-          )
+          const nextIndex = Math.min(this.selectedIndex + 1, this.suggestions.length - 1)
           this.updateSelectedIndex(nextIndex)
           break
-        case 'ArrowUp':
+        }
+        case 'ArrowUp': {
           event.preventDefault()
-          const prevIndex = Math.max(
-            this.selectedIndex - 1,
-            -1
-          )
+          const prevIndex = Math.max(this.selectedIndex - 1, -1)
           this.updateSelectedIndex(prevIndex)
           break
+        }
         case 'Enter':
           event.preventDefault()
           if (this.selectedIndex >= 0) {
@@ -99,7 +95,7 @@ export default {
           this.$emit('close-suggestions')
           break
       }
-    }
+    },
   },
   mounted() {
     // Listen for keydown events on the document when component is active
@@ -108,7 +104,7 @@ export default {
   beforeUnmount() {
     // Clean up event listener
     document.removeEventListener('keydown', this.handleKeyDown)
-  }
+  },
 }
 </script>
 

@@ -37,19 +37,19 @@
 </template>
 
 <script>
-import RefreshButton from '../components/common/RefreshButton.vue';
-import GameSettings from '../components/ui/GameSettings.vue'
-import GameDescription from '../components/ui/GameDescription.vue'
-import ProcessingWarning from '../components/ui/ProcessingWarning.vue'
-import ErrorMessage from '../components/common/ErrorMessage.vue'
+import Button from '../components/base/Button.vue'
 import Spinner from '../components/base/Spinner.vue'
-import apiService from '../services/backend/apiService.js'
+import ErrorMessage from '../components/common/ErrorMessage.vue'
+import QuickLink from '../components/common/QuickLink.vue'
+import RandomArt from '../components/common/RandomArt.vue'
+import RefreshButton from '../components/common/RefreshButton.vue'
 import GameDataSources from '../components/ui/GameDataSources.vue'
-import UserProfile from '../components/ui/UserProfile.vue'
+import GameDescription from '../components/ui/GameDescription.vue'
+import GameSettings from '../components/ui/GameSettings.vue'
+import ProcessingWarning from '../components/ui/ProcessingWarning.vue'
 import ThumbsRating from '../components/ui/ThumbsRating.vue'
-import QuickLink from "../components/common/QuickLink.vue";
-import RandomArt from '../components/common/RandomArt.vue';
-import Button from '../components/base/Button.vue';
+import UserProfile from '../components/ui/UserProfile.vue'
+import apiService from '../services/backend/apiService.js'
 
 export default {
   name: 'GamePage',
@@ -65,13 +65,13 @@ export default {
     UserProfile,
     ThumbsRating,
     RefreshButton,
-    RandomArt
+    RandomArt,
   },
   props: {
     gameId: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
@@ -81,13 +81,13 @@ export default {
       error: null,
       searchPerformed: false,
       processingWarning: false,
-      user: null
+      user: null,
     }
   },
   computed: {
     gameTitle() {
       return this.steamGameDetails?.name || `Game ID ${this.gameId}`
-    }
+    },
   },
   async mounted() {
     // Add keyboard event listener for backspace key
@@ -103,16 +103,16 @@ export default {
   methods: {
     async handleVoteSubmit(gameSettingsId, type) {
       if (type === null) {
-        await apiService.removeVote(gameSettingsId);
+        await apiService.removeVote(gameSettingsId)
       } else {
-        await apiService.submitVote(gameSettingsId, type);
+        await apiService.submitVote(gameSettingsId, type)
       }
       // Refresh user and game data to reflect updated votes
-      this.user = await apiService.fetchAuthUser();
-      this.deckuGame = (await apiService.fetchGame(this.gameId)).game;
+      this.user = await apiService.fetchAuthUser()
+      this.deckuGame = (await apiService.fetchGame(this.gameId)).game
     },
     handleRefresh() {
-      window.location.reload();
+      window.location.reload()
     },
     handleKeydown(event) {
       // Check if backspace key is pressed and not in an input field
@@ -165,7 +165,7 @@ export default {
       this.processingWarning = false
 
       try {
-        this.steamGameDetails = await apiService.fetchSteamGame(this.gameId);
+        this.steamGameDetails = await apiService.fetchSteamGame(this.gameId)
         const deckuGame = await apiService.fetchGame(this.gameId)
 
         if (deckuGame.status === 'queued') {
@@ -180,7 +180,7 @@ export default {
         this.loading = false
       }
     },
-  }
+  },
 }
 </script>
 

@@ -36,18 +36,18 @@ export default {
   props: {
     game: {
       type: Object,
-      required: true
+      required: true,
     },
     isSelected: {
       type: Boolean,
-      default: false
+      default: false,
     },
     animationDelay: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
-  emits: ['select']
+  emits: ['select'],
 }
 </script>
 

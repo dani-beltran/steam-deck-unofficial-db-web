@@ -33,36 +33,36 @@ export default {
   props: {
     title: {
       type: String,
-      default: null
+      default: null,
     },
     initiallyCollapsed: {
       type: Boolean,
-      default: false
+      default: false,
     },
     cardClass: {
       type: String,
-      default: ''
+      default: '',
     },
     ariaLabel: {
       type: String,
-      default: null
+      default: null,
     },
     toggleAriaLabel: {
       type: String,
-      default: 'Toggle section visibility'
-    }
+      default: 'Toggle section visibility',
+    },
   },
   data() {
     return {
-      isCollapsed: this.initiallyCollapsed
+      isCollapsed: this.initiallyCollapsed,
     }
   },
   methods: {
     toggleCollapsed() {
       this.isCollapsed = !this.isCollapsed
       this.$emit('toggle', this.isCollapsed)
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -12,12 +12,12 @@ export default {
   props: {
     text: {
       type: String,
-      default: 'Jump to Settings'
+      default: 'Jump to Settings',
     },
     targetId: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   methods: {
     handleClick(event) {
@@ -30,11 +30,11 @@ export default {
         const targetY = rect.top + scrollTop + viewportHeight / 2
         window.scrollTo({
           top: targetY,
-          behavior: 'smooth'
+          behavior: 'smooth',
         })
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

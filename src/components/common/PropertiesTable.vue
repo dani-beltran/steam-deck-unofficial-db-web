@@ -38,18 +38,20 @@ export default {
     data: {
       type: Array,
       required: true,
-      default: () => []
+      default: () => [],
     },
     keyPrefix: {
       type: String,
-      default: 'row'
-    }
+      default: 'row',
+    },
   },
   computed: {
     filteredData() {
       // Filter out rows where value is null or undefined
-      return this.data.filter(row => row.value !== null && row.value !== undefined && row.value !== '');
-    }
+      return this.data.filter(
+        (row) => row.value !== null && row.value !== undefined && row.value !== ''
+      )
+    },
   },
   methods: {
     formatKey(key) {
@@ -57,10 +59,10 @@ export default {
       return key
         .replace(/_/g, ' ')
         .split(' ')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-        .join(' ');
-    }
-  }
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ')
+    },
+  },
 }
 </script>
 

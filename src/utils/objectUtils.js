@@ -6,11 +6,11 @@
  * @returns {Array} An array of objects with 'key' and 'value' properties
  */
 export function flattenObject(obj, parentKey = '', result = []) {
-  for (let key in obj) {
-    if (obj.hasOwnProperty(key)) {
+  for (const key in obj) {
+    if (Object.hasOwn(obj, key)) {
       const newKey = parentKey ? `${parentKey}.${key}` : key
       const value = obj[key]
-      
+
       if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
         // Recursively flatten nested objects
         flattenObject(value, newKey, result)
@@ -18,7 +18,7 @@ export function flattenObject(obj, parentKey = '', result = []) {
         // Add the key-value pair to results
         result.push({
           key: newKey,
-          value: Array.isArray(value) ? JSON.stringify(value) : value
+          value: Array.isArray(value) ? JSON.stringify(value) : value,
         })
       }
     }

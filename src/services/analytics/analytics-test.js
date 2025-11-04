@@ -3,12 +3,12 @@
  * This file can be used to test analytics events in the browser console
  */
 
-import { 
-  trackSearch, 
-  trackSearchInput, 
-  trackSuggestionSelect, 
-  trackGameSelect, 
-  trackCustomEvent 
+import {
+  trackCustomEvent,
+  trackGameSelect,
+  trackSearch,
+  trackSearchInput,
+  trackSuggestionSelect,
 } from '../src/services/analytics'
 
 // Test functions - these can be called from browser console during development
@@ -19,7 +19,7 @@ window.testAnalytics = {
     console.log('✅ Search event tracked: Portal 2')
   },
 
-  // Test search input tracking  
+  // Test search input tracking
   testSearchInput: () => {
     trackSearchInput('Portal', 6, 'game_search_input')
     console.log('✅ Search input event tracked: Portal (length: 6)')
@@ -43,7 +43,7 @@ window.testAnalytics = {
     trackCustomEvent('test_event', {
       category: 'testing',
       action: 'manual_test',
-      value: 1
+      value: 1,
     })
     console.log('✅ Custom event tracked: test_event')
   },
@@ -57,7 +57,7 @@ window.testAnalytics = {
     window.testAnalytics.testGameSelect()
     window.testAnalytics.testCustomEvent()
     console.log('✅ All analytics tests completed!')
-  }
+  },
 }
 
 console.log('📊 Analytics testing functions loaded!')

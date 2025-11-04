@@ -19,25 +19,25 @@ export default {
     variant: {
       type: String,
       default: 'primary',
-      validator: (value) => ['primary', 'secondary', 'search'].includes(value)
+      validator: (value) => ['primary', 'secondary', 'search'].includes(value),
     },
     size: {
       type: String,
       default: 'medium',
-      validator: (value) => ['small', 'medium', 'large'].includes(value)
+      validator: (value) => ['small', 'medium', 'large'].includes(value),
     },
     disabled: {
       type: Boolean,
-      default: false
+      default: false,
     },
     type: {
       type: String,
-      default: 'button'
+      default: 'button',
     },
     label: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   emits: ['click'],
   computed: {
@@ -47,11 +47,11 @@ export default {
         `btn-${this.variant}`,
         `btn-${this.size}`,
         {
-          'btn-disabled': this.disabled
-        }
+          'btn-disabled': this.disabled,
+        },
       ]
-    }
-  }
+    },
+  },
 }
 </script>
 

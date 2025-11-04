@@ -15,13 +15,13 @@ export default {
   props: {
     isPlatinum: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isNative: {
       type: Boolean,
-      default: false
-    }
-  }
+      default: false,
+    },
+  },
 }
 </script>
 

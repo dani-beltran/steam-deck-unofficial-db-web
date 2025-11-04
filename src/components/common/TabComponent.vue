@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { ref, computed, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 export default {
   name: 'TabComponent',
@@ -40,35 +40,32 @@ export default {
       type: Array,
       required: true,
       validator(tabs) {
-        return tabs.every(tab => 
-          tab.hasOwnProperty('id') && 
-          tab.hasOwnProperty('label')
-        )
-      }
+        return tabs.every((tab) => Object.hasOwn(tab, 'id') && Object.hasOwn(tab, 'label'))
+      },
     },
     defaultTab: {
       type: String,
-      default: null
-    }
+      default: null,
+    },
   },
   emits: ['tab-changed'],
   setup(props, { emit }) {
     // Component state
     const activeTab = ref(null)
-    
+
     // Computed properties
     const availableTabs = computed(() => {
-      return props.tabs.filter(tab => !tab.hidden)
+      return props.tabs.filter((tab) => !tab.hidden)
     })
-    
+
     // Tab management methods
     const initializeActiveTab = () => {
       // Use the provided default tab if it exists and is available
-      if (props.defaultTab && availableTabs.value.some(tab => tab.id === props.defaultTab)) {
+      if (props.defaultTab && availableTabs.value.some((tab) => tab.id === props.defaultTab)) {
         activeTab.value = props.defaultTab
         return
       }
-      
+
       // Otherwise, use the first available tab
       if (availableTabs.value.length > 0) {
         activeTab.value = availableTabs.value[0].id
@@ -76,26 +73,30 @@ export default {
         activeTab.value = null
       }
     }
-    
+
     const setActiveTab = (tabId) => {
       activeTab.value = tabId
       emit('tab-changed', tabId)
     }
-    
+
     // Watchers
-    watch([() => props.tabs, () => props.defaultTab], () => {
-      initializeActiveTab()
-    }, { immediate: true, deep: true })
-    
+    watch(
+      [() => props.tabs, () => props.defaultTab],
+      () => {
+        initializeActiveTab()
+      },
+      { immediate: true, deep: true }
+    )
+
     return {
       // State
       activeTab,
       availableTabs,
-      
+
       // Methods
-      setActiveTab
+      setActiveTab,
     }
-  }
+  },
 }
 </script>
 

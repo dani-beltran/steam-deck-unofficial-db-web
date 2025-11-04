@@ -9,7 +9,7 @@
 
 <script>
 export default {
-  name: "Tooltip",
+  name: 'Tooltip',
   props: {
     text: {
       type: String,
@@ -17,15 +17,25 @@ export default {
     },
     position: {
       type: String,
-      default: "top",
-      validator: (value) => ["top", "bottom", "left", "right", "top-left", "top-right", "bottom-left", "bottom-right"].includes(value),
+      default: 'top',
+      validator: (value) =>
+        [
+          'top',
+          'bottom',
+          'left',
+          'right',
+          'top-left',
+          'top-right',
+          'bottom-left',
+          'bottom-right',
+        ].includes(value),
     },
     wrapperClass: {
       type: String,
-      default: "",
+      default: '',
     },
   },
-};
+}
 </script>
 
 <style scoped>

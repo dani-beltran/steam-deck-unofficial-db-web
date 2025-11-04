@@ -80,195 +80,198 @@ import apiService from '../../services/backend/apiService.js'
 import Button from '../base/Button.vue'
 
 export default {
-    name: 'PopularGames',
-    components: {
-        Button
-    },
-    emits: ['game-selected'],
-    data() {
-        return {
-            currentIndex: 0,
-            itemsPerSlide: 3,
-            swipe: null,
-            isMobile: false,
-            popularGames: [],
-            isLoading: true,
-            error: null,
-            localStorageKey: 'popularGames_currentIndex',
-            showAllGames: false,
-            mobileDisplayLimit: 5
-        }
-    },
-    computed: {
-        displayedGames() {
-            if (this.isMobile && !this.showAllGames) {
-                return this.popularGames.slice(0, this.mobileDisplayLimit)
-            }
-            return this.popularGames
-        },
-        totalSlides() {
-            return Math.ceil(this.popularGames.length / this.itemsPerSlide)
-        },
-        maxIndex() {
-            return this.totalSlides - 1
-        },
-        trackStyle() {
-            const translateX = -(this.currentIndex * 100)
-            const swipeOffset = this.swipe?.swipeState?.isDragging ?
-                (this.swipe?.swipeState.translateX / window.innerWidth) * 100 : 0
-
-            return {
-                transform: `translateX(calc(${translateX}% + ${swipeOffset}px))`,
-                transition: this.swipe?.swipeState?.isDragging ? 'none' : 'transform 0.3s ease-in-out'
-            }
-        },
-        showMoreButton() {
-            return this.isMobile && !this.showAllGames && this.popularGames.length > this.mobileDisplayLimit
-        }
-    },
-    watch: {
-        currentIndex(newIndex) {
-            this.saveCurrentIndex(newIndex)
-        }
-    },
-    async mounted() {
-        this.initCarousel()
-        await this.fetchPopularGames()
-        this.restoreCurrentIndex()
-        window.addEventListener('resize', this.updateCarouselOnResize)
-    },
-    beforeUnmount() {
-        window.removeEventListener('resize', this.updateCarouselOnResize)
-    },
-    methods: {
-        async fetchPopularGames() {
-            try {
-                this.isLoading = true
-                this.error = null
-                const games = await apiService.fetchMostPlayedGames()
-                this.popularGames = games || []
-            } catch (err) {
-                console.error('Error fetching popular games:', err)
-                this.error = err.message || 'Failed to load popular games'
-            } finally {
-                this.isLoading = false
-            }
-        },
-        initCarousel() {
-            this.updateCarouselOnResize()
-            if (!this.isMobile) {
-                this.swipe = useSwipe({
-                    swipeThreshold: 50,
-                    velocityThreshold: 0.3
-                })
-            }
-        },
-        updateCarouselOnResize() {
-            const width = window.innerWidth
-            const wasMobile = this.isMobile
-            if (width < 640) {
-                this.itemsPerSlide = 1
-                this.isMobile = true
-                this.currentIndex = 0
-            } else if (width < 1024) {
-                this.itemsPerSlide = 2
-                this.isMobile = false
-            } else {
-                this.itemsPerSlide = 3
-                this.isMobile = false
-            }
-
-            // Initialize or destroy swipe based on mobile state change
-            if (wasMobile !== this.isMobile) {
-                if (this.isMobile && this.swipe) {
-                    this.swipe.resetSwipeState()
-                    this.swipe = null
-                } else if (!this.isMobile && !this.swipe) {
-                    this.swipe = useSwipe({
-                        swipeThreshold: 50,
-                        velocityThreshold: 0.3
-                    })
-                }
-            }
-
-            // Reset showAllGames when switching from mobile to desktop
-            if (wasMobile && !this.isMobile) {
-                this.showAllGames = false
-            }
-        },
-        nextSlide() {
-            if (this.currentIndex < this.maxIndex) {
-                this.currentIndex++
-            }
-        },
-        previousSlide() {
-            if (this.currentIndex > 0) {
-                this.currentIndex--
-            }
-        },
-        goToSlide(index) {
-            this.currentIndex = index
-        },
-        onGameClick(game) {
-            this.$emit('game-selected', game)
-        },
-        handleTouchStart(event) {
-            this.swipe?.handleTouchStart(event)
-        },
-        handleTouchMove(event) {
-            this.swipe?.handleTouchMove(event, this.currentIndex, this.totalSlides)
-            // Prevent scrolling when swiping horizontally
-            if (this.swipe?.swipeState.isDragging) {
-                event.preventDefault()
-            }
-        },
-        handleTouchEnd() {
-            const result = this.swipe?.handleTouchEnd(this.currentIndex, this.totalSlides)
-            if (result && result.type === 'change') {
-                this.currentIndex = result.newIndex
-            }
-        },
-        handleMouseDown(event) {
-            this.swipe?.handleMouseDown(event)
-        },
-        handleMouseMove(event) {
-            this.swipe?.handleMouseMove(event, this.currentIndex, this.totalSlides)
-        },
-        handleMouseUp() {
-            const result = this.swipe?.handleMouseEnd(this.currentIndex, this.totalSlides)
-            if (result && result.type === 'change') {
-                this.currentIndex = result.newIndex
-            }
-        },
-        handleMouseLeave() {
-            if (this.swipe?.swipeState.isPointerDown) {
-                this.swipe?.resetSwipeState()
-            }
-        },
-        saveCurrentIndex(index) {
-            try {
-                localStorage.setItem(this.localStorageKey, index.toString())
-            } catch (err) {
-                console.warn('Failed to save current index to localStorage:', err)
-            }
-        },
-        restoreCurrentIndex() {
-            try {
-                const savedIndex = localStorage.getItem(this.localStorageKey)
-                if (savedIndex !== null) {
-                    const index = parseInt(savedIndex, 10)
-                    if (!isNaN(index) && index >= 0 && index <= this.maxIndex) {
-                        this.currentIndex = index
-                    }
-                }
-            } catch (err) {
-                console.warn('Failed to restore current index from localStorage:', err)
-            }
-        },
-        toggleShowAll() {
-            this.showAllGames = !this.showAllGames
-        }
+  name: 'PopularGames',
+  components: {
+    Button,
+  },
+  emits: ['game-selected'],
+  data() {
+    return {
+      currentIndex: 0,
+      itemsPerSlide: 3,
+      swipe: null,
+      isMobile: false,
+      popularGames: [],
+      isLoading: true,
+      error: null,
+      localStorageKey: 'popularGames_currentIndex',
+      showAllGames: false,
+      mobileDisplayLimit: 5,
     }
+  },
+  computed: {
+    displayedGames() {
+      if (this.isMobile && !this.showAllGames) {
+        return this.popularGames.slice(0, this.mobileDisplayLimit)
+      }
+      return this.popularGames
+    },
+    totalSlides() {
+      return Math.ceil(this.popularGames.length / this.itemsPerSlide)
+    },
+    maxIndex() {
+      return this.totalSlides - 1
+    },
+    trackStyle() {
+      const translateX = -(this.currentIndex * 100)
+      const swipeOffset = this.swipe?.swipeState?.isDragging
+        ? (this.swipe?.swipeState.translateX / window.innerWidth) * 100
+        : 0
+
+      return {
+        transform: `translateX(calc(${translateX}% + ${swipeOffset}px))`,
+        transition: this.swipe?.swipeState?.isDragging ? 'none' : 'transform 0.3s ease-in-out',
+      }
+    },
+    showMoreButton() {
+      return (
+        this.isMobile && !this.showAllGames && this.popularGames.length > this.mobileDisplayLimit
+      )
+    },
+  },
+  watch: {
+    currentIndex(newIndex) {
+      this.saveCurrentIndex(newIndex)
+    },
+  },
+  async mounted() {
+    this.initCarousel()
+    await this.fetchPopularGames()
+    this.restoreCurrentIndex()
+    window.addEventListener('resize', this.updateCarouselOnResize)
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.updateCarouselOnResize)
+  },
+  methods: {
+    async fetchPopularGames() {
+      try {
+        this.isLoading = true
+        this.error = null
+        const games = await apiService.fetchMostPlayedGames()
+        this.popularGames = games || []
+      } catch (err) {
+        console.error('Error fetching popular games:', err)
+        this.error = err.message || 'Failed to load popular games'
+      } finally {
+        this.isLoading = false
+      }
+    },
+    initCarousel() {
+      this.updateCarouselOnResize()
+      if (!this.isMobile) {
+        this.swipe = useSwipe({
+          swipeThreshold: 50,
+          velocityThreshold: 0.3,
+        })
+      }
+    },
+    updateCarouselOnResize() {
+      const width = window.innerWidth
+      const wasMobile = this.isMobile
+      if (width < 640) {
+        this.itemsPerSlide = 1
+        this.isMobile = true
+        this.currentIndex = 0
+      } else if (width < 1024) {
+        this.itemsPerSlide = 2
+        this.isMobile = false
+      } else {
+        this.itemsPerSlide = 3
+        this.isMobile = false
+      }
+
+      // Initialize or destroy swipe based on mobile state change
+      if (wasMobile !== this.isMobile) {
+        if (this.isMobile && this.swipe) {
+          this.swipe.resetSwipeState()
+          this.swipe = null
+        } else if (!this.isMobile && !this.swipe) {
+          this.swipe = useSwipe({
+            swipeThreshold: 50,
+            velocityThreshold: 0.3,
+          })
+        }
+      }
+
+      // Reset showAllGames when switching from mobile to desktop
+      if (wasMobile && !this.isMobile) {
+        this.showAllGames = false
+      }
+    },
+    nextSlide() {
+      if (this.currentIndex < this.maxIndex) {
+        this.currentIndex++
+      }
+    },
+    previousSlide() {
+      if (this.currentIndex > 0) {
+        this.currentIndex--
+      }
+    },
+    goToSlide(index) {
+      this.currentIndex = index
+    },
+    onGameClick(game) {
+      this.$emit('game-selected', game)
+    },
+    handleTouchStart(event) {
+      this.swipe?.handleTouchStart(event)
+    },
+    handleTouchMove(event) {
+      this.swipe?.handleTouchMove(event, this.currentIndex, this.totalSlides)
+      // Prevent scrolling when swiping horizontally
+      if (this.swipe?.swipeState.isDragging) {
+        event.preventDefault()
+      }
+    },
+    handleTouchEnd() {
+      const result = this.swipe?.handleTouchEnd(this.currentIndex, this.totalSlides)
+      if (result && result.type === 'change') {
+        this.currentIndex = result.newIndex
+      }
+    },
+    handleMouseDown(event) {
+      this.swipe?.handleMouseDown(event)
+    },
+    handleMouseMove(event) {
+      this.swipe?.handleMouseMove(event, this.currentIndex, this.totalSlides)
+    },
+    handleMouseUp() {
+      const result = this.swipe?.handleMouseEnd(this.currentIndex, this.totalSlides)
+      if (result && result.type === 'change') {
+        this.currentIndex = result.newIndex
+      }
+    },
+    handleMouseLeave() {
+      if (this.swipe?.swipeState.isPointerDown) {
+        this.swipe?.resetSwipeState()
+      }
+    },
+    saveCurrentIndex(index) {
+      try {
+        localStorage.setItem(this.localStorageKey, index.toString())
+      } catch (err) {
+        console.warn('Failed to save current index to localStorage:', err)
+      }
+    },
+    restoreCurrentIndex() {
+      try {
+        const savedIndex = localStorage.getItem(this.localStorageKey)
+        if (savedIndex !== null) {
+          const index = parseInt(savedIndex, 10)
+          if (!Number.isNaN(index) && index >= 0 && index <= this.maxIndex) {
+            this.currentIndex = index
+          }
+        }
+      } catch (err) {
+        console.warn('Failed to restore current index from localStorage:', err)
+      }
+    },
+    toggleShowAll() {
+      this.showAllGames = !this.showAllGames
+    },
+  },
 }
 </script>
 

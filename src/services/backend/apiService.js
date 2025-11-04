@@ -7,9 +7,7 @@ import Cookies from 'js-cookie'
 class ApiService {
   constructor() {
     // Use localhost in development, production URL otherwise
-    this.baseUrl = import.meta.env.DEV
-      ? 'http://localhost:3000'
-      : 'https://api.deckudb.com'
+    this.baseUrl = import.meta.env.DEV ? 'http://localhost:3000' : 'https://api.deckudb.com'
   }
 
   /**
@@ -24,13 +22,11 @@ class ApiService {
     }
 
     try {
-      const { data } = await axios.get(
-        `${this.baseUrl}/games/${encodeURIComponent(gameId)}`
-      )
-      return data;
+      const { data } = await axios.get(`${this.baseUrl}/games/${encodeURIComponent(gameId)}`)
+      return data
     } catch (err) {
       console.error('Error fetching game settings:', err)
-      return null;
+      return null
     }
   }
 
@@ -40,13 +36,11 @@ class ApiService {
     }
 
     try {
-      const { data } = await axios.get(
-        `${this.baseUrl}/steam/games/${encodeURIComponent(gameId)}`
-      )
-      return data;
+      const { data } = await axios.get(`${this.baseUrl}/steam/games/${encodeURIComponent(gameId)}`)
+      return data
     } catch (err) {
       console.error('Error fetching Steam game details:', err)
-      return null;
+      return null
     }
   }
 
@@ -58,10 +52,10 @@ class ApiService {
     try {
       const searchUrl = `${this.baseUrl}/steam/games?term=${encodeURIComponent(term)}&limit=${limit}`
       const { data } = await axios.get(searchUrl)
-      return data;
+      return data
     } catch (err) {
       console.error('Error searching for games:', err)
-      return [];
+      return []
     }
   }
 
@@ -71,14 +65,12 @@ class ApiService {
     }
 
     try {
-      const idsParam = gameIds.map(id => encodeURIComponent(id)).join(',')
-      const { data } = await axios.get(
-        `${this.baseUrl}/steam/games/batch?ids=${idsParam}`
-      )
-      return data;
+      const idsParam = gameIds.map((id) => encodeURIComponent(id)).join(',')
+      const { data } = await axios.get(`${this.baseUrl}/steam/games/batch?ids=${idsParam}`)
+      return data
     } catch (err) {
       console.error('Error fetching Steam games by IDs:', err)
-      return [];
+      return []
     }
   }
 
@@ -89,34 +81,32 @@ class ApiService {
    */
   async fetchMostPlayedGames() {
     try {
-      const { data } = await axios.get(
-        `${this.baseUrl}/steam/most-played-steam-deck-games`
-      )
-      return data;
+      const { data } = await axios.get(`${this.baseUrl}/steam/most-played-steam-deck-games`)
+      return data
     } catch (err) {
       console.error('Error fetching most played games:', err)
-      return [];
+      return []
     }
   }
 
   async fetchAuthUser() {
     try {
       const { data } = await axios.get(`${this.baseUrl}/auth/user`, { withCredentials: true })
-      return data;
+      return data
     } catch (err) {
       console.error('Error fetching authenticated user:', err)
-      return null;
+      return null
     }
   }
 
   loginWithSteam() {
-    Cookies.set('login_referer', window.location.href);
-    window.location.href = `${this.baseUrl}/auth/steam`;
+    Cookies.set('login_referer', window.location.href)
+    window.location.href = `${this.baseUrl}/auth/steam`
   }
 
   logout() {
-    Cookies.set('logout_referer', window.location.href);
-    window.location.href = `${this.baseUrl}/auth/logout`;
+    Cookies.set('logout_referer', window.location.href)
+    window.location.href = `${this.baseUrl}/auth/logout`
   }
 
   async submitVote(gameSettingId, voteType) {
@@ -143,16 +133,12 @@ class ApiService {
       if (!gameSettingId) {
         throw new Error('Game ID is required to remove a vote')
       }
-      await axios.delete(
-        `${this.baseUrl}/games/${gameSettingId}/vote`,
-        { withCredentials: true }
-      )
+      await axios.delete(`${this.baseUrl}/games/${gameSettingId}/vote`, { withCredentials: true })
     } catch (err) {
       console.error('Error removing vote:', err)
     }
   }
 }
-
 
 // Export a singleton instance
 export default new ApiService()

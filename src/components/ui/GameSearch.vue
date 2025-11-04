@@ -74,15 +74,23 @@
 </template>
 
 <script>
+import {
+  trackGameSelect,
+  trackSearch,
+  trackSearchError,
+  trackSearchInput,
+  trackSearchResults,
+  trackShowMoreResults,
+  trackSuggestionSelect,
+} from '../../services/analytics'
 import apiService from '../../services/backend/apiService.js'
 import { isMobile } from '../../utils/deviceUtils.js'
-import { trackSearch, trackSearchInput, trackSuggestionSelect, trackGameSelect, trackSearchResults, trackSearchError, trackShowMoreResults } from '../../services/analytics'
-import ErrorMessage from '../common/ErrorMessage.vue'
-import Spinner from '../base/Spinner.vue'
-import GameCard from './GameCard.vue'
 import Button from '../base/Button.vue'
+import Spinner from '../base/Spinner.vue'
+import ErrorMessage from '../common/ErrorMessage.vue'
 import SearchBar from '../common/SearchBar.vue'
 import SearchSuggestions from '../common/SearchSuggestions.vue'
+import GameCard from './GameCard.vue'
 
 export default {
   name: 'GameSearch',
@@ -92,7 +100,7 @@ export default {
     GameCard,
     Button,
     SearchBar,
-    SearchSuggestions
+    SearchSuggestions,
   },
   emits: ['game-selected'],
   data() {
@@ -122,7 +130,7 @@ export default {
     },
     hasMoreResults() {
       return this.gameSearchResults.length > this.INITIAL_RESULTS_COUNT && !this.showAllResults
-    }
+    },
   },
   mounted() {
     // Check if there's a search query in the URL
@@ -139,65 +147,65 @@ export default {
     async onSearchBarFocus() {
       if (this.gameName.trim().length > 0) {
         // If there's input, show suggestions as usual
-        this.showSuggestions = this.suggestions.length > 0;
-        return;
+        this.showSuggestions = this.suggestions.length > 0
+        return
       }
       await this.showRecentGamesAsSuggestions()
     },
 
     async showRecentGamesAsSuggestions() {
       try {
-        this.suggestions = await this.getRecentGames();
-        this.showSuggestions = this.suggestions.length > 0;
-        this.selectedSuggestionIndex = -1;
+        this.suggestions = await this.getRecentGames()
+        this.showSuggestions = this.suggestions.length > 0
+        this.selectedSuggestionIndex = -1
       } catch (e) {
-        console.warn('Error fetching recent games by IDs:', e);
-        this.suggestions = [];
-        this.showSuggestions = false;
+        console.warn('Error fetching recent games by IDs:', e)
+        this.suggestions = []
+        this.showSuggestions = false
       }
     },
 
     async getRecentGames() {
-      const recentIds = this.getRecentSearchedGameIds();
+      const recentIds = this.getRecentSearchedGameIds()
 
       if (recentIds.length === 0) {
-        return [];
+        return []
       }
 
       try {
-        const result = await apiService.fetchSteamGamesByIds(recentIds);
-        return result.items || [];
+        const result = await apiService.fetchSteamGamesByIds(recentIds)
+        return result.items || []
       } catch (e) {
-        console.warn('Error fetching recent games by IDs:', e);
-        return [];
+        console.warn('Error fetching recent games by IDs:', e)
+        return []
       }
     },
 
     getRecentSearchedGameIds() {
-      const storageKey = 'recentSearchedGameIds';
-      let recentIds = [];
+      const storageKey = 'recentSearchedGameIds'
+      let recentIds = []
       try {
-        const stored = localStorage.getItem(storageKey);
+        const stored = localStorage.getItem(storageKey)
         if (stored) {
-          recentIds = JSON.parse(stored);
+          recentIds = JSON.parse(stored)
         }
       } catch (e) {
-        console.warn('Error parsing recent searched game IDs from localStorage:', e);
+        console.warn('Error parsing recent searched game IDs from localStorage:', e)
       }
-      return Array.isArray(recentIds) ? recentIds : [];
+      return Array.isArray(recentIds) ? recentIds : []
     },
 
     async handleSearch(submitSource) {
       clearTimeout(this.debounceTimer)
       this.closeSuggestions()
-      
+
       // Update URL with search param
       this.updateSearchParam(this.gameName)
-      
+
       this.searchGameByName()
       // Track the search event
       trackSearch(this.gameName, 'game_search', {
-        search_source: submitSource ? submitSource : 'search_bar_button'
+        search_source: submitSource ? submitSource : 'search_bar_button',
       })
     },
     async handleSearchBarKeydown(event) {
@@ -220,7 +228,7 @@ export default {
       this.gameSearchResults = []
       this.selectedGameId = null
       this.showAllResults = false
-      
+
       // Ensure suggestions are completely hidden
       this.suggestions = []
       this.showSuggestions = false
@@ -232,20 +240,15 @@ export default {
         this.gameSearchResults = games
 
         // Track search results
-        trackSearchResults(
-          this.gameName.trim(),
-          results.total,
-          games.length > 0,
-          'game_search'
-        )
-        
+        trackSearchResults(this.gameName.trim(), results.total, games.length > 0, 'game_search')
+
         if (games.length === 0) {
           this.gameSearchError = 'No games found with that name. Try a different search term.'
         }
       } catch (err) {
         console.error('Error searching for games:', err)
         this.gameSearchError = `Failed to search for games: ${err.message}`
-        
+
         // Track search error
         trackSearchError(this.gameName.trim(), err.message, 'game_search')
       } finally {
@@ -280,15 +283,11 @@ export default {
       if (this.inputTrackingTimeout) {
         clearTimeout(this.inputTrackingTimeout)
       }
-      
+
       // Set new timeout to track input after 1 second of inactivity
       this.inputTrackingTimeout = setTimeout(() => {
         if (this.gameName && this.gameName.trim().length > 0) {
-          trackSearchInput(
-            this.gameName.trim(), 
-            this.gameName.trim().length, 
-            'game_search_input'
-          )
+          trackSearchInput(this.gameName.trim(), this.gameName.trim().length, 'game_search_input')
         }
       }, 1000)
     },
@@ -298,7 +297,7 @@ export default {
       if (this.debounceTimer) {
         clearTimeout(this.debounceTimer)
       }
-      
+
       // Set new timer for 300ms delay
       this.debounceTimer = setTimeout(() => {
         this.fetchSuggestions()
@@ -314,7 +313,7 @@ export default {
       }
 
       this.suggestionsLoading = true
-      
+
       try {
         const suggestions = await apiService.searchSteamGamesByName(this.gameName.trim(), 7)
         // Only show suggestions if the search hasn't been submitted
@@ -333,7 +332,7 @@ export default {
     async selectSuggestion(suggestion) {
       trackSuggestionSelect(suggestion.name, this.selectedSuggestionIndex, this.gameName.trim())
       this.closeSuggestions()
-      this.saveRecentSearchedGameId(suggestion.id);
+      this.saveRecentSearchedGameId(suggestion.id)
       // Route directly to the game page using the suggestion ID
       this.$router.push(`/game/${suggestion.id}`)
     },
@@ -356,35 +355,35 @@ export default {
       trackGameSelect(game, 'search_result')
 
       this.selectedGameId = game.id
-      this.saveRecentSearchedGameId(game.id);
+      this.saveRecentSearchedGameId(game.id)
 
-      const searchTerm = this.gameName.trim();
-      this.$emit('game-selected', game, searchTerm);
+      const searchTerm = this.gameName.trim()
+      this.$emit('game-selected', game, searchTerm)
     },
 
     saveRecentSearchedGameId(gameId) {
-      const storageKey = 'recentSearchedGameIds';
-      let recentIds = [];
+      const storageKey = 'recentSearchedGameIds'
+      let recentIds = []
       try {
-        const stored = localStorage.getItem(storageKey);
+        const stored = localStorage.getItem(storageKey)
         if (stored) {
-          recentIds = JSON.parse(stored);
+          recentIds = JSON.parse(stored)
         }
       } catch (e) {
-        console.warn('Error parsing recent searched game IDs from localStorage:', e);
+        console.warn('Error parsing recent searched game IDs from localStorage:', e)
       }
       // Remove if already present
-      recentIds = recentIds.filter(id => id !== gameId);
+      recentIds = recentIds.filter((id) => id !== gameId)
       // Add to front
-      recentIds.unshift(gameId);
+      recentIds.unshift(gameId)
       // Limit to 10
       if (recentIds.length > 10) {
-        recentIds = recentIds.slice(0, 10);
+        recentIds = recentIds.slice(0, 10)
       }
       try {
-        localStorage.setItem(storageKey, JSON.stringify(recentIds));
+        localStorage.setItem(storageKey, JSON.stringify(recentIds))
       } catch (e) {
-        console.warn('Error saving recent searched game IDs to localStorage:', e);
+        console.warn('Error saving recent searched game IDs to localStorage:', e)
       }
     },
 
@@ -403,13 +402,13 @@ export default {
 
     updateSearchParam(query) {
       const url = new URL(window.location)
-      if (query && query.trim()) {
+      if (query?.trim()) {
         url.searchParams.set('q', query.trim())
       } else {
         url.searchParams.delete('q')
       }
       window.history.pushState({}, '', url)
-    }
+    },
   },
   beforeUnmount() {
     // Clean up debounce timer
@@ -420,7 +419,7 @@ export default {
     if (this.inputTrackingTimeout) {
       clearTimeout(this.inputTrackingTimeout)
     }
-  }
+  },
 }
 </script>
 

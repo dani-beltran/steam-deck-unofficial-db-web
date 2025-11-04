@@ -23,41 +23,41 @@ export default {
   props: {
     deckuGame: {
       type: Object,
-      required: false
-    }
+      required: false,
+    },
   },
   computed: {
     sources() {
-      const sources = this.deckuGame?.settings?.map(setting => setting.source) || [];
-      const uniqueSources = [...new Set(sources)];
-      return uniqueSources;
-    }
+      const sources = this.deckuGame?.settings?.map((setting) => setting.source) || []
+      const uniqueSources = [...new Set(sources)]
+      return uniqueSources
+    },
   },
   methods: {
     getSourceLink(source) {
-        switch(source) {
-          case 'steam':
-            return `https://store.steampowered.com/app/${this.deckuGame.game_id}`;
-          case 'protondb':
-            return `https://www.protondb.com/app/${this.deckuGame.game_id}?device=steamDeck`;
-          case 'sharedeck':
-            return `https://sharedeck.games/apps/${this.deckuGame.game_id}`;
-          case 'steamdeckhq':
-            return `https://steamdeckhq.com/game-reviews/${this.getFormattedGameName()}`;
-          default:
-            return '#';
-        }
+      switch (source) {
+        case 'steam':
+          return `https://store.steampowered.com/app/${this.deckuGame.game_id}`
+        case 'protondb':
+          return `https://www.protondb.com/app/${this.deckuGame.game_id}?device=steamDeck`
+        case 'sharedeck':
+          return `https://sharedeck.games/apps/${this.deckuGame.game_id}`
+        case 'steamdeckhq':
+          return `https://steamdeckhq.com/game-reviews/${this.getFormattedGameName()}`
+        default:
+          return '#'
+      }
     },
-	getFormattedGameName() {
-        if (!this.deckuGame || !this.deckuGame.game_name) {
-        return '';
-        }
-        return this.deckuGame.game_name
+    getFormattedGameName() {
+      if (!this.deckuGame || !this.deckuGame.game_name) {
+        return ''
+      }
+      return this.deckuGame.game_name
         .toLowerCase()
-        .replace(/\s+/g, "-")
-        .replace(/[^a-z0-9-]/g, "");
-    }
-  }
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '')
+    },
+  },
 }
 </script>
 

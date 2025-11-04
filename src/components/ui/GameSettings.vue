@@ -93,12 +93,12 @@
 </template>
 
 <script>
+import { Battery, Gamepad2, Monitor } from 'lucide-vue-next'
+import { trackTabClick } from '../../services/analytics'
+import { flattenObject } from '../../utils/objectUtils.js'
+import CollapsibleCard from '../common/CollapsibleCard.vue'
 import PropertiesTable from '../common/PropertiesTable.vue'
 import TabComponent from '../common/TabComponent.vue'
-import CollapsibleCard from '../common/CollapsibleCard.vue'
-import { flattenObject } from '../../utils/objectUtils.js'
-import { trackTabClick } from '../../services/analytics'
-import { Gamepad2, Monitor, Battery } from 'lucide-vue-next'
 import ThumbsRating from './ThumbsRating.vue'
 
 export default {
@@ -107,33 +107,33 @@ export default {
     PropertiesTable,
     TabComponent,
     CollapsibleCard,
-    ThumbsRating
+    ThumbsRating,
   },
   props: {
     game: {
       type: Object,
-      default: null
+      default: null,
     },
     user: {
       type: Object,
-      default: null
+      default: null,
     },
     loading: {
       type: Boolean,
-      default: false
+      default: false,
     },
     error: {
       type: String,
-      default: null
+      default: null,
     },
     searchPerformed: {
       type: Boolean,
-      default: false
+      default: false,
     },
     processingWarning: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
@@ -143,8 +143,8 @@ export default {
       tabLabels: {
         game: 'Game Settings',
         steamdeck: 'SteamOS Settings',
-        battery: 'Battery Performance'
-      }
+        battery: 'Battery Performance',
+      },
     }
   },
   computed: {
@@ -156,7 +156,7 @@ export default {
       if (!this.game || !this.game.settings) return []
 
       // First filter by hardware type
-      const hardwareFiltered = this.game.settings.filter(config => {
+      const hardwareFiltered = this.game.settings.filter((config) => {
         const hardware = config.steamdeck_hardware?.toLowerCase()
 
         if (this.selectedHardware === 'lcd') {
@@ -171,9 +171,9 @@ export default {
       const hardwareGroups = new Map()
 
       // Unknown or null hardware goes to 'lcd' group
-      hardwareFiltered.forEach(config => {
+      hardwareFiltered.forEach((config) => {
         let hardware = config.steamdeck_hardware?.toLowerCase()
-        hardware = (hardware === 'lcd' || hardware === 'oled') ? hardware : 'lcd'
+        hardware = hardware === 'lcd' || hardware === 'oled' ? hardware : 'lcd'
 
         if (!hardwareGroups.has(hardware)) {
           hardwareGroups.set(hardware, [])
@@ -183,7 +183,7 @@ export default {
 
       // For each hardware group, keep only the most complete configuration
       const result = []
-      hardwareGroups.forEach(configs => {
+      hardwareGroups.forEach((configs) => {
         const sortedConfigs = configs.sort((a, b) => {
           const nSettingsA = a.game_settings ? Object.keys(a.game_settings).length : 0
           const nSettingsB = b.game_settings ? Object.keys(b.game_settings).length : 0
@@ -197,7 +197,7 @@ export default {
     hasLcdSettings() {
       if (!this.game || !this.game.settings) return false
 
-      return this.game.settings.some(config => {
+      return this.game.settings.some((config) => {
         const hardware = config.steamdeck_hardware?.toLowerCase()
         return hardware === 'lcd' || !hardware
       })
@@ -206,7 +206,7 @@ export default {
     hasOledSettings() {
       if (!this.game || !this.game.settings) return false
 
-      return this.game.settings.some(config => {
+      return this.game.settings.some((config) => {
         const hardware = config.steamdeck_hardware?.toLowerCase()
         return hardware === 'oled'
       })
@@ -225,18 +225,18 @@ export default {
     game: {
       handler(newGame) {
         // Reset filter when new results are loaded
-        this.selectedHardware = this.hasLcdSettings ? 'lcd' : (this.hasOledSettings ? 'oled' : null)
+        this.selectedHardware = this.hasLcdSettings ? 'lcd' : this.hasOledSettings ? 'oled' : null
         // If the game changes, reset to first page
         if (this.game?.game_id !== newGame?.game_id) {
           this.currentPage = 1
         }
       },
-      immediate: true
+      immediate: true,
     },
     selectedHardware() {
       // Reset to first page when filter changes
       this.currentPage = 1
-    }
+    },
   },
   methods: {
     filterByHardware(hardware) {
@@ -260,7 +260,7 @@ export default {
       trackTabClick(tabId, this.tabLabels[tabId], 'game_settings', {
         game_id: this.game?.game_id,
         game_name: this.game?.game_name,
-        hardware_filter: this.selectedHardware
+        hardware_filter: this.selectedHardware,
       })
     },
 
@@ -270,7 +270,7 @@ export default {
         return date.toLocaleDateString('en-US', {
           year: 'numeric',
           month: 'short',
-          day: 'numeric'
+          day: 'numeric',
         })
       } catch {
         return dateString
@@ -319,14 +319,14 @@ export default {
           icon: Battery,
           count: batteryPerformance.length,
           // hidden: batteryPerformance.length === 0
-        }
+        },
       ]
     },
 
     async submitVote(type) {
-      this.$emit('submit-vote', this.currentConfig._id, type);
-    }
-  }
+      this.$emit('submit-vote', this.currentConfig._id, type)
+    },
+  },
 }
 </script>
 

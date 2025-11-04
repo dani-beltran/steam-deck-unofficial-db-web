@@ -8,7 +8,7 @@ export function useSwipe(options = {}) {
     maxDragDistance: 0.25, // percentage of window width
     edgeResistance: 0.2,
     animationDuration: 300,
-    ...options
+    ...options,
   }
 
   // Reactive state
@@ -21,7 +21,7 @@ export function useSwipe(options = {}) {
     isTransitioning: false,
     isDragging: false,
     isPointerDown: false,
-    startTime: 0
+    startTime: 0,
   })
 
   // Reset all swipe state
@@ -53,22 +53,22 @@ export function useSwipe(options = {}) {
     swipeState.currentX = clientX
     const deltaX = swipeState.currentX - swipeState.startX
     const deltaY = Math.abs(swipeState.currentY - swipeState.startY)
-    
+
     // Only start dragging if horizontal movement is greater than vertical
     if (!swipeState.isDragging && Math.abs(deltaX) > 15 && Math.abs(deltaX) > deltaY * 1.5) {
       swipeState.isDragging = true
     }
-    
+
     if (swipeState.isDragging) {
       // Limit drag distance with resistance at edges
       const maxDrag = window.innerWidth * defaultOptions.maxDragDistance
       let limitedDelta = deltaX
-      
+
       // Add resistance at edges
       if ((deltaX > 0 && currentIndex === 0) || (deltaX < 0 && currentIndex === totalItems - 1)) {
         limitedDelta = deltaX * defaultOptions.edgeResistance
       }
-      
+
       swipeState.translateX = Math.max(-maxDrag, Math.min(maxDrag, limitedDelta))
     }
   }
@@ -79,17 +79,19 @@ export function useSwipe(options = {}) {
       resetSwipeState()
       return null
     }
-    
+
     const deltaX = swipeState.currentX - swipeState.startX
     const deltaTime = Date.now() - swipeState.startTime
     const velocity = Math.abs(deltaX) / deltaTime
-    
+
     // Determine if swipe should trigger change
-    const shouldSwipe = Math.abs(deltaX) > defaultOptions.swipeThreshold || velocity > defaultOptions.velocityThreshold
-    
+    const shouldSwipe =
+      Math.abs(deltaX) > defaultOptions.swipeThreshold ||
+      velocity > defaultOptions.velocityThreshold
+
     if (shouldSwipe) {
       let newIndex = currentIndex
-      
+
       if (deltaX > 0 && currentIndex > 0) {
         // Swipe right - go to previous item
         newIndex = currentIndex - 1
@@ -97,27 +99,27 @@ export function useSwipe(options = {}) {
         // Swipe left - go to next item
         newIndex = currentIndex + 1
       }
-      
+
       if (newIndex !== currentIndex) {
         return {
           type: 'change',
           newIndex,
-          direction: newIndex > currentIndex ? 'next' : 'prev'
+          direction: newIndex > currentIndex ? 'next' : 'prev',
         }
       }
     }
-    
+
     return { type: 'reset' }
   }
 
   // Animate to new position
   const animateToPosition = (callback) => {
     swipeState.isTransitioning = true
-    
+
     if (callback) {
       callback()
     }
-    
+
     setTimeout(() => {
       resetSwipeState()
     }, defaultOptions.animationDuration)
@@ -127,7 +129,7 @@ export function useSwipe(options = {}) {
   const resetPosition = () => {
     swipeState.isTransitioning = true
     swipeState.translateX = 0
-    
+
     setTimeout(() => {
       // resetSwipeState()
     }, defaultOptions.animationDuration)
@@ -169,20 +171,20 @@ export function useSwipe(options = {}) {
   return {
     // State
     swipeState,
-    
+
     // Methods
     resetSwipeState,
     animateToPosition,
     resetPosition,
-    
+
     // Touch handlers
     handleTouchStart,
     handleTouchMove,
     handleTouchEnd,
-    
+
     // Mouse handlers
     handleMouseDown,
     handleMouseMove,
-    handleMouseEnd
+    handleMouseEnd,
   }
 }

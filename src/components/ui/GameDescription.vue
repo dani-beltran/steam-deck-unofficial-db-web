@@ -34,11 +34,11 @@
 </template>
 
 <script>
-import Tooltip from "../base/Tooltip.vue";
-import GamePreview from "./GamePreview.vue";
+import Tooltip from '../base/Tooltip.vue'
+import GamePreview from './GamePreview.vue'
 
 export default {
-  name: "GameDescription",
+  name: 'GameDescription',
   components: {
     Tooltip,
     GamePreview,
@@ -60,33 +60,31 @@ export default {
   data() {
     return {
       gameDetails: null,
-    };
+    }
   },
   computed: {
     gameTitle() {
-      return this.gameData.game_name || this.gameDetails.name;
+      return this.gameData.game_name || this.gameDetails.name
     },
     gameId() {
-      return this.gameData?.game_id || "";
+      return this.gameData?.game_id || ''
     },
     steamStoreUrl() {
-      return this.gameId
-        ? `https://store.steampowered.com/app/${this.gameId}/`
-        : "#";
+      return this.gameId ? `https://store.steampowered.com/app/${this.gameId}/` : '#'
     },
   },
   methods: {
     getRatingTooltip(rating) {
       const tooltips = {
-        native: "Game works natively on linux",
-        gold: "Game works flawlessly after a few changes",
-        platinum: "Game works flawlessly out of the box",
-        unsupported: "Game is not supported"
-      };
-      return tooltips[rating] || "";
+        native: 'Game works natively on linux',
+        gold: 'Game works flawlessly after a few changes',
+        platinum: 'Game works flawlessly out of the box',
+        unsupported: 'Game is not supported',
+      }
+      return tooltips[rating] || ''
     },
   },
-};
+}
 </script>
 
 <style scoped>

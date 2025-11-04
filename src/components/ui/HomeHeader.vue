@@ -10,7 +10,7 @@
 
 <script>
 export default {
-  name: 'HomeHeader'
+  name: 'HomeHeader',
 }
 </script>
 

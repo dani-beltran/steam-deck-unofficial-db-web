@@ -1,17 +1,17 @@
 /**
  * Analytics service exports
- * 
+ *
  * This file provides a clean interface for importing analytics functions
  */
 
 export {
-  trackSearch,
-  trackSearchInput,
-  trackSuggestionSelect,
+  trackCustomEvent,
   trackGameSelect,
-  trackSearchResults,
+  trackSearch,
   trackSearchError,
+  trackSearchInput,
+  trackSearchResults,
   trackShowMoreSearchResults as trackShowMoreResults,
+  trackSuggestionSelect,
   trackTabClick,
-  trackCustomEvent
 } from './analytics.js'

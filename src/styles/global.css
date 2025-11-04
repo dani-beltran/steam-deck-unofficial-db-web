@@ -1,8 +1,12 @@
 :root {
-    /* Theme colors */
-  --primary-color-start: #0370BE;
-  --primary-color-end: #00355B;
-  --primary-color: linear-gradient(135deg, var(--primary-color-start) 0%, var(--primary-color-end) 100%);
+  /* Theme colors */
+  --primary-color-start: #0370be;
+  --primary-color-end: #00355b;
+  --primary-color: linear-gradient(
+    135deg,
+    var(--primary-color-start) 0%,
+    var(--primary-color-end) 100%
+  );
   --primary-text-color: #ffffff;
 
   --secondary-color: #fff;
@@ -10,9 +14,9 @@
   --secondary-border-color: #e5e7eb;
   --secondary-border-hover: #d1d5db;
   --secondary-bg-hover: #f9fafb;
-  
-  --highlight-color: #FCC337;
-  
+
+  --highlight-color: #fcc337;
+
   /* Box shadow colors */
   --highlight-box-shadow-hover: rgba(252, 195, 55, 0.15);
   --highlight-box-shadow-selected: rgba(252, 195, 55, 0.2);

@@ -36,21 +36,21 @@ export default {
   name: 'SearchBar',
   components: {
     Button,
-    Search
+    Search,
   },
   props: {
     modelValue: {
       type: String,
-      default: ''
+      default: '',
     },
     placeholder: {
       type: String,
-      default: 'Enter search term...'
+      default: 'Enter search term...',
     },
     loading: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   emits: ['update:modelValue', 'search', 'input', 'keydown', 'blur', 'focus'],
   computed: {
@@ -60,14 +60,14 @@ export default {
       },
       set(value) {
         this.$emit('update:modelValue', value)
-      }
-    }
+      },
+    },
   },
   methods: {
     handleSearch() {
       // Hide mobile keyboard by blurring input
       if (this.$refs.searchInput) {
-        this.$refs.searchInput.blur();
+        this.$refs.searchInput.blur()
       }
       this.$emit('search', this.searchTerm)
     },
@@ -86,8 +86,8 @@ export default {
 
     handleFocus(event) {
       this.$emit('focus', event)
-    }
-  }
+    },
+  },
 }
 </script>
 

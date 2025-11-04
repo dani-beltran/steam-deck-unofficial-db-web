@@ -18,9 +18,9 @@ export default {
   props: {
     gameName: {
       type: String,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 }
 </script>
 

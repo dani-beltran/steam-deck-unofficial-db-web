@@ -14,7 +14,7 @@ export function trackSearch(searchTerm, searchType = 'game_search', additionalPa
       search_term: searchTerm,
       search_type: searchType,
       event_category: 'search_interaction',
-      ...additionalParams
+      ...additionalParams,
     })
   }
 }
@@ -31,7 +31,7 @@ export function trackSearchInput(searchTerm, searchLength, searchType = 'game_se
       search_term: searchTerm,
       search_length: searchLength,
       search_type: searchType,
-      event_category: 'search_interaction'
+      event_category: 'search_interaction',
     })
   }
 }
@@ -48,7 +48,7 @@ export function trackSuggestionSelect(suggestionText, suggestionIndex, searchTer
       suggestion_text: suggestionText,
       suggestion_index: suggestionIndex,
       original_search_term: searchTerm,
-      event_category: 'search_interaction'
+      event_category: 'search_interaction',
     })
   }
 }
@@ -64,7 +64,7 @@ export function trackGameSelect(game, selectionMethod = 'search_result') {
       game_id: game.id,
       game_name: game.name,
       selection_method: selectionMethod,
-      event_category: 'search_interaction'
+      event_category: 'search_interaction',
     })
   }
 }
@@ -82,7 +82,7 @@ export function trackShowMoreSearchResults(searchTerm, totalResults, initiallySh
       search_term: searchTerm,
       total_results: totalResults,
       initially_shown: initiallyShown,
-      event_category: 'search_interaction'
+      event_category: 'search_interaction',
     })
   }
 }
@@ -94,14 +94,19 @@ export function trackShowMoreSearchResults(searchTerm, totalResults, initiallySh
  * @param {boolean} hasResults - Whether any results were found
  * @param {string} searchType - Type of search
  */
-export function trackSearchResults(searchTerm, resultsCount, hasResults, searchType = 'game_search') {
+export function trackSearchResults(
+  searchTerm,
+  resultsCount,
+  hasResults,
+  searchType = 'game_search'
+) {
   if (typeof window !== 'undefined' && window.gtag) {
     window.gtag('event', 'search_results', {
       search_term: searchTerm,
       results_count: resultsCount,
       search_type: searchType,
       has_results: hasResults,
-      event_category: 'search_interaction'
+      event_category: 'search_interaction',
     })
   }
 }
@@ -118,7 +123,7 @@ export function trackSearchError(searchTerm, errorMessage, searchType = 'game_se
       search_term: searchTerm,
       error_message: errorMessage,
       search_type: searchType,
-      event_category: 'search_interaction'
+      event_category: 'search_interaction',
     })
   }
 }
@@ -137,7 +142,7 @@ export function trackTabClick(tabId, tabLabel, context = 'game_settings', additi
       tab_label: tabLabel,
       tab_context: context,
       event_category: 'game_interaction',
-      ...additionalParams
+      ...additionalParams,
     })
   }
 }

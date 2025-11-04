@@ -15,9 +15,8 @@
 </template>
 
 <script>
-
-import { LogOut } from 'lucide-vue-next';
-import apiService from '../../services/backend/apiService';
+import { LogOut } from 'lucide-vue-next'
+import apiService from '../../services/backend/apiService'
 
 export default {
   name: 'UserProfile',
@@ -25,25 +24,25 @@ export default {
   props: {
     user: {
       type: Object,
-      default: null
-    }
+      default: null,
+    },
   },
   methods: {
     loginWithSteam() {
-      apiService.loginWithSteam();
+      apiService.loginWithSteam()
     },
     goToSteamProfile() {
-      if (!this.user?.steamProfile) return;
-      const profile = this.user.steamProfile;
-      const url = profile.profileUrl || (profile._json && profile._json.profileurl) || profile.profileurl;
+      if (!this.user?.steamProfile) return
+      const profile = this.user.steamProfile
+      const url = profile.profileUrl || profile?._json?.profileurl || profile.profileurl
       if (url) {
-        window.open(url, '_blank');
+        window.open(url, '_blank')
       }
     },
     logout() {
-        apiService.logout();
-    }
-  }
+      apiService.logout()
+    },
+  },
 }
 </script>
 

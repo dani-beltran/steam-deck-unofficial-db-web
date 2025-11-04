@@ -19,59 +19,69 @@
 </template>
 
 <script>
-import { ThumbsUp, ThumbsDown } from 'lucide-vue-next';
-import Tooltip from '@/components/base/Tooltip.vue';
+import { ThumbsDown, ThumbsUp } from 'lucide-vue-next'
+import Tooltip from '@/components/base/Tooltip.vue'
 export default {
   name: 'ThumbsRating',
   components: {
     ThumbsUp,
     ThumbsDown,
-    Tooltip
+    Tooltip,
   },
   data() {
     return {
       thumbsUp: 0,
-      thumbsDown: 0
-    };
+      thumbsDown: 0,
+    }
   },
   props: {
     user: {
       type: Object,
-      default: null
+      default: null,
     },
     gameSettings: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   computed: {
     userVote() {
-      if (!this.user || !this.user.deckuProfile || !this.user.deckuProfile.votes || !this.gameSettings) {
-        return null;
+      if (
+        !this.user ||
+        !this.user.deckuProfile ||
+        !this.user.deckuProfile.votes ||
+        !this.gameSettings
+      ) {
+        return null
       }
-      return this.user.deckuProfile.votes.find(vote => vote.game_settings_id === this.gameSettings._id)?.vote_type || null;
+      return (
+        this.user.deckuProfile.votes.find((vote) => vote.game_settings_id === this.gameSettings._id)
+          ?.vote_type || null
+      )
     },
   },
   watch: {
     gameSettings: {
       immediate: true,
       handler() {
-        this.thumbsUp = this.gameSettings.thumbs_up ?? 0;
-        this.thumbsDown = this.gameSettings.thumbs_down ?? 0;
-      }
-    }
+        this.thumbsUp = this.gameSettings.thumbs_up ?? 0
+        this.thumbsDown = this.gameSettings.thumbs_down ?? 0
+      },
+    },
   },
   emits: ['vote'],
   methods: {
     vote(type) {
-      if (!this.user) { return; }
-      const previousVote = this.userVote;
+      if (!this.user) {
+        return
+      }
+      const previousVote = this.userVote
       // if the same vote is clicked, remove the vote passing null
-      const vote = previousVote === type ? null : type;
-      this.$emit('vote', vote);
-    }
-  }
-};
+      const vote = previousVote === type ? null : type
+      this.$emit('vote', vote)
+    },
+  },
+}
 </script>
 
 <style scoped>

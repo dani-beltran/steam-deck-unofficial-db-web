@@ -11,59 +11,58 @@
 
 <script>
 export default {
-    name: "GamePreview",
-    props: {
-        // Steam Game Details from Steam API appdetails
-        gameDetails: {
-            type: Object,
-            default: null,
-        },
+  name: 'GamePreview',
+  props: {
+    // Steam Game Details from Steam API appdetails
+    gameDetails: {
+      type: Object,
+      default: null,
     },
-    data() {
-        return {
-            showTrailer: false,
-        };
+  },
+  data() {
+    return {
+      showTrailer: false,
+    }
+  },
+  computed: {
+    steamStoreUrl() {
+      return this.gameDetails.steam_appid
+        ? `https://store.steampowered.com/app/${this.gameDetails.steam_appid}/`
+        : '#'
     },
-    computed: {
-        steamStoreUrl() {
-            return this.gameDetails.steam_appid
-                ? `https://store.steampowered.com/app/${this.gameDetails.steam_appid}/`
-                : "#";
-        },
-        trailerUrl() {
-            if (this.gameDetails.movies && this.gameDetails.movies.length > 0) {
-                // Get the first trailer's webm or mp4 URL
-                const trailer = this.gameDetails.movies[0];
-                if (trailer.webm && trailer.webm.max) {
-                    return trailer.webm.max;
-                } else if (trailer.mp4 && trailer.mp4.max) {
-                    return trailer.mp4.max;
-                }
-            }
-        },
+    trailerUrl() {
+      if (this.gameDetails.movies && this.gameDetails.movies.length > 0) {
+        // Get the first trailer's webm or mp4 URL
+        const trailer = this.gameDetails.movies[0]
+        if (trailer?.webm?.max) {
+          return trailer.webm.max
+        } else if (trailer?.mp4?.max) {
+          return trailer.mp4.max
+        }
+      }
     },
-    methods: {
+  },
+  methods: {
+    onMouseEnter() {
+      if (this.trailerUrl) {
+        this.showTrailer = true
+        // Resume video playback when mouse enters
+        this.$nextTick(() => {
+          this.$refs.videoElement?.play().catch((error) => {
+            console.error('Error playing video:', error)
+            this.showTrailer = false
+          })
+        })
+      }
+    },
 
-        onMouseEnter() {
-            if (this.trailerUrl) {
-                this.showTrailer = true;
-                // Resume video playback when mouse enters
-                this.$nextTick(() => {
-                    this.$refs.videoElement?.play().catch((error) => {
-                        console.error("Error playing video:", error);
-                        this.showTrailer = false;
-                    });
-                });
-            }
-        },
-
-        onMouseLeave() {
-            // Pause video before hiding
-            this.$refs.videoElement?.pause();
-            this.showTrailer = false;
-        },
+    onMouseLeave() {
+      // Pause video before hiding
+      this.$refs.videoElement?.pause()
+      this.showTrailer = false
     },
-};
+  },
+}
 </script>
 
 <style scoped>

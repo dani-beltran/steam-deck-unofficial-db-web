@@ -1,9 +1,9 @@
 <template>
   <div class="random-art">
-    <img :src="artImageUrl" :alt="`${captionQuote} - ${captionAuthor}`" class="art-image" />
+    <img :src="artImageUrl" :alt="`${selectedArt.caption_quote} - ${selectedArt.caption_author}`" class="art-image" />
   <div class="caption">
-    <blockquote><cite>{{ captionQuote }}</cite></blockquote>
-    <b>{{ captionAuthor }}</b>
+    <blockquote><cite>{{ selectedArt.caption_quote }}</cite></blockquote>
+    <b>{{ selectedArt.caption_author }}</b>
   </div>
   </div>
 </template>
@@ -34,17 +34,15 @@ const artList = [
   },
   {
     file: 'houses.png',
-    caption_quote: '“In the end, we only regret the chances we didn\'t take.”',
+    caption_quote: "“In the end, we only regret the chances we didn't take.”",
     caption_author: 'Lewis Carroll',
-  }
+  },
 ]
 
 const randomIndex = Math.floor(Math.random() * artList.length)
 const selectedArt = artList[randomIndex]
 
 const artImageUrl = computed(() => `/art/${selectedArt.file}`)
-const captionQuote = selectedArt.caption_quote
-const captionAuthor = selectedArt.caption_author
 </script>
 
 <style scoped>

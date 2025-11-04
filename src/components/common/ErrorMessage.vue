@@ -11,14 +11,14 @@ export default {
   props: {
     message: {
       type: String,
-      default: null
-    }
+      default: null,
+    },
   },
   methods: {
     dismiss() {
       this.$emit('dismiss')
-    }
-  }
+    },
+  },
 }
 </script>
 
