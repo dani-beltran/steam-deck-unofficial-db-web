@@ -1,8 +1,8 @@
 <template>
-  <section v-if="gameData && !loading" class="game-description" aria-label="Game information">
+  <section v-if="game && !loading" class="game-description" aria-label="Game information">
     <!-- Game Header with Title and Image -->
     <div class="game-header">
-      <GamePreview :game-details="steamGameDetails" />
+      <GamePreview :game-details="game.steam_app" />
       <div class="game-title-section">
         <h2 class="game-title">
           <a :href="steamStoreUrl" target="_blank" rel="noopener noreferrer" class="steam-title-link">
@@ -11,20 +11,20 @@
         </h2>
 
         <!-- Game Review Summary -->
-        <div v-if="steamGameDetails.short_description" class="summary-section">
-          <p class="summary-text">{{ steamGameDetails.short_description }}</p>
+        <div v-if="game.steam_app.short_description" class="summary-section">
+          <p class="summary-text">{{ game.steam_app.short_description }}</p>
         </div>
       </div>
     </div>
 
     <!-- Game Rating and Verification -->
     <div class="game-badges">
-      <Tooltip v-if="gameData.steamdeck_rating" :text="getRatingTooltip(gameData.steamdeck_rating)" position="top-right">
-        <div class="rating-badge" :class="`rating-${gameData.steamdeck_rating}`">
-          {{ gameData.steamdeck_rating.toUpperCase() }}
+      <Tooltip v-if="game.steamdeck_rating" :text="getRatingTooltip(game.steamdeck_rating)" position="top-right">
+        <div class="rating-badge" :class="`rating-${game.steamdeck_rating}`">
+          {{ game.steamdeck_rating.toUpperCase() }}
         </div>
       </Tooltip>
-      <Tooltip v-if="gameData.steamdeck_verified" text="Steam Deck verified game">
+      <Tooltip v-if="game.steamdeck_verified" text="Steam Deck verified game">
         <div class="verified-badge">
           ✓ Verified
         </div>
@@ -44,11 +44,7 @@ export default {
     GamePreview,
   },
   props: {
-    gameData: {
-      type: Object,
-      default: null,
-    },
-    steamGameDetails: {
+    game: {
       type: Object,
       default: null,
     },
@@ -64,10 +60,10 @@ export default {
   },
   computed: {
     gameTitle() {
-      return this.gameData.game_name || this.gameDetails.name
+      return this.game.steam_app?.name || this.gameDetails.name
     },
     gameId() {
-      return this.gameData?.game_id || ''
+      return this.game?.game_id || ''
     },
     steamStoreUrl() {
       return this.gameId ? `https://store.steampowered.com/app/${this.gameId}/` : '#'

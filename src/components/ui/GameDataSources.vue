@@ -49,10 +49,10 @@ export default {
       }
     },
     getFormattedGameName() {
-      if (!this.deckuGame || !this.deckuGame.game_name) {
+      if (!this.deckuGame?.steam_app.name) {
         return ''
       }
-      return this.deckuGame.game_name
+      return this.deckuGame.steam_app.name
         .toLowerCase()
         .replace(/\s+/g, '-')
         .replace(/[^a-z0-9-]/g, '')

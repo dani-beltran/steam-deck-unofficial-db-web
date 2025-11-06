@@ -154,7 +154,7 @@ export default {
   },
   computed: {
     gameTitle() {
-      return this.game.game_name || `Game ID: ${this.game.game_id}`
+      return this.game.steam_app?.name || `Game ID: ${this.game.game_id}`
     },
 
     filteredSettings() {
@@ -261,7 +261,7 @@ export default {
       this.activeTab = tabId
       trackTabClick(tabId, this.tabLabels[tabId], 'game_settings', {
         game_id: this.game?.game_id,
-        game_name: this.game?.game_name,
+        game_name: this.game?.steam_app?.name,
         hardware_filter: this.selectedHardware,
       })
     },
