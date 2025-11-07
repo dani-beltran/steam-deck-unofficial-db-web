@@ -26,6 +26,9 @@
       @clear-processing-warning="clearProcessingWarning" @submit-vote="handleVoteSubmit" /> -->
 
 
+    <!-- Game Reports Section -->
+    <GameReportsSection v-if="game && game.reports" :reports="game.reports" />
+
     <GameDataSources class="game-data-sources" :game="game" />
 
     <!-- Processing game view -->
