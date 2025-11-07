@@ -2,7 +2,7 @@
   <section v-if="game && !loading" class="game-description" aria-label="Game information">
     <!-- Game Header with Title and Image -->
     <div class="game-header">
-      <GamePreview :game-details="game.steam_app" />
+      <GamePreview :game="game" />
       <div class="game-title-section">
         <h2 class="game-title">
           <a :href="steamStoreUrl" target="_blank" rel="noopener noreferrer" class="steam-title-link">

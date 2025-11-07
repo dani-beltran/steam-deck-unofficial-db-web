@@ -1,8 +1,8 @@
 <template>
-    <div class="game-image-container" v-if="gameDetails && gameDetails.header_image">
+    <div class="game-image-container" v-if="game && game.steam_app?.header_image">
         <a :href="steamStoreUrl" target="_blank" rel="noopener noreferrer" class="steam-link" @mouseenter="onMouseEnter"
             @mouseleave="onMouseLeave">
-            <img v-show="!showTrailer" :src="gameDetails.header_image" :alt="`${gameDetails.name} cover image`" class="game-image"/>
+            <img v-show="!showTrailer" :src="game.steam_app.header_image" :alt="`${game.steam_app.name} cover image`" class="game-image"/>
             <video v-show="trailerUrl && showTrailer" ref="videoElement" :src="trailerUrl" class="game-trailer" autoplay muted loop
                 playsinline></video>
         </a>
@@ -14,7 +14,7 @@ export default {
   name: 'GamePreview',
   props: {
     // Steam Game Details from Steam API appdetails
-    gameDetails: {
+    game: {
       type: Object,
       default: null,
     },
@@ -26,14 +26,14 @@ export default {
   },
   computed: {
     steamStoreUrl() {
-      return this.gameDetails.steam_appid
-        ? `https://store.steampowered.com/app/${this.gameDetails.steam_appid}/`
+      return this.game?.steam_app
+        ? `https://store.steampowered.com/app/${this.game.steam_app.steam_appid}/`
         : '#'
     },
     trailerUrl() {
-      if (this.gameDetails.movies && this.gameDetails.movies.length > 0) {
+      if (this.game?.steam_app?.movies && this.game.steam_app.movies.length > 0) {
         // Get the first trailer's webm or mp4 URL
-        const trailer = this.gameDetails.movies[0]
+        const trailer = this.game.steam_app.movies[0]
         if (trailer?.webm?.max) {
           return trailer.webm.max
         } else if (trailer?.mp4?.max) {

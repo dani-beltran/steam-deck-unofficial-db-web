@@ -15,17 +15,18 @@
     <ErrorMessage :message="error" @dismiss="clearError" class="error-with-top-margin" />
 
     <!-- Game Description Section -->
-    <GameDescription :game-data="deckuGame" :steam-game-details="steamGameDetails" :loading="loading" />
+    <GameDescription :game="game" :loading="loading" />
 
     <!-- Quick link to settings -->
-    <QuickLink v-if="deckuGame" class="quick-links-only-mobile" target-id="settings-section"
+    <QuickLink v-if="game" class="quick-links-only-mobile" target-id="settings-section"
       text="Check the Settings" />
 
-    <GameSettings id="settings-section" :game="deckuGame" :user="user" :loading="loading" :error="error"
+    <!-- <GameSettings id="settings-section" :game="game" :user="user" :loading="loading" :error="error"
       :search-performed="searchPerformed" :processing-warning="processingWarning"
-      @clear-processing-warning="clearProcessingWarning" @submit-vote="handleVoteSubmit" />
+      @clear-processing-warning="clearProcessingWarning" @submit-vote="handleVoteSubmit" /> -->
 
-    <GameDataSources class="game-data-sources" :deckuGame="deckuGame" />
+
+    <GameDataSources class="game-data-sources" :game="game" />
 
     <!-- Processing game view -->
     <ProcessingWarning v-if="processingWarning" :game-name="gameTitle" @dismiss="clearProcessingWarning" />
@@ -45,6 +46,7 @@ import RandomArt from '../components/common/RandomArt.vue'
 import RefreshButton from '../components/common/RefreshButton.vue'
 import GameDataSources from '../components/ui/GameDataSources.vue'
 import GameDescription from '../components/ui/GameDescription.vue'
+import GameReportsSection from '../components/ui/GameReportsSection.vue'
 import GameSettings from '../components/ui/GameSettings.vue'
 import ProcessingWarning from '../components/ui/ProcessingWarning.vue'
 import ThumbsRating from '../components/ui/ThumbsRating.vue'
@@ -58,6 +60,7 @@ export default {
     QuickLink,
     GameSettings,
     GameDescription,
+    GameReportsSection,
     ProcessingWarning,
     ErrorMessage,
     Spinner,
@@ -75,8 +78,7 @@ export default {
   },
   data() {
     return {
-      deckuGame: null,
-      steamGameDetails: null,
+      game: null,
       loading: false,
       error: null,
       searchPerformed: false,
@@ -86,7 +88,7 @@ export default {
   },
   computed: {
     gameTitle() {
-      return this.steamGameDetails?.name || `Game ID ${this.gameId}`
+      return this.game?.steam_app?.name || `Game ID ${this.gameId}`
     },
   },
   async mounted() {
@@ -109,7 +111,7 @@ export default {
       }
       // Refresh user and game data to reflect updated votes
       this.user = await apiService.fetchAuthUser()
-      this.deckuGame = (await apiService.fetchGame(this.gameId)).game
+      this.game = (await apiService.fetchGame(this.gameId)).game
     },
     handleRefresh() {
       window.location.reload()
@@ -160,20 +162,19 @@ export default {
 
       this.loading = true
       this.error = null
-      this.deckuGame = null
+      this.game = null
       this.searchPerformed = true
       this.processingWarning = false
 
       try {
-        this.steamGameDetails = await apiService.fetchSteamGame(this.gameId)
-        const deckuGame = await apiService.fetchGame(this.gameId)
+        const game = await apiService.fetchGame(this.gameId)
 
-        if (deckuGame.status === 'queued') {
+        if (game.status === 'queued') {
           this.processingWarning = true
           return
         }
 
-        this.deckuGame = deckuGame.game
+        this.game = game.game
       } catch (err) {
         this.error = err.message
       } finally {
