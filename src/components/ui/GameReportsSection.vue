@@ -61,7 +61,7 @@
 
         <!-- Report Content -->
         <div class="report-content">
-            <p class="notes-text" v-if="report.notes">{{ this.cutText(`${report.title} ${report.notes}`, 90) }}...</p>
+            <p class="notes-text" v-if="report.notes">{{ this.cutText(`${report.title || ""} ${report.notes}`, 90) }}...</p>
         </div>
       </div>
 
