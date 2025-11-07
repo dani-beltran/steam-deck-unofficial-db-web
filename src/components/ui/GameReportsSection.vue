@@ -10,17 +10,17 @@
         v-for="(report, index) in reports"
         :key="`${report.source}-${report.hash || index}`"
         class="report-card"
-        @click="openReport(report.url)"
+        @click="openLink(report.url)"
       >
         <!-- Reporter Info -->
         <div class="report-header">
           <div class="reporter-info">
-            <a
-              :href="report.reporter.user_profile_url ?? '#'"
+            <div
               target="_blank"
               rel="noopener noreferrer"
               class="reporter-link"
               :aria-label="`View ${report.reporter.username}'s profile`"
+              @click="openLink(report.reporter.user_profile_url)"
             >
               <img
                 v-if="report.reporter.user_profile_avatar_url && !imageErrors[index]"
@@ -33,30 +33,35 @@
                 {{ getInitials(report.reporter.username) }}
               </div>
               <span class="reporter-name">{{ report.reporter.username }}</span>
-            </a>
+            </div>
           </div>
 
           <div class="report-metadata">
-            <span class="source-badge" :class="`source-${report.source}`">
-              {{ report.source }}
+            <span v-if="report.steamdeck_settings?.frame_rate_cap || report.steamdeck_settings?.screen_refresh_rate" class="frame-rate-badge">
+              {{ report.steamdeck_settings.frame_rate_cap || report.steamdeck_settings.screen_refresh_rate }} FPS
+            </span>
+            <span v-if="report.steamdeck_settings?.tdp_limit" class="tdp-badge">
+              {{ report.steamdeck_settings.tdp_limit }} W
             </span>
             <span v-if="report.steamdeck_hardware" class="hardware-badge" :class="`hardware-${report.steamdeck_hardware}`">
               {{ formatHardware(report.steamdeck_hardware) }}
             </span>
+          </div>
+
+          <div class="report-source">
+            <span class="source-badge" :class="`source-${report.source}`">
+              {{ report.source }}
+            </span>
+            
             <span v-if="report.posted_at" class="posted-date" :title="formatFullDate(report.posted_at)">
               {{ formatDate(report.posted_at) }}
             </span>
           </div>
         </div>
 
-        <!-- Report Title -->
-        <h4 v-if="report.title" class="report-title">
-            {{ report.title }}
-        </h4>
-
         <!-- Report Content -->
         <div class="report-content">
-          
+            <p class="notes-text" v-if="report.notes">{{ this.cutText(`${report.title} ${report.notes}`, 90) }}...</p>
         </div>
       </div>
 
@@ -87,10 +92,14 @@ export default {
     }
   },
   methods: {
-    openReport(url) {
+    openLink(url) {
       if (url) {
         window.open(url, '_blank', 'noopener,noreferrer')
       }
+    },
+    cutText(text, maxLength) {
+      if (text.length <= maxLength) return text
+      return text.slice(0, maxLength).replace(/\n/g, " ") + '...'
     },
     formatKey(key) {
       return key
@@ -214,15 +223,25 @@ export default {
   color: var(--text-primary);
 }
 
-.report-metadata {
+.report-source {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
 }
 
+.report-metadata {
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  gap: 8px;
+  flex: 1;
+}
+
 .source-badge,
-.hardware-badge {
+.hardware-badge,
+.frame-rate-badge,
+.tdp-badge {
   padding: 4px 10px;
   border-radius: 12px;
   font-size: 0.75rem;
@@ -265,27 +284,19 @@ export default {
   color: #1e3a8a;
 }
 
+.frame-rate-badge {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #064e3b;
+}
+
+.tdp-badge {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #92400e;
+}
+
 .posted-date {
   font-size: 0.75rem;
   color: var(--secondary-text-color);
-}
-
-.report-title {
-  margin: 0 0 16px 0;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.report-title-link {
-  color: var(--text-primary);
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.report-title-link:hover {
-  color: var(--primary-color);
-  text-decoration: underline;
 }
 
 .report-content {
@@ -354,8 +365,12 @@ export default {
 /* Responsive adjustments */
 @media (max-width: 640px) {
   .report-header {
-    flex-direction: column;
     align-items: flex-start;
+  }
+
+  .report-source {
+    justify-content: space-between;
+    width: 100%;
   }
 
   .settings-grid {

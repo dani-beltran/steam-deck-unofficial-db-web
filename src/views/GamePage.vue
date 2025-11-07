@@ -170,20 +170,37 @@ export default {
       this.processingWarning = false
 
       try {
-        const game = await apiService.fetchGame(this.gameId)
+        const res = await apiService.fetchGame(this.gameId)
 
-        if (game.status === 'queued') {
+        if (res.status === 'queued') {
           this.processingWarning = true
           return
         }
 
-        this.game = game.game
+        const sortedReports = this.sortGameReportsPerRelevance(res.game.reports)
+        this.game = { ...res.game, reports: sortedReports }
+
       } catch (err) {
         this.error = err.message
       } finally {
         this.loading = false
       }
     },
+
+    sortGameReportsPerRelevance(reports) {
+      // Example sorting logic: prioritize reports from certain sources
+      const sourcePriority = {
+        'steamdeckhq': 1,
+        'sharedeck': 2,
+        'protondb': 3,
+      }
+
+      return reports.sort((a, b) => {
+        const priorityA = sourcePriority[a.source] || 99
+        const priorityB = sourcePriority[b.source] || 99
+        return priorityA - priorityB
+      })
+    }
   },
 }
 </script>
