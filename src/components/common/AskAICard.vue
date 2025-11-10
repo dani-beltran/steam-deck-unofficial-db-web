@@ -18,7 +18,10 @@
       :show="!isCollapsed"
       content-class="ai-content"
     >
-      <slot></slot>
+      <div v-if="animateText && textContent" class="typewriter-container">
+        <div class="typewriter-text" v-html="displayedText"></div>
+      </div>
+      <div v-else class="typewriter-text" v-html="textContent"></div>
     </ExpandTransition>
   </section>
 </template>
@@ -46,17 +49,80 @@ export default {
       type: String,
       default: 'Ask AI',
     },
+    animateText: {
+      type: Boolean,
+      default: false,
+    },
+    textContent: {
+      type: String,
+      default: '',
+    },
+    typeSpeed: {
+      type: Number,
+      default: 50, // milliseconds per character
+    },
+    startDelay: {
+      type: Number,
+      default: 500, // delay before starting animation
+    },
   },
   data() {
     return {
       isCollapsed: true, // Starts closed
+      displayedText: '',
+      currentIndex: 0,
+      typewriterInterval: null,
     }
   },
   methods: {
     toggleCollapsed() {
       this.isCollapsed = !this.isCollapsed
       this.$emit('toggle', this.isCollapsed)
+      
+      if (!this.isCollapsed && this.animateText && this.textContent) {
+        this.startTypewriter()
+      }
     },
+    
+    startTypewriter() {
+      // Reset state
+      this.displayedText = ''
+      this.currentIndex = 0
+      this.clearIntervals()
+      
+      // Start typewriter after delay
+      setTimeout(() => {
+        this.typewriterInterval = setInterval(() => {
+          if (this.currentIndex < this.textContent.length) {
+            this.displayedText += this.textContent[this.currentIndex]
+            this.currentIndex++
+          } else {
+            // Animation complete
+            clearInterval(this.typewriterInterval)
+            this.typewriterInterval = null
+          }
+        }, this.typeSpeed)
+      }, this.startDelay)
+    },
+    
+    clearIntervals() {
+      if (this.typewriterInterval) {
+        clearInterval(this.typewriterInterval)
+        this.typewriterInterval = null
+      }
+    },
+  },
+  
+  watch: {
+    textContent() {
+      if (!this.isCollapsed && this.animateText) {
+        this.startTypewriter()
+      }
+    }
+  },
+  
+  beforeUnmount() {
+    this.clearIntervals()
   },
 }
 </script>
@@ -195,4 +261,21 @@ export default {
     margin-bottom: 15px;
   }
 }
+
+/* Typewriter Animation Styles */
+.typewriter-container {
+  display: flex;
+  align-items: flex-start;
+  min-height: 1.6em; /* Prevent layout shift */
+}
+
+.typewriter-text {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 1rem;
+  white-space: pre-wrap; /* Preserve whitespace and line breaks */
+  word-wrap: break-word;
+}
+
+
 </style>
