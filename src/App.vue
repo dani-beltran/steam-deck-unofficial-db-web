@@ -13,8 +13,8 @@
 </template>
 
 <script>
-import Footer from './components/ui/Footer.vue'
 import DarkModeToggle from './components/common/DarkModeToggle.vue'
+import Footer from './components/ui/Footer.vue'
 import { useDarkMode } from './composables/useDarkMode'
 
 export default {
