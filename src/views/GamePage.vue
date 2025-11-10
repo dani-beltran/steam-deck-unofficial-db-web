@@ -25,6 +25,11 @@
       :search-performed="searchPerformed" :processing-warning="processingWarning"
       @clear-processing-warning="clearProcessingWarning" @submit-vote="handleVoteSubmit" /> -->
 
+    <AskAICard v-if="game" class="settings-section" :title="`What users are saying about performance?`" >
+      <p>{{ game.game_performance_summary }}</p>
+      
+    </AskAICard>
+        
 
     <!-- Game Reports Section -->
     <GameReportsSection v-if="game && game.reports" :reports="game.reports" />
@@ -43,6 +48,7 @@
 <script>
 import Button from '../components/base/Button.vue'
 import Spinner from '../components/base/Spinner.vue'
+import AskAICard from '../components/common/AskAICard.vue'
 import ErrorMessage from '../components/common/ErrorMessage.vue'
 import QuickLink from '../components/common/QuickLink.vue'
 import RandomArt from '../components/common/RandomArt.vue'
@@ -72,6 +78,7 @@ export default {
     ThumbsRating,
     RefreshButton,
     RandomArt,
+    AskAICard,
   },
   props: {
     gameId: {
@@ -179,7 +186,6 @@ export default {
 
         const sortedReports = this.sortGameReportsPerRelevance(res.game.reports)
         this.game = { ...res.game, reports: sortedReports }
-
       } catch (err) {
         this.error = err.message
       } finally {
@@ -190,9 +196,9 @@ export default {
     sortGameReportsPerRelevance(reports) {
       // Example sorting logic: prioritize reports from certain sources
       const sourcePriority = {
-        'steamdeckhq': 1,
-        'sharedeck': 2,
-        'protondb': 3,
+        steamdeckhq: 1,
+        sharedeck: 2,
+        protondb: 3,
       }
 
       return reports.sort((a, b) => {
@@ -200,7 +206,7 @@ export default {
         const priorityB = sourcePriority[b.source] || 99
         return priorityA - priorityB
       })
-    }
+    },
   },
 }
 </script>
