@@ -3,23 +3,11 @@
     <div class="collapsible-header">
       <h3 v-if="title">{{ title }}</h3>
       <slot name="header" v-if="!title"></slot>
-      <button 
-        class="collapse-toggle"
-        @click="toggleCollapsed"
-        :aria-expanded="!isCollapsed"
+      <CollapseToggle 
+        :is-collapsed="isCollapsed"
         :aria-label="toggleAriaLabel"
-      >
-        <svg 
-          :class="['collapse-icon', { rotated: isCollapsed }]" 
-          width="16" 
-          height="16" 
-          viewBox="0 0 24 24" 
-          fill="none" 
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
+        @toggle="toggleCollapsed"
+      />
     </div>
     <div v-show="!isCollapsed" class="collapsible-content">
       <slot></slot>
@@ -28,8 +16,13 @@
 </template>
 
 <script>
+import CollapseToggle from '../base/CollapseToggle.vue'
+
 export default {
   name: 'CollapsibleCard',
+  components: {
+    CollapseToggle,
+  },
   props: {
     title: {
       type: String,
@@ -90,38 +83,6 @@ export default {
   display: flex;
   align-items: center;
   gap: 8px;
-}
-
-.collapse-toggle {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
-  color: var(--text-secondary);
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.collapse-toggle:hover {
-  background: var(--secondary-bg-hover);
-  color: var(--text-primary);
-}
-
-.collapse-toggle:focus {
-  outline: 2px solid var(--primary-color-start);
-  outline-offset: 2px;
-}
-
-.collapse-icon {
-  transition: transform 0.2s ease;
-}
-
-.collapse-icon.rotated {
-  transform: rotate(-90deg);
 }
 
 .collapsible-content {
