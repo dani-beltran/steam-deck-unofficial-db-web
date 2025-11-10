@@ -390,9 +390,12 @@ export default {
     align-items: flex-start;
   }
 
+  .report-header > div {
+    flex: 1 1 100%;
+  }
+
   .report-source {
     justify-content: space-between;
-    width: 100%;
   }
 
   .settings-grid {
