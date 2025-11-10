@@ -273,8 +273,8 @@ export default {
 }
 
 .decku-logo {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   margin-top: 2px;
   flex-shrink: 0;
   opacity: 1;
@@ -288,11 +288,11 @@ export default {
 @keyframes logo-pulse {
   0%, 100% {
     transform: scale(0.85);
-    opacity: 1;
+    opacity: 0.8;
   }
   50% {
     transform: scale(1);
-    opacity: 0.8;
+    opacity: 1;
   }
 }
 
