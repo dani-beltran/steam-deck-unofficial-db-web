@@ -15,11 +15,18 @@
       </button>
     </div>
     <ExpandTransition
-      :show="!isCollapsed"
+      :show="!isCollapsed && displayedText"
       content-class="ai-content"
     >
       <div class="typewriter-container">
         <div class="typewriter-text" v-html="displayedText"></div>
+        <Tooltip :text="typewriter.isTyping.value ? 'DeckuBot is typing...' : 'Brought to you by DeckuBot'" position="right">
+        <img 
+          src="/favicon-256x256.png" 
+          alt="DeckuBot logo" 
+          :class="['decku-logo', { 'logo-typing': typewriter.isTyping.value }]"
+        />
+        </Tooltip>
       </div>
     </ExpandTransition>
   </section>
@@ -30,12 +37,14 @@ import { ref, computed, watch } from 'vue'
 import { Sparkles } from 'lucide-vue-next'
 import ExpandTransition from '../base/ExpandTransition.vue'
 import { useTypewriter } from '../../composables/useTypewriter'
+import Tooltip from '../base/Tooltip.vue'
 
 export default {
   name: 'AskAICard',
   components: {
     Sparkles,
     ExpandTransition,
+    Tooltip
   },
   props: {
     title: {
@@ -104,6 +113,7 @@ export default {
       isCollapsed,
       displayedText,
       toggleCollapsed,
+      typewriter,
     }
   },
 }
@@ -247,7 +257,9 @@ export default {
 /* Typewriter Animation Styles */
 .typewriter-container {
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
+  gap: 8px;
   min-height: 1.6em; /* Prevent layout shift */
 }
 
@@ -257,6 +269,31 @@ export default {
   font-size: 1rem;
   white-space: pre-wrap; /* Preserve whitespace and line breaks */
   word-wrap: break-word;
+  flex: 1;
+}
+
+.decku-logo {
+  width: 40px;
+  height: 40px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.logo-typing {
+  animation: logo-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes logo-pulse {
+  0%, 100% {
+    transform: scale(0.85);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
 }
 
 
