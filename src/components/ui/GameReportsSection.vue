@@ -60,8 +60,14 @@
         </div>
 
         <!-- Report Content -->
-        <div class="report-content">
-            <p class="notes-text" v-if="report.notes">{{ this.cutText(`${report.title || ""} ${report.notes}`, 90) }}</p>
+        <div class="report-content" v-if="report.notes">
+            <p class="notes-text">
+              {{ this.cutText(`${report.title || ""} ${report.notes}`, 80) }}
+            </p>
+          
+            <div class="see-more-text">
+              <span>Continue reading...</span>
+            </div>
         </div>
       </div>
 
@@ -301,7 +307,9 @@ export default {
 
 .report-content {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
   gap: 16px;
 }
 
@@ -351,6 +359,20 @@ export default {
   white-space: pre-wrap;
 }
 
+.see-more-text {
+  margin-left: 6px;
+  font-size: 0.8rem;
+  color: var(--primary-color);
+  font-weight: 500;
+  opacity: 0;
+  flex-shrink: 0;
+  transition: opacity 0.2s ease;
+}
+
+.report-card:hover .see-more-text {
+  opacity: 1;
+}
+
 .no-reports {
   text-align: center;
   padding: 40px 20px;
@@ -381,6 +403,12 @@ export default {
   .reporter-avatar-placeholder {
     width: 36px;
     height: 36px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .see-more-text {
+    display: none;
   }
 }
 </style>
