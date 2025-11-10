@@ -20,13 +20,19 @@
     >
       <div class="typewriter-container">
         <div class="typewriter-text" v-html="displayedText"></div>
-        <Tooltip :text="typewriter.isTyping.value ? 'DeckuBot is typing...' : 'Brought to you by DeckuBot'" position="right">
-        <img 
-          src="/favicon-256x256.png" 
-          alt="DeckuBot logo" 
-          :class="['decku-logo', { 'logo-typing': typewriter.isTyping.value }]"
-        />
-        </Tooltip>
+        <div class="footer-container">
+          <Tooltip :text="typewriter.isTyping.value ? 'DeckuBot is typing...' : 'Brought to you by DeckuBot'" position="right">
+          <img 
+            src="/favicon-256x256.png" 
+            alt="DeckuBot logo" 
+            :class="['decku-logo', { 'logo-typing': typewriter.isTyping.value }]"
+          />
+          </Tooltip>
+          <FeedbackButtons 
+            :show="typewriter.isComplete.value"
+            @feedback="handleFeedback"
+          />
+        </div>
       </div>
     </ExpandTransition>
   </section>
@@ -38,13 +44,15 @@ import { Sparkles } from 'lucide-vue-next'
 import ExpandTransition from '../base/ExpandTransition.vue'
 import { useTypewriter } from '../../composables/useTypewriter'
 import Tooltip from '../base/Tooltip.vue'
+import FeedbackButtons from './FeedbackButtons.vue'
 
 export default {
   name: 'AskAICard',
   components: {
     Sparkles,
     ExpandTransition,
-    Tooltip
+    Tooltip,
+    FeedbackButtons,
   },
   props: {
     title: {
@@ -109,10 +117,15 @@ export default {
       }
     }
     
+    const handleFeedback = (type) => {
+      emit('feedback', type)
+    }
+    
     return {
       isCollapsed,
       displayedText,
       toggleCollapsed,
+      handleFeedback,
       typewriter,
     }
   },
@@ -272,6 +285,13 @@ export default {
   flex: 1;
 }
 
+.footer-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
 .decku-logo {
   width: 32px;
   height: 32px;
@@ -295,6 +315,4 @@ export default {
     opacity: 1;
   }
 }
-
-
 </style>
