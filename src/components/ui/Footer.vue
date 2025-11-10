@@ -54,7 +54,8 @@
       <div class="separator"></div>
       
       <div class="disclaimer-info">
-        <span class="disclaimer-text">Game settings recommendations are AI-generated from public internet sources and may be inaccurate, outdated, or unsuitable for your system. Users assume all risks.</span>
+        <span class="disclaimer-text">This site has no affiliation with Valve Software. All game images and logos are property of their respective owners.
+</span>
       </div>
     </div>
   </footer>
