@@ -15,7 +15,7 @@
       </button>
     </div>
     <ExpandTransition
-      :show="!isCollapsed && displayedText"
+      :show="!isCollapsed && !!displayedText"
       content-class="ai-content"
     >
       <div class="typewriter-container">

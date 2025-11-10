@@ -138,6 +138,25 @@ class ApiService {
       console.error('Error removing vote:', err)
     }
   }
+
+  async submitGameSummaryVote(gameId, voteType) {
+    try {
+      if (!gameId) {
+        throw new Error('Game ID is required to submit a summary vote')
+      }
+      if (!['up', 'down'].includes(voteType)) {
+        throw new Error('Invalid vote type. Must be "up" or "down"')
+      }
+
+      await axios.post(
+        `${this.baseUrl}/games/${gameId}/summary-vote`,
+        { vote_type: voteType },
+        { withCredentials: true }
+      )
+    } catch (err) {
+      console.error('Error submitting game summary vote:', err)
+    }
+  }
 }
 
 // Export a singleton instance

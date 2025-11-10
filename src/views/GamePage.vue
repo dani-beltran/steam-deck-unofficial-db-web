@@ -27,8 +27,11 @@
       :title="`What is the community saying?`"
       :animate-text="true"
       :text-content="aiCardContent"
-      :type-speed="30"
+      :type-speed="15"
       :start-delay="800"
+      @feedback="(feedback) => {
+        submitGameSummaryVote(game.game_id, feedback)
+      }"
     >
     </AskAICard>
         
@@ -216,6 +219,12 @@ export default {
         const priorityB = sourcePriority[b.source] || 99
         return priorityA - priorityB
       })
+    },
+
+    submitGameSummaryVote(gameId, feedback) {
+      const voteType = feedback === 'positive' ? 'up' : feedback === 'negative' ? 'down' : null
+      if (!voteType) return 
+      return apiService.submitGameSummaryVote(gameId, voteType)
     },
   },
 }
