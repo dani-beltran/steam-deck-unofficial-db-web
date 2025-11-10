@@ -310,8 +310,8 @@ export default {
 
     async fetchSuggestions() {
       if (!this.gameName.trim() || this.gameName.trim().length < 2) {
-        await this.showRecentGamesAsSuggestions();
-        return;
+        await this.showRecentGamesAsSuggestions()
+        return
       }
 
       this.suggestionsLoading = true

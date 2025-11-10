@@ -164,7 +164,7 @@ export default {
       const hardwareFiltered = this.game.settings.filter((config) => {
         const hardware = config.steamdeck_hardware?.toLowerCase()
         if (this.selectedHardware === 'all') {
-          return true 
+          return true
         }
         return hardware === this.selectedHardware
       })

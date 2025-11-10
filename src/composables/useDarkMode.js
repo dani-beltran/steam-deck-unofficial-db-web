@@ -1,4 +1,4 @@
-import { ref, watch, onMounted } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 
 const isDarkMode = ref(false)
 
@@ -25,7 +25,7 @@ export function useDarkMode() {
   // Initialize dark mode from localStorage or system preference
   onMounted(() => {
     const savedMode = localStorage.getItem('darkMode')
-    
+
     if (savedMode === 'enabled') {
       isDarkMode.value = true
     } else if (savedMode === 'disabled') {

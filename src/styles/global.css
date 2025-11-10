@@ -36,7 +36,7 @@
   --highlight-box-shadow-selected-deep: rgba(252, 195, 55, 0.3);
   --highlight-box-shadow-selected-hover: rgba(252, 195, 55, 0.4);
   --highlight-selected-bg-gradient: linear-gradient(135deg, #ffffff 0%, #fffbf0 100%);
-  
+
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.15);
   --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.2);
@@ -46,7 +46,7 @@
 .dark-mode {
   /* Primary colors adjusted for dark mode */
   --primary-color: #0ea5e9;
-  --primary-color-start: #0ea5e9 ;
+  --primary-color-start: #0ea5e9;
   --primary-color-end: #0369a1;
   --primary-color-gradient: linear-gradient(
     135deg,
@@ -81,7 +81,7 @@
   --highlight-box-shadow-selected-deep: rgba(251, 191, 36, 0.35);
   --highlight-box-shadow-selected-hover: rgba(251, 191, 36, 0.45);
   --highlight-selected-bg-gradient: linear-gradient(135deg, #1e293b 0%, #2d3a4f 100%);
-  
+
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
   --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.6);
@@ -91,5 +91,7 @@
 body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }

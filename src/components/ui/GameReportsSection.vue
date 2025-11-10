@@ -99,12 +99,12 @@ export default {
     },
     cutText(text, maxLength) {
       if (text.length <= maxLength) return text
-      return text.slice(0, maxLength).replace(/\n/g, " ") + '...'
+      return text.slice(0, maxLength).replace(/\n/g, ' ') + '...'
     },
     formatKey(key) {
       return key
         .split('_')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ')
     },
     formatHardware(hardware) {

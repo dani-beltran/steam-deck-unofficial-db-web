@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { useDarkMode } from '@/composables/useDarkMode';
+import { useDarkMode } from '@/composables/useDarkMode'
 
 export default {
   name: 'DarkModeToggle',
