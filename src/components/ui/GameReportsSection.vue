@@ -200,24 +200,37 @@ export default {
 .filter-button {
   padding: 6px 16px;
   border-radius: 20px;
-  border: 1px solid var(--secondary-border-color);
-  background: var(--bg-primary);
+  border: 0px;
+  background: var(--bg-card);
   color: var(--text-primary);
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
 }
-
 .filter-button:hover {
-  border-color: var(--primary-color);
-  background: var(--bg-secondary);
+  background: var(--primary-color);
+  color: white;
 }
 
 .filter-button.active {
-  background: var(--primary-color-gradient);
+  background: var(--primary-color);
   color: white;
-  border-color: transparent;
+}
+
+.filter-button:nth-child(3).active,.filter-button:nth-child(3):hover {
+  /* LCD filter - blue gradient matching hardware badge */
+  background: linear-gradient(135deg, #60a5fa, #3b82f6);
+  color: #1e3a8a;
+  font-weight: 600;
+}
+
+
+.filter-button:nth-child(4).active,.filter-button:nth-child(4):hover {
+  /* OLED filter - orange gradient matching hardware badge */
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: #78350f;
+  font-weight: 600;
 }
 
 .reports-container {
