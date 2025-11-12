@@ -22,8 +22,8 @@
 </template>
 
 <script>
+import { ThumbsDown, ThumbsUp } from 'lucide-vue-next'
 import { ref } from 'vue'
-import { ThumbsUp, ThumbsDown } from 'lucide-vue-next'
 
 export default {
   name: 'FeedbackButtons',
@@ -38,14 +38,14 @@ export default {
     },
   },
   emits: ['feedback'],
-  setup(props, { emit }) {
+  setup(_props, { emit }) {
     const selectedFeedback = ref(null)
-    
+
     const handleFeedback = (type) => {
       selectedFeedback.value = type
       emit('feedback', type)
     }
-    
+
     return {
       selectedFeedback,
       handleFeedback,

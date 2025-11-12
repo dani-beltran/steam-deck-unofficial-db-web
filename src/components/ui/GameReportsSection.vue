@@ -107,7 +107,7 @@ export default {
     },
     cutText(text, maxLength) {
       if (text.length <= maxLength) return text
-      return text.slice(0, maxLength).replace(/\n/g, ' ') + '...'
+      return `${text.slice(0, maxLength).replace(/\n/g, ' ')}...`
     },
     formatKey(key) {
       return key

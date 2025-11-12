@@ -1,4 +1,4 @@
-import { ref, watch, onBeforeUnmount } from 'vue'
+import { onBeforeUnmount, ref, watch } from 'vue'
 
 /**
  * Composable for creating a typewriter animation effect
@@ -9,17 +9,13 @@ import { ref, watch, onBeforeUnmount } from 'vue'
  * @returns {Object} - Typewriter state and controls
  */
 export function useTypewriter(options = {}) {
-  const {
-    text = ref(''),
-    typeSpeed = 50,
-    startDelay = 500,
-  } = options
+  const { text = ref(''), typeSpeed = 50, startDelay = 500 } = options
 
   const displayedText = ref('')
   const currentIndex = ref(0)
   const isTyping = ref(false)
   const isComplete = ref(false)
-  
+
   let typewriterInterval = null
   let startTimeout = null
 
@@ -107,9 +103,9 @@ export function useTypewriter(options = {}) {
    */
   const resume = () => {
     if (isComplete.value) return
-    
+
     const textValue = typeof text.value === 'string' ? text.value : text
-    
+
     if (currentIndex.value < textValue.length) {
       isTyping.value = true
       typewriterInterval = setInterval(() => {

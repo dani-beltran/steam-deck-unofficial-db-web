@@ -39,10 +39,10 @@
 </template>
 
 <script>
-import { ref, computed, watch } from 'vue'
 import { Sparkles } from 'lucide-vue-next'
-import ExpandTransition from '../base/ExpandTransition.vue'
+import { computed, ref, watch } from 'vue'
 import { useTypewriter } from '../../composables/useTypewriter'
+import ExpandTransition from '../base/ExpandTransition.vue'
 import Tooltip from '../base/Tooltip.vue'
 import FeedbackButtons from './FeedbackButtons.vue'
 
@@ -87,19 +87,22 @@ export default {
   setup(props, { emit }) {
     const isCollapsed = ref(true)
     const textContentRef = ref(props.textContent)
-    
+
     // Initialize typewriter with reactive text
     const typewriter = useTypewriter({
       text: textContentRef,
       typeSpeed: props.typeSpeed,
       startDelay: props.startDelay,
     })
-    
+
     // Update textContentRef when prop changes
-    watch(() => props.textContent, (newValue) => {
-      textContentRef.value = newValue
-    })
-    
+    watch(
+      () => props.textContent,
+      (newValue) => {
+        textContentRef.value = newValue
+      }
+    )
+
     // Computed property for the text to display
     const displayedText = computed(() => {
       if (props.animateText) {
@@ -107,20 +110,20 @@ export default {
       }
       return props.textContent
     })
-    
+
     const toggleCollapsed = () => {
       isCollapsed.value = !isCollapsed.value
       emit('toggle', isCollapsed.value)
-      
+
       if (!isCollapsed.value && props.animateText && props.textContent) {
         typewriter.start()
       }
     }
-    
+
     const handleFeedback = (type) => {
       emit('feedback', type)
     }
-    
+
     return {
       isCollapsed,
       displayedText,

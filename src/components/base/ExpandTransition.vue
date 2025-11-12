@@ -59,7 +59,7 @@ export default {
       el.offsetHeight // force reflow
       const targetHeight = el.scrollHeight
       el.style.transition = `height ${this.duration.enter}ms ${this.easing}, opacity ${Math.floor(this.duration.enter * 0.75)}ms ease-out ${Math.floor(this.duration.enter * 0.25)}ms, transform ${this.duration.enter}ms ${this.easing} ${Math.floor(this.duration.enter * 0.125)}ms, padding ${this.duration.enter}ms ${this.easing}`
-      el.style.height = targetHeight + 'px'
+      el.style.height = `${targetHeight}px`
       el.style.opacity = '1'
       el.style.transform = 'translateY(0) scale(1)'
       el.style.paddingTop = ''
@@ -72,7 +72,7 @@ export default {
     },
     leave(el) {
       const currentHeight = el.offsetHeight
-      el.style.height = currentHeight + 'px'
+      el.style.height = `${currentHeight}px`
       el.offsetHeight // force reflow
       el.style.transition = `height ${this.duration.leave}ms ${this.easing} ${Math.floor(this.duration.leave * 0.167)}ms, opacity ${Math.floor(this.duration.leave * 0.667)}ms ease-in, transform ${this.duration.leave}ms ${this.easing}, padding ${this.duration.leave}ms ${this.easing} ${Math.floor(this.duration.leave * 0.167)}ms`
       el.style.height = '0'
