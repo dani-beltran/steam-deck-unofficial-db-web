@@ -2,10 +2,21 @@
   <div class="report-section">
     <div class="section-header">
       <h2 class="section-title">Community Game Reports</h2>
+      <div class="filter-controls">
+        <span class="filter-label">Filter by:</span>
+        <button 
+          v-for="filter in hardwareFilters" 
+          :key="filter.value"
+          :class="['filter-button', { active: selectedFilter === filter.value }]"
+          @click="selectedFilter = filter.value"
+        >
+          {{ filter.label }}
+        </button>
+      </div>
     </div>
     <Card v-if="reports && reports.length > 0">
       <div class="reports-container">
-        <div v-for="(report, index) in reports" :key="`${report.source}-${report.hash || index}`" class="report-card"
+        <div v-for="(report, index) in filteredReports" :key="`${report.source}-${report.hash || index}`" class="report-card"
           @click="openLink(report.url)">
           <!-- Reporter Info -->
           <div class="report-header">
@@ -87,6 +98,23 @@ export default {
   data() {
     return {
       imageErrors: {},
+      selectedFilter: 'all',
+      hardwareFilters: [
+        { label: 'All', value: 'all' },
+        { label: 'LCD', value: 'lcd' },
+        { label: 'OLED', value: 'oled' },
+      ],
+    }
+  },
+  computed: {
+    filteredReports() {
+      if (this.selectedFilter === 'all') {
+        return this.reports
+      }
+      return this.reports.filter(report => 
+        report.steamdeck_hardware && 
+        report.steamdeck_hardware.toLowerCase() === this.selectedFilter
+      )
     }
   },
   methods: {
@@ -149,6 +177,47 @@ export default {
 <style scoped>
 .section-header {
   margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.filter-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-right: 4px;
+  color: var(--text-secondary);
+}
+
+.filter-button {
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--secondary-border-color);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-button:hover {
+  border-color: var(--primary-color);
+  background: var(--bg-secondary);
+}
+
+.filter-button.active {
+  background: var(--primary-color-gradient);
+  color: white;
+  border-color: transparent;
 }
 
 .reports-container {
@@ -381,6 +450,16 @@ export default {
 
 /* Responsive adjustments */
 @media (max-width: 640px) {
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .filter-controls {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
   .report-header {
     align-items: flex-start;
   }

@@ -28,7 +28,7 @@
   /* Text colors */
   --text-primary: #1f2937;
   --text-secondary: #6b7280;
-  --text-tertiary: var(--text-tertiary);
+  --text-tertiary: #9ca3af;
 
   /* Box shadow colors */
   --highlight-box-shadow-hover: rgba(252, 195, 55, 0.15);
