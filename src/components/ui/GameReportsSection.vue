@@ -217,7 +217,7 @@ export default {
   border: 0px;
   background: var(--bg-card);
   color: var(--text-primary);
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
