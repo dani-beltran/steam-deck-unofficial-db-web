@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://dlb-demos.s3.eu-west-1.amazonaws.com/sitemap.xml
+Sitemap: https://deckudb.com/sitemap.xml
 
 # Crawl-delay (optional - some bots respect this)
 Crawl-delay: 1

@@ -12,7 +12,7 @@ A comprehensive web application that allows users to query a database with colle
 
 ## 🚀 Live Demo
 
-Visit the live application: [Steam Deck Settings Database](https://dlb-demos.s3.eu-west-1.amazonaws.com/index.html)
+Visit the live application: [Steam Deck Settings Database](https://deckudb.com)
 
 ## 🛠 Technical Stack
 
