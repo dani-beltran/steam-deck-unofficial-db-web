@@ -1,82 +1,72 @@
 <template>
   <div class="report-section">
-  <div class="section-header">
-    <h2 class="section-title">Community Game Reports</h2>
-  </div>
-  <Card
-    v-if="reports && reports.length > 0"
-  >
-    <div class="reports-container">
-      <div
-        v-for="(report, index) in reports"
-        :key="`${report.source}-${report.hash || index}`"
-        class="report-card"
-        @click="openLink(report.url)"
-      >
-        <!-- Reporter Info -->
-        <div class="report-header">
-          <div class="reporter-info">
-            <div
-              target="_blank"
-              rel="noopener noreferrer"
-              class="reporter-link"
-              :aria-label="`View ${report.reporter.username}'s profile`"
-              @click="openLink(report.reporter.user_profile_url)"
-            >
-              <img
-                v-if="report.reporter.user_profile_avatar_url && !imageErrors[index]"
-                :src="report.reporter.user_profile_avatar_url"
-                :alt="`${report.reporter.username}'s avatar`"
-                class="reporter-avatar"
-                @error="handleImageError(index)"
-              />
-              <div v-else class="reporter-avatar-placeholder">
-                {{ getInitials(report.reporter.username) }}
+    <div class="section-header">
+      <h2 class="section-title">Community Game Reports</h2>
+    </div>
+    <Card v-if="reports && reports.length > 0">
+      <div class="reports-container">
+        <div v-for="(report, index) in reports" :key="`${report.source}-${report.hash || index}`" class="report-card"
+          @click="openLink(report.url)">
+          <!-- Reporter Info -->
+          <div class="report-header">
+            <div class="reporter-info">
+              <div target="_blank" rel="noopener noreferrer" class="reporter-link"
+                :aria-label="`View ${report.reporter.username}'s profile`"
+                @click="openLink(report.reporter.user_profile_url)">
+                <img v-if="report.reporter.user_profile_avatar_url && !imageErrors[index]"
+                  class="reporter-avatar" 
+                  :src="report.reporter.user_profile_avatar_url" 
+                  :alt="`${report.reporter.username}'s avatar`"
+                  @error="handleImageError(index)" />
+                <div v-else class="reporter-avatar-placeholder">
+                  {{ getInitials(report.reporter.username) }}
+                </div>
+                <span class="reporter-name">{{ report.reporter.username }}</span>
               </div>
-              <span class="reporter-name">{{ report.reporter.username }}</span>
+            </div>
+
+            <div class="report-metadata">
+              <span v-if="report.steamdeck_settings?.frame_rate_cap || report.steamdeck_settings?.screen_refresh_rate"
+                class="frame-rate-badge">
+                {{ report.steamdeck_settings.frame_rate_cap || report.steamdeck_settings.screen_refresh_rate }} FPS
+              </span>
+              <span v-if="report.steamdeck_settings?.tdp_limit" class="tdp-badge">
+                {{ report.steamdeck_settings.tdp_limit }} W
+              </span>
+              <span v-if="report.steamdeck_hardware" class="hardware-badge"
+                :class="`hardware-${report.steamdeck_hardware}`">
+                {{ formatHardware(report.steamdeck_hardware) }}
+              </span>
+            </div>
+
+            <div class="report-source">
+              <span class="source-badge" :class="`source-${report.source}`">
+                {{ report.source }}
+              </span>
+
+              <span v-if="report.posted_at" class="posted-date" :title="formatFullDate(report.posted_at)">
+                {{ formatDate(report.posted_at) }}
+              </span>
             </div>
           </div>
 
-          <div class="report-metadata">
-            <span v-if="report.steamdeck_settings?.frame_rate_cap || report.steamdeck_settings?.screen_refresh_rate" class="frame-rate-badge">
-              {{ report.steamdeck_settings.frame_rate_cap || report.steamdeck_settings.screen_refresh_rate }} FPS
-            </span>
-            <span v-if="report.steamdeck_settings?.tdp_limit" class="tdp-badge">
-              {{ report.steamdeck_settings.tdp_limit }} W
-            </span>
-            <span v-if="report.steamdeck_hardware" class="hardware-badge" :class="`hardware-${report.steamdeck_hardware}`">
-              {{ formatHardware(report.steamdeck_hardware) }}
-            </span>
-          </div>
-
-          <div class="report-source">
-            <span class="source-badge" :class="`source-${report.source}`">
-              {{ report.source }}
-            </span>
-            
-            <span v-if="report.posted_at" class="posted-date" :title="formatFullDate(report.posted_at)">
-              {{ formatDate(report.posted_at) }}
-            </span>
-          </div>
-        </div>
-
-        <!-- Report Content -->
-        <div class="report-content" v-if="report.notes">
+          <!-- Report Content -->
+          <div class="report-content" v-if="report.notes">
             <p class="notes-text">
               {{ this.cutText(`${report.title || ""} ${report.notes}`, 80) }}
             </p>
-          
+
             <div class="see-more-text">
               <span>Continue reading...</span>
             </div>
+          </div>
+        </div>
+
+        <div v-if="reports.length === 0" class="no-reports">
+          <p>No community reports available yet.</p>
         </div>
       </div>
-
-      <div v-if="reports.length === 0" class="no-reports">
-        <p>No community reports available yet.</p>
-      </div>
-    </div>
-  </Card>
+    </Card>
   </div>
 </template>
 
@@ -395,7 +385,7 @@ export default {
     align-items: flex-start;
   }
 
-  .report-header > div {
+  .report-header>div {
     flex: 1 1 100%;
   }
 
