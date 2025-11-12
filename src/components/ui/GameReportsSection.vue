@@ -14,8 +14,12 @@
         </button>
       </div>
     </div>
-    <Card v-if="reports && reports.length > 0">
+    <Card>
       <div class="reports-container">
+        <div v-if="filteredReports.length === 0" class="no-reports">
+          <p>No reports to display.</p>
+        </div>
+        
         <div v-for="(report, index) in filteredReports" :key="`${report.source}-${report.hash || index}`" class="report-card"
           @click="openLink(report.url)">
           <!-- Reporter Info -->
@@ -71,10 +75,6 @@
               <span>Continue reading...</span>
             </div>
           </div>
-        </div>
-
-        <div v-if="reports.length === 0" class="no-reports">
-          <p>No community reports available yet.</p>
         </div>
       </div>
     </Card>
