@@ -15,7 +15,7 @@
       </button>
     </div>
     <ExpandTransition
-      :show="!isCollapsed && !!displayedText"
+      :show="!isCollapsed"
       content-class="ai-content"
     >
       <div class="typewriter-container">
@@ -149,16 +149,14 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
+  gap: 12px;
 }
 
 .ask-ai-header h3 {
   margin: 0;
   color: var(--text-primary);
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 
 .ask-ai-button {
