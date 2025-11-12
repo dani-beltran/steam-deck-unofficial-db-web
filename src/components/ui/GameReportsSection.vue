@@ -66,14 +66,13 @@
           </div>
 
           <!-- Report Content -->
-          <div class="report-content" v-if="report.notes">
-            <p class="notes-text">
-              {{ this.cutText(`${report.title || ""} ${report.notes}`, 80) }}
+          <div class="report-content">
+            <p class="notes">
+              <span class="notes-text">
+              {{ this.cutText(`${report.title || ""} ${report.notes}`, 100) }}
+              </span>
+              <span class="see-more-text">See more details</span>
             </p>
-
-            <div class="see-more-text">
-              <span>Continue reading...</span>
-            </div>
           </div>
         </div>
       </div>
@@ -138,8 +137,9 @@ export default {
       }
     },
     cutText(text, maxLength) {
-      if (text.length <= maxLength) return text
-      return `${text.slice(0, maxLength).replace(/\n/g, ' ')}...`
+      const trimmedText = text.trim()
+      if (trimmedText.length <= maxLength) return trimmedText
+      return `${trimmedText.slice(0, maxLength).replace(/\n/g, ' ')}...`
     },
     formatKey(key) {
       return key
@@ -283,7 +283,7 @@ export default {
   align-items: flex-start;
   margin-bottom: 12px;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 8px;
 }
 
 .reporter-info {
@@ -411,7 +411,7 @@ export default {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 16px;
 }
 
@@ -452,7 +452,7 @@ export default {
   font-weight: 400;
 }
 
-.notes-text {
+.notes {
   margin: 0;
   font-size: 0.875rem;
   line-height: 1.6;
@@ -460,13 +460,16 @@ export default {
   white-space: pre-wrap;
 }
 
+.notes-text {
+  margin-right: 1rem;
+}
+
 .see-more-text {
-  margin-left: 6px;
   font-size: 0.8rem;
   color: var(--primary-color);
   font-weight: 500;
   opacity: 0;
-  flex-shrink: 0;
+  text-wrap: nowrap;
   transition: opacity 0.2s ease;
 }
 
@@ -522,11 +525,17 @@ export default {
   .filter-label {
     display: none;
   }
+
 }
 
-@media (max-width: 1024px) {
-  .see-more-text {
-    display: none;
+  @media (max-width: 1024px) {
+    .see-more-text {
+      opacity: 1;
+      display: block;
+    }
+
+    .notes-text {
+      margin-right: 0;
+    }
   }
-}
 </style>
