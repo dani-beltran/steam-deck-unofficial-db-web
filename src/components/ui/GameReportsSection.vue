@@ -121,7 +121,7 @@ export default {
       if (this.selectedFilter === 'battery_saving') {
         return this.reports.filter(report => {
           const tdp = report.steamdeck_settings?.tdp_limit
-          return tdp && parseInt(tdp) <= 10
+          return tdp && parseInt(tdp) < 10
         })
       }
       return this.reports.filter(report => 
