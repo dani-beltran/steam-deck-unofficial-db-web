@@ -3,23 +3,24 @@
     <div class="ask-ai-header">
       <h3 v-if="title">{{ title }}</h3>
       <slot name="header" v-if="!title"></slot>
-      <button
+      <Button
         v-if="isCollapsed"
+        :disabled="!content.length"
         class="ask-ai-button"
         @click="toggleCollapsed"
         :aria-expanded="!isCollapsed"
         :aria-label="buttonLabel"
       >
-        <Sparkles class="ask-ai-icon sparkle-animate" />
+        <Sparkles :class="['ask-ai-icon', { 'sparkle-animate': content.length }]" />
         <span>{{ buttonLabel }}</span>
-      </button>
+      </Button>
     </div>
     <ExpandTransition
       :show="!isCollapsed"
       content-class="ai-content"
     >
       <div class="typewriter-container">
-        <div class="typewriter-text" v-html="displayedText"></div>
+        <div class="typewriter-text" v-html="displayedContent"></div>
         <div class="footer-container">
           <Tooltip :text="typewriter.isTyping.value ? 'DeckuBot is typing...' : 'Brought to you by DeckuBot'" position="right">
           <img 
@@ -42,6 +43,7 @@
 import { Sparkles } from 'lucide-vue-next'
 import { computed, ref, watch } from 'vue'
 import { useTypewriter } from '../../composables/useTypewriter'
+import Button from '../base/Button.vue'
 import ExpandTransition from '../base/ExpandTransition.vue'
 import Tooltip from '../base/Tooltip.vue'
 import FeedbackButtons from './FeedbackButtons.vue'
@@ -50,6 +52,7 @@ export default {
   name: 'AskAICard',
   components: {
     Sparkles,
+    Button,
     ExpandTransition,
     Tooltip,
     FeedbackButtons,
@@ -71,7 +74,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    textContent: {
+    content: {
       type: String,
       default: '',
     },
@@ -86,7 +89,7 @@ export default {
   },
   setup(props, { emit }) {
     const isCollapsed = ref(true)
-    const textContentRef = ref(props.textContent)
+    const textContentRef = ref(props.content)
 
     // Initialize typewriter with reactive text
     const typewriter = useTypewriter({
@@ -97,25 +100,25 @@ export default {
 
     // Update textContentRef when prop changes
     watch(
-      () => props.textContent,
+      () => props.content,
       (newValue) => {
         textContentRef.value = newValue
       }
     )
 
     // Computed property for the text to display
-    const displayedText = computed(() => {
+    const displayedContent = computed(() => {
       if (props.animateText) {
         return typewriter.displayedText.value
       }
-      return props.textContent
+      return props.content
     })
 
     const toggleCollapsed = () => {
       isCollapsed.value = !isCollapsed.value
       emit('toggle', isCollapsed.value)
 
-      if (!isCollapsed.value && props.animateText && props.textContent) {
+      if (!isCollapsed.value && props.animateText && props.content) {
         typewriter.start()
       }
     }
@@ -126,7 +129,7 @@ export default {
 
     return {
       isCollapsed,
-      displayedText,
+      displayedContent,
       toggleCollapsed,
       handleFeedback,
       typewriter,
@@ -161,19 +164,6 @@ export default {
 
 .ask-ai-button {
   background: linear-gradient(135deg, #8B5CF6, #A855F7);
-  border: none;
-  cursor: pointer;
-  padding: 8px 16px;
-  border-radius: 8px;
-  color: white;
-  font-weight: 500;
-  font-size: 0.9rem;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  box-shadow: 0 2px 4px rgba(139, 92, 246, 0.2);
 }
 
 .ask-ai-icon {
@@ -202,18 +192,11 @@ export default {
   }
 }
 
-.ask-ai-button:hover {
+.ask-ai-button:not(:disabled):hover {
   background: linear-gradient(135deg, #7C3AED, #9333EA);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(139, 92, 246, 0.3);
 }
 
-.ask-ai-button:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(139, 92, 246, 0.2);
-}
-
-.ask-ai-button:focus {
+.ask-ai-button:not(:disabled):focus {
   outline: 2px solid #A855F7;
   outline-offset: 2px;
 }

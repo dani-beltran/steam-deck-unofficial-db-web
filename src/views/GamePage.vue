@@ -26,7 +26,7 @@
       class="settings-section" 
       :title="`What is the community saying?`"
       :animate-text="true"
-      :text-content="aiCardContent"
+      :content="aiCardContent"
       :type-speed="15"
       :start-delay="800"
       @feedback="(feedback) => {
