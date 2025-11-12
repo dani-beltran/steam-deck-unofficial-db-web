@@ -117,4 +117,26 @@ export default {
   background: #fbe9e7;
   color: #d23f31;
 }
+
+/* Dark mode styles */
+.dark-mode .feedback-button {
+  color: #a0a0a0;
+}
+
+.dark-mode .feedback-button:disabled {
+  background: #2a2a2a;
+  color: #505050;
+}
+
+.dark-mode .feedback-button.up.active,
+.dark-mode .feedback-button.up:hover {
+  background: #1e3a5f;
+  color: #6ba3e8;
+}
+
+.dark-mode .feedback-button.down.active,
+.dark-mode .feedback-button.down:hover {
+  background: #4a2323;
+  color: #e87a6e;
+}
 </style>
