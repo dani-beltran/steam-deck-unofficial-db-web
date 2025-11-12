@@ -497,7 +497,7 @@ export default {
 
   .filter-controls {
     width: 100%;
-    justify-content: flex-start;
+    justify-content: space-evenly;
   }
 
   .report-header {
