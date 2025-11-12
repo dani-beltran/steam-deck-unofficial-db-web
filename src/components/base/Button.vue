@@ -66,6 +66,7 @@ export default {
   justify-content: center;
   text-decoration: none;
   outline: none;
+  text-wrap: nowrap;
 }
 
 .btn:focus {
