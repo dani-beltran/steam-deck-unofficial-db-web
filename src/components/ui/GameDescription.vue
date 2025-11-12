@@ -76,6 +76,7 @@ export default {
         gold: 'Game works flawlessly after a few changes',
         platinum: 'Game works flawlessly out of the box',
         unsupported: 'Game is not supported',
+        borked: 'Game is broken or is unplayable',
       }
       return tooltips[rating] || ''
     },
@@ -157,7 +158,7 @@ export default {
   color: white;
 }
 
-.rating-badge.rating-unsupported {
+.rating-badge.rating-unsupported, .rating-badge.rating-borked {
   background: linear-gradient(135deg, #ef4444, #f87171);
   color: white;
 }
