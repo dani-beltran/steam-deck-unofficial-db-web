@@ -103,6 +103,8 @@ export default {
         { label: 'All', value: 'all' },
         { label: 'LCD', value: 'lcd' },
         { label: 'OLED', value: 'oled' },
+        { label: '60 FPS', value: 'performance' },
+        { label: 'Low TDP', value: 'battery_saving' },
       ],
     }
   },
@@ -110,6 +112,18 @@ export default {
     filteredReports() {
       if (this.selectedFilter === 'all') {
         return this.reports
+      }
+      if (this.selectedFilter === 'performance') {
+        return this.reports.filter(report => {
+          const fps = report.steamdeck_settings?.frame_rate_cap || report.steamdeck_settings?.screen_refresh_rate
+          return fps && parseInt(fps) >= 60
+        })
+      }
+      if (this.selectedFilter === 'battery_saving') {
+        return this.reports.filter(report => {
+          const tdp = report.steamdeck_settings?.tdp_limit
+          return tdp && parseInt(tdp) <= 10
+        })
       }
       return this.reports.filter(report => 
         report.steamdeck_hardware && 
@@ -222,7 +236,6 @@ export default {
   /* LCD filter - blue gradient matching hardware badge */
   background: linear-gradient(135deg, #60a5fa, #3b82f6);
   color: #1e3a8a;
-  font-weight: 600;
 }
 
 
@@ -230,7 +243,18 @@ export default {
   /* OLED filter - orange gradient matching hardware badge */
   background: linear-gradient(135deg, #fbbf24, #f59e0b);
   color: #78350f;
-  font-weight: 600;
+}
+
+.filter-button:nth-child(5).active,.filter-button:nth-child(5):hover {
+  /* +60FPS filter - green gradient */
+  background: linear-gradient(135deg, #34d399, #10b981);
+  color: #064e3b;
+}
+
+.filter-button:nth-child(6).active,.filter-button:nth-child(6):hover {
+  /* Low TDP filter - orange gradient */
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #92400e;
 }
 
 .reports-container {
@@ -493,6 +517,10 @@ export default {
   .reporter-avatar-placeholder {
     width: 36px;
     height: 36px;
+  }
+
+  .filter-label {
+    display: none;
   }
 }
 
