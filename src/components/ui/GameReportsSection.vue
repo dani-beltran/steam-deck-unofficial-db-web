@@ -1,9 +1,10 @@
 <template>
-  <CollapsibleCard
+  <div class="report-section">
+  <div class="section-header">
+    <h2 class="section-title">Community Game Reports</h2>
+  </div>
+  <Card
     v-if="reports && reports.length > 0"
-    title="Community Reports"
-    :initiallyCollapsed="false"
-    aria-label="Community game reports"
   >
     <div class="reports-container">
       <div
@@ -75,16 +76,17 @@
         <p>No community reports available yet.</p>
       </div>
     </div>
-  </CollapsibleCard>
+  </Card>
+  </div>
 </template>
 
 <script>
-import CollapsibleCard from '../common/CollapsibleCard.vue'
+import Card from '../base/Card.vue'
 
 export default {
   name: 'GameReportsSection',
   components: {
-    CollapsibleCard,
+    Card,
   },
   props: {
     reports: {
@@ -155,6 +157,10 @@ export default {
 </script>
 
 <style scoped>
+.section-header {
+  margin-bottom: 16px;
+}
+
 .reports-container {
   display: flex;
   flex-direction: column;
@@ -314,8 +320,7 @@ export default {
 }
 
 .report-section {
-  border-top: 1px solid var(--secondary-border-color);
-  padding-top: 12px;
+  margin-bottom: 20px;
 }
 
 .section-title {

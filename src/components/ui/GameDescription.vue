@@ -4,11 +4,11 @@
     <div class="game-header">
       <GamePreview :game="game" />
       <div class="game-title-section">
-        <h2 class="game-title">
+        <h1 class="game-title">
           <a :href="steamStoreUrl" target="_blank" rel="noopener noreferrer" class="steam-title-link">
             {{ gameTitle }}
           </a>
-        </h2>
+        </h1>
 
         <!-- Game Review Summary -->
         <div v-if="game.steam_app.short_description" class="summary-section">

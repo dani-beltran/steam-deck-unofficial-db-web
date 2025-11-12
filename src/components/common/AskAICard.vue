@@ -151,8 +151,8 @@ export default {
 .ask-ai-header h3 {
   margin: 0;
   color: var(--text-primary);
-  font-size: 1.3rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 500;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -165,7 +165,7 @@ export default {
   padding: 8px 16px;
   border-radius: 8px;
   color: white;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 0.9rem;
   transition: all 0.2s ease;
   display: flex;
