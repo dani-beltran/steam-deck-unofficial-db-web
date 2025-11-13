@@ -42,7 +42,7 @@ export default {
 .dark-mode-toggle {
   position: fixed;
   bottom: 64px;
-  left: 20px;
+  left: 10px;
   z-index: 1000;
   background: var(--secondary-color);
   border: 2px solid var(--secondary-border-color);
@@ -74,14 +74,5 @@ export default {
 
 .dark-mode-toggle:hover .icon {
   transform: rotate(15deg);
-}
-
-@media (max-width: 768px) {
-  .dark-mode-toggle {
-    bottom: 64px;
-    left: 12px;
-    width: 44px;
-    height: 44px;
-  }
 }
 </style>
