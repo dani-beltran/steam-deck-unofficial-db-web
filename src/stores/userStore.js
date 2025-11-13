@@ -114,7 +114,6 @@ export default {
   fetchUser,
   clearUser,
   setUser,
-  getUser,
   isAuthenticated,
   signIn,
   signOut,
