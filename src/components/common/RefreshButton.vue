@@ -1,9 +1,9 @@
 <template>
-  <Button :disabled="isDisabled" @click="$emit('refresh')" variant="primary" size="medium">
+  <Button :disabled="isDisabled" @click="handleClick" variant="secondary" size="medium">
     <span class="refresh-content">
-      <RotateCw />
-      <span v-if="isDisabled">Refresh ({{ countdown }})</span>
-      <span v-else>Refresh</span>
+      <RotateCw class="refresh-icon" :class="{ loading: loading }"/>
+      <span v-if="isDisabled">Try again in {{ countdown }} seconds</span>
+      <span v-else>Try again</span>
     </span>
   </Button>
 </template>
@@ -26,6 +26,7 @@ export default {
       countdown: this.countdownStart,
       isDisabled: true,
       timer: null,
+      loading: false,
     }
   },
   mounted() {
@@ -51,6 +52,16 @@ export default {
       clearInterval(this.timer)
       this.startCountdown()
     },
+    handleClick() {
+      if (this.isDisabled) {
+        return
+      }
+      // delay to show loading spinner
+      this.loading = true
+      setTimeout(() => {
+        window.location.reload()
+      }, 1000)
+    },
   },
 }
 </script>
@@ -65,5 +76,24 @@ button[disabled] {
   display: inline-flex;
   align-items: center;
   gap: 0.5em;
+  font-size: 1em;
+}
+
+.refresh-icon {
+  width: 1.1em;
+  height: 1.1em;
+}
+
+.refresh-icon.loading {
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>

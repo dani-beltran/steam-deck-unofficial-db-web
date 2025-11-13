@@ -43,10 +43,10 @@
 
     <!-- Processing game view -->
     <ProcessingWarning v-if="processingWarning" :game-name="gameTitle" @dismiss="clearProcessingWarning" />
-    <RandomArt v-if="processingWarning" />
-    <div v-if="processingWarning" style="margin-top: 24px; text-align: center;">
-      <RefreshButton @refresh="handleRefresh" :countdown-start="60" />
+    <div v-if="processingWarning" class="refresh-button-container">
+      <RefreshButton :countdown-start="3" />
     </div>
+    <RandomArt v-if="processingWarning" />
   </div>
 </template>
 
@@ -136,9 +136,6 @@ export default {
       // Refresh user and game data to reflect updated votes
       this.user = await apiService.fetchAuthUser()
       this.game = (await apiService.fetchGame(this.gameId)).game
-    },
-    handleRefresh() {
-      window.location.reload()
     },
     handleKeydown(event) {
       // Check if backspace key is pressed and not in an input field
@@ -275,6 +272,11 @@ export default {
   padding: 0;
   display: flex;
   align-items: center;
+}
+
+.refresh-button-container {
+  margin: 1rem 0 2rem 0;
+  text-align: center;
 }
 
 /* Show on mobile devices */

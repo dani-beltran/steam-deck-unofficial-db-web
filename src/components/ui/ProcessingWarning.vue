@@ -27,7 +27,6 @@ export default {
 <style scoped>
 .processing-warning-container {
   text-align: center;
-  margin-bottom: 20px;
 }
 
 .warning-icon {
