@@ -66,6 +66,7 @@ import ProcessingWarning from '../components/ui/ProcessingWarning.vue'
 import ThumbsRating from '../components/ui/ThumbsRating.vue'
 import UserProfile from '../components/ui/UserProfile.vue'
 import apiService from '../services/backend/apiService.js'
+import { sortGameReportsPerRelevance } from '../helpers/report.helper.js'
 
 export default {
   name: 'GamePage',
@@ -195,7 +196,7 @@ export default {
           return
         }
 
-        const sortedReports = this.sortGameReportsPerRelevance(res.game.reports)
+        const sortedReports = sortGameReportsPerRelevance(res.game.reports)
         this.game = { ...res.game, reports: sortedReports }
       } catch (err) {
         this.error = err.message
@@ -203,22 +204,6 @@ export default {
         this.loading = false
       }
     },
-
-    sortGameReportsPerRelevance(reports) {
-      // Example sorting logic: prioritize reports from certain sources
-      const sourcePriority = {
-        steamdeckhq: 1,
-        sharedeck: 2,
-        protondb: 3,
-      }
-
-      return reports.sort((a, b) => {
-        const priorityA = sourcePriority[a.source] || 99
-        const priorityB = sourcePriority[b.source] || 99
-        return priorityA - priorityB
-      })
-    },
-
     submitGameSummaryVote(gameId, feedback) {
       const voteType = feedback === 'positive' ? 'up' : feedback === 'negative' ? 'down' : null
       if (!voteType) return
