@@ -66,6 +66,7 @@ import ProcessingWarning from '../components/ui/ProcessingWarning.vue'
 import ThumbsRating from '../components/ui/ThumbsRating.vue'
 import UserProfile from '../components/ui/UserProfile.vue'
 import apiService from '../services/backend/apiService.js'
+import userStore from '../stores/userStore.js'
 import { sortGameReportsPerRelevance } from '../helpers/report.helper.js'
 
 export default {
@@ -121,7 +122,7 @@ export default {
     document.addEventListener('keydown', this.handleKeydown)
     this.updateDocumentTitle()
     this.loadGame()
-    this.user = await apiService.fetchAuthUser()
+    this.user = await userStore.fetchUser()
   },
   unmounted() {
     // Remove keyboard event listener to prevent memory leaks
@@ -135,7 +136,7 @@ export default {
         await apiService.submitVote(gameSettingsId, type)
       }
       // Refresh user and game data to reflect updated votes
-      this.user = await apiService.fetchAuthUser()
+      this.user = await userStore.fetchUser(true)
       this.game = (await apiService.fetchGame(this.gameId)).game
     },
     handleKeydown(event) {
