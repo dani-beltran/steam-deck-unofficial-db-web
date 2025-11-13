@@ -41,8 +41,8 @@ export default {
 <style scoped>
 .dark-mode-toggle {
   position: fixed;
-  top: 20px;
-  right: 20px;
+  bottom: 64px;
+  left: 20px;
   z-index: 1000;
   background: var(--secondary-color);
   border: 2px solid var(--secondary-border-color);
@@ -78,8 +78,8 @@ export default {
 
 @media (max-width: 768px) {
   .dark-mode-toggle {
-    top: 12px;
-    right: 12px;
+    bottom: 64px;
+    left: 12px;
     width: 44px;
     height: 44px;
   }
