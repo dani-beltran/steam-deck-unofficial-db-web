@@ -8,8 +8,8 @@
         </div>
 
         <!-- Error State -->
-        <div v-else-if="error" class="error-container">
-            <p>{{ error }}</p>
+        <div v-else-if="popularGames.length === 0" class="error-container">
+            <p>Failed to load popular games.</p>
             <button @click="fetchPopularGames" class="retry-button">Retry</button>
         </div>
 
@@ -145,17 +145,12 @@ export default {
   },
   methods: {
     async fetchPopularGames() {
-      try {
-        this.isLoading = true
-        this.error = null
-        const games = await apiService.fetchMostPlayedGames()
-        this.popularGames = games || []
-      } catch (err) {
-        console.error('Error fetching popular games:', err)
-        this.error = err.message || 'Failed to load popular games'
-      } finally {
-        this.isLoading = false
-      }
+      
+      this.isLoading = true
+      this.error = null
+      const games = await apiService.fetchMostPlayedGames()
+      this.popularGames = games || []
+      this.isLoading = false
     },
     initCarousel() {
       this.updateCarouselOnResize()

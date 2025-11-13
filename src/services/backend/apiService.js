@@ -76,7 +76,7 @@ class ApiService {
 
   /**
    * Fetch most played Steam Deck games
-   * @returns {Promise<Object>} - Object containing array of games
+   * @returns {Promise<Object[]>} - Array of games
    * @throws {Error} - Throws error if request fails
    */
   async fetchMostPlayedGames() {
