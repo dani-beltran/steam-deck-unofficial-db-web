@@ -462,6 +462,7 @@ export default {
 
 .notes-text {
   margin-right: 1rem;
+  word-break: break-word;
 }
 
 .see-more-text {
