@@ -8,7 +8,7 @@
       <LogOut class="logout-icon" />
     </button>
   </div>
-  <button v-else @click="loginWithSteam" class="steam-login-btn" aria-label="Login with Steam">
+  <button v-else @click="login" class="steam-login-btn" aria-label="Login with Steam">
     <img src="@/assets/steam_signin_large.png"
       alt="Sign in through Steam" style="height: 40px;" />
   </button>
@@ -16,20 +16,22 @@
 
 <script>
 import { LogOut } from 'lucide-vue-next'
-import apiService from '../../services/backend/apiService'
+import userStore from '../../stores/userStore';
 
 export default {
   name: 'UserProfile',
   components: { LogOut },
-  props: {
-    user: {
-      type: Object,
-      default: null,
-    },
+  data() {
+    return {
+      user: null,
+    }
+  },
+  async mounted() {
+    this.user = await userStore.fetchUser()
   },
   methods: {
-    loginWithSteam() {
-      apiService.loginWithSteam()
+    login() {
+      userStore.signIn()
     },
     goToSteamProfile() {
       if (!this.user?.steamProfile) return
@@ -40,7 +42,7 @@ export default {
       }
     },
     logout() {
-      apiService.logout()
+      userStore.signOut()
     },
   },
 }

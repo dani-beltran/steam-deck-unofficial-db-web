@@ -5,7 +5,7 @@
       <Button @click="goBack" aria-label="Go back to home" size="small">
         ← Back to Search
       </Button>
-      <UserProfile :user="user" />
+      <UserProfile/>
     </div>
 
     <!-- Loading State -->
@@ -14,12 +14,8 @@
     <!-- Error State -->
     <ErrorMessage :message="error" @dismiss="clearError" class="error-with-top-margin" />
 
-    <!-- Game Description Section -->
+    <!-- Game ready State -->
     <GameDescription :game="game" :loading="loading" />
-
-    <!-- <GameSettings id="settings-section" :game="game" :user="user" :loading="loading" :error="error"
-      :search-performed="searchPerformed" :processing-warning="processingWarning"
-      @clear-processing-warning="clearProcessingWarning" @submit-vote="handleVoteSubmit" /> -->
 
     <AskAICard 
       v-if="game" 
@@ -35,13 +31,11 @@
     >
     </AskAICard>
         
-
-    <!-- Game Reports Section -->
     <GameReportsSection v-if="game && game.reports" :reports="game.reports" />
 
     <GameDataSources class="game-data-sources" :game="game" />
 
-    <!-- Processing game view -->
+    <!-- Processing State -->
     <ProcessingWarning v-if="processingWarning" :game-name="gameTitle" @dismiss="clearProcessingWarning" />
     <div v-if="processingWarning" class="refresh-button-container">
       <RefreshButton :countdown-start="60" />
@@ -66,7 +60,6 @@ import ProcessingWarning from '../components/ui/ProcessingWarning.vue'
 import ThumbsRating from '../components/ui/ThumbsRating.vue'
 import UserProfile from '../components/ui/UserProfile.vue'
 import apiService from '../services/backend/apiService.js'
-import userStore from '../stores/userStore.js'
 import { sortGameReportsPerRelevance } from '../helpers/report.helper.js'
 
 export default {
@@ -100,7 +93,6 @@ export default {
       error: null,
       searchPerformed: false,
       processingWarning: false,
-      user: null,
     }
   },
   computed: {
@@ -122,23 +114,12 @@ export default {
     document.addEventListener('keydown', this.handleKeydown)
     this.updateDocumentTitle()
     this.loadGame()
-    this.user = await userStore.fetchUser()
   },
   unmounted() {
     // Remove keyboard event listener to prevent memory leaks
     document.removeEventListener('keydown', this.handleKeydown)
   },
   methods: {
-    async handleVoteSubmit(gameSettingsId, type) {
-      if (type === null) {
-        await apiService.removeVote(gameSettingsId)
-      } else {
-        await apiService.submitVote(gameSettingsId, type)
-      }
-      // Refresh user and game data to reflect updated votes
-      this.user = await userStore.fetchUser(true)
-      this.game = (await apiService.fetchGame(this.gameId)).game
-    },
     handleKeydown(event) {
       // Check if backspace key is pressed and not in an input field
       if (event.key === 'Backspace' && !this.isInInputField(event.target)) {
