@@ -44,7 +44,7 @@
     <!-- Processing game view -->
     <ProcessingWarning v-if="processingWarning" :game-name="gameTitle" @dismiss="clearProcessingWarning" />
     <div v-if="processingWarning" class="refresh-button-container">
-      <RefreshButton :countdown-start="3" />
+      <RefreshButton :countdown-start="60" />
     </div>
     <RandomArt v-if="processingWarning" />
   </div>

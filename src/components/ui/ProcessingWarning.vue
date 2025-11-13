@@ -5,9 +5,9 @@
     </div>
     <div class="processing-warning">
       <h3>Game Being Processed <div class="warning-icon">⏳</div> </h3>
-      <p>Our caffeinated Decku monkeys are scraping the internet non-stop to find you the best game settings for this game.</p>
-      <p>Can't guarantee they will do a good job though. They are monkeys after all.</p>
-      <p>Please check back in a few minutes. In the meantime, feel free to explore other games!</p>
+      <p>Our caffeinated Decku monkeys are searching the internet non-stop to find you game settings reports for this game.</p>
+      <p><strong>Please, check back in a few minutes 🙏</strong> In the meantime, feel free to explore other games!</p>
+      <p></p>
     </div>
   </div>
 </template>
@@ -27,6 +27,11 @@ export default {
 <style scoped>
 .processing-warning-container {
   text-align: center;
+}
+
+.processing-warning p {
+  text-align: left;
+  line-height: 1.2em;
 }
 
 .warning-icon {
