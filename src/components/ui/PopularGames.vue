@@ -148,8 +148,8 @@ export default {
       
       this.isLoading = true
       this.error = null
-      const games = await apiService.fetchMostPlayedGames()
-      this.popularGames = games || []
+      const data = await apiService.fetchMostPlayedGames()
+      this.popularGames = data.items || []
       this.isLoading = false
     },
     initCarousel() {
