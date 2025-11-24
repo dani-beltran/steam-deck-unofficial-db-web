@@ -142,10 +142,17 @@ export default {
     async fetchPopularGames() {
       this.isLoading = true
       this.error = null
-      const games = await apiService.fetchMostPlayedGames(this.currentPage, this.pageSize)
-      this.popularGames = games || []
-      this.hasMoreGames = games && games.length === this.pageSize
-      this.isLoading = false
+      try {
+        const games = await apiService.fetchMostPlayedGames(this.currentPage, this.pageSize)
+        this.popularGames = games || []
+        this.hasMoreGames = games && games.length >= this.pageSize
+      } catch (err) {
+        console.error('Error fetching popular games:', err)
+        this.popularGames = []
+        this.hasMoreGames = false
+      } finally {
+        this.isLoading = false
+      }
     },
     async loadMoreGames() {
       if (this.isLoadingMore || !this.hasMoreGames || !this.isMobile) {
@@ -154,16 +161,22 @@ export default {
       
       this.isLoadingMore = true
       this.currentPage++
-      const games = await apiService.fetchMostPlayedGames(this.currentPage, this.pageSize)
       
-      if (games && games.length > 0) {
-        this.popularGames = [...this.popularGames, ...games]
-        this.hasMoreGames = games.length === this.pageSize
-      } else {
+      try {
+        const games = await apiService.fetchMostPlayedGames(this.currentPage, this.pageSize)
+        
+        if (games && games.length > 0) {
+          this.popularGames = [...this.popularGames, ...games]
+          this.hasMoreGames = games.length >= this.pageSize
+        } else {
+          this.hasMoreGames = false
+        }
+      } catch (err) {
+        console.error('Error loading more games:', err)
         this.hasMoreGames = false
+      } finally {
+        this.isLoadingMore = false
       }
-      
-      this.isLoadingMore = false
     },
     setupIntersectionObserver() {
       if (!this.isMobile) {
