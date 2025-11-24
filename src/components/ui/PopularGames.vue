@@ -139,7 +139,7 @@ export default {
       this.isLoading = true
       this.error = null
       try {
-        const games = await apiService.fetchMostPlayedGames(this.currentPage, this.pageSize)
+        const { items: games } = await apiService.fetchMostPlayedGames(this.currentPage, this.pageSize)
         this.popularGames = games || []
         this.hasMoreGames = games && games.length >= this.pageSize
       } catch (err) {

@@ -65,7 +65,7 @@ export default {
       }
       if (this.selectedFilter === 'performance') {
         return this.reports.filter(report => {
-          const fps = report.steamdeck_settings?.frame_rate_cap || report.steamdeck_settings?.screen_refresh_rate
+          const fps = report.steamdeck_settings?.frame_rate_cap || report.steamdeck_experience?.average_frame_rate
           return fps && parseInt(fps) >= 60
         })
       }
