@@ -1,6 +1,7 @@
 <template>
   <div class="app-layout">
     <a href="#main-content" class="skip-link">Skip to main content</a>
+    <ScrollToTopButton />
     <DarkModeToggle />
     <div class="container">
       <main class="main-content" id="main-content">
@@ -13,6 +14,7 @@
 </template>
 
 <script>
+import ScrollToTopButton from './components/common/ScrollToTopButton.vue'
 import DarkModeToggle from './components/common/DarkModeToggle.vue'
 import Footer from './components/ui/Footer.vue'
 import { useDarkMode } from './composables/useDarkMode'
@@ -21,6 +23,7 @@ export default {
   name: 'App',
   components: {
     Footer,
+    ScrollToTopButton,
     DarkModeToggle,
   },
   setup() {
