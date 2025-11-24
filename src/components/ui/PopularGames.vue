@@ -83,7 +83,7 @@ export default {
       error: null,
       localStorageKey: 'popularGames_currentIndex',
       currentPage: 1,
-      pageSize: 20,
+      pageSize: 16,
       hasMoreGames: true,
       isLoadingMore: false,
       intersectionObserver: null,
@@ -139,9 +139,9 @@ export default {
       this.isLoading = true
       this.error = null
       try {
-        const { items: games } = await apiService.fetchMostPlayedGames(this.currentPage, this.pageSize)
+        const { items: games, total } = await apiService.fetchMostPlayedGames(this.currentPage, this.pageSize)
         this.popularGames = games || []
-        this.hasMoreGames = games && games.length >= this.pageSize
+        this.hasMoreGames = total >= this.currentPage * this.pageSize
       } catch (err) {
         console.error('Error fetching popular games:', err)
         this.popularGames = []
@@ -159,11 +159,11 @@ export default {
       this.currentPage++
       
       try {
-        const games = await apiService.fetchMostPlayedGames(this.currentPage, this.pageSize)
+        const { items: games, total } = await apiService.fetchMostPlayedGames(this.currentPage, this.pageSize)
         
         if (games && games.length > 0) {
           this.popularGames = [...this.popularGames, ...games]
-          this.hasMoreGames = games.length >= this.pageSize
+          this.hasMoreGames = total >= this.currentPage * this.pageSize
         } else {
           this.hasMoreGames = false
         }
