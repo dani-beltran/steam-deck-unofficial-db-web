@@ -58,18 +58,9 @@
                 :aria-label="`Go to slide ${index + 1}`"></button>
         </div>
 
-        <!-- Show More Button (Mobile Only) -->
-        <div v-if="showMoreButton" class="show-more-container">
-            <Button @click="toggleShowAll" variant="primary" size="medium">
-                Show More
-            </Button>
-        </div>
-
-        <!-- Show Less Button (Mobile Only) -->
-        <div v-if="isMobile && showAllGames && popularGames.length > mobileDisplayLimit" class="show-more-container">
-            <Button @click="toggleShowAll" variant="primary" size="medium">
-                Show Less
-            </Button>
+        <!-- Loading More Indicator (Mobile Only) -->
+        <div v-if="isMobile && isLoadingMore" class="loading-more-container">
+            <p>Loading more games...</p>
         </div>
     </section>
 </template>
@@ -77,13 +68,9 @@
 <script>
 import { useSwipe } from '../../composables/swipe/useSwipe.js'
 import apiService from '../../services/backend/apiService.js'
-import Button from '../base/Button.vue'
 
 export default {
   name: 'PopularGames',
-  components: {
-    Button,
-  },
   emits: ['game-selected'],
   data() {
     return {
@@ -95,15 +82,15 @@ export default {
       isLoading: true,
       error: null,
       localStorageKey: 'popularGames_currentIndex',
-      showAllGames: false,
-      mobileDisplayLimit: 5,
+      currentPage: 1,
+      pageSize: 16,
+      hasMoreGames: true,
+      isLoadingMore: false,
+      intersectionObserver: null,
     }
   },
   computed: {
     displayedGames() {
-      if (this.isMobile && !this.showAllGames) {
-        return this.popularGames.slice(0, this.mobileDisplayLimit)
-      }
       return this.popularGames
     },
     totalSlides() {
@@ -123,15 +110,17 @@ export default {
         transition: this.swipe?.swipeState?.isDragging ? 'none' : 'transform 0.3s ease-in-out',
       }
     },
-    showMoreButton() {
-      return (
-        this.isMobile && !this.showAllGames && this.popularGames.length > this.mobileDisplayLimit
-      )
-    },
   },
   watch: {
     currentIndex(newIndex) {
       this.saveCurrentIndex(newIndex)
+    },
+    popularGames() {
+      if (this.isMobile) {
+        this.$nextTick(() => {
+          this.observeLastCard()
+        })
+      }
     },
   },
   async mounted() {
@@ -139,18 +128,94 @@ export default {
     await this.fetchPopularGames()
     this.restoreCurrentIndex()
     window.addEventListener('resize', this.updateCarouselOnResize)
+    this.setupIntersectionObserver()
   },
   beforeUnmount() {
     window.removeEventListener('resize', this.updateCarouselOnResize)
+    this.disconnectIntersectionObserver()
   },
   methods: {
     async fetchPopularGames() {
-      
       this.isLoading = true
       this.error = null
-      const data = await apiService.fetchMostPlayedGames()
-      this.popularGames = data.items || []
-      this.isLoading = false
+      try {
+        const { items: games, total } = await apiService.fetchMostPlayedGames(this.currentPage, this.pageSize)
+        this.popularGames = games || []
+        this.hasMoreGames = total >= this.currentPage * this.pageSize
+      } catch (err) {
+        console.error('Error fetching popular games:', err)
+        this.popularGames = []
+        this.hasMoreGames = false
+      } finally {
+        this.isLoading = false
+      }
+    },
+    async loadMoreGames() {
+      if (this.isLoadingMore || !this.hasMoreGames || !this.isMobile) {
+        return
+      }
+      
+      this.isLoadingMore = true
+      this.currentPage++
+      
+      try {
+        const { items: games, total } = await apiService.fetchMostPlayedGames(this.currentPage, this.pageSize)
+        
+        if (games && games.length > 0) {
+          this.popularGames = [...this.popularGames, ...games]
+          this.hasMoreGames = total >= this.currentPage * this.pageSize
+        } else {
+          this.hasMoreGames = false
+        }
+      } catch (err) {
+        console.error('Error loading more games:', err)
+        this.hasMoreGames = false
+      } finally {
+        this.isLoadingMore = false
+      }
+    },
+    setupIntersectionObserver() {
+      if (!this.isMobile) {
+        return
+      }
+      
+      this.intersectionObserver = new IntersectionObserver(
+        (entries) => {
+          const lastCard = entries[0]
+          if (lastCard.isIntersecting && !this.isLoadingMore && this.hasMoreGames) {
+            this.loadMoreGames()
+          }
+        },
+        {
+          root: null,
+          rootMargin: '100px',
+          threshold: 0.1,
+        }
+      )
+      
+      this.$nextTick(() => {
+        this.observeLastCard()
+      })
+    },
+    observeLastCard() {
+      if (!this.intersectionObserver || !this.isMobile) {
+        return
+      }
+      
+      // Disconnect all previous observations
+      this.intersectionObserver.disconnect()
+      
+      const cards = this.$el.querySelectorAll('.carousel-item')
+      if (cards.length > 0) {
+        const lastCard = cards[cards.length - 1]
+        this.intersectionObserver.observe(lastCard)
+      }
+    },
+    disconnectIntersectionObserver() {
+      if (this.intersectionObserver) {
+        this.intersectionObserver.disconnect()
+        this.intersectionObserver = null
+      }
     },
     initCarousel() {
       this.updateCarouselOnResize()
@@ -189,9 +254,13 @@ export default {
         }
       }
 
-      // Reset showAllGames when switching from mobile to desktop
-      if (wasMobile && !this.isMobile) {
-        this.showAllGames = false
+      // Setup or disconnect intersection observer based on mobile state
+      if (wasMobile !== this.isMobile) {
+        if (this.isMobile) {
+          this.setupIntersectionObserver()
+        } else {
+          this.disconnectIntersectionObserver()
+        }
       }
     },
     nextSlide() {
@@ -263,9 +332,7 @@ export default {
         console.warn('Failed to restore current index from localStorage:', err)
       }
     },
-    toggleShowAll() {
-      this.showAllGames = !this.showAllGames
-    },
+
   },
 }
 </script>
@@ -537,15 +604,17 @@ export default {
         max-width: 350px;
         padding: 0;
     }
-
-    .show-more-container {
-        margin-top: 0;
-    }
 }
 
-.show-more-container {
+.loading-more-container {
     display: flex;
     justify-content: center;
     margin-top: 20px;
+    padding: 20px;
+}
+
+.loading-more-container p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
 }
 </style>
