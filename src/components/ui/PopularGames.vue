@@ -68,13 +68,9 @@
 <script>
 import { useSwipe } from '../../composables/swipe/useSwipe.js'
 import apiService from '../../services/backend/apiService.js'
-import Button from '../base/Button.vue'
 
 export default {
   name: 'PopularGames',
-  components: {
-    Button,
-  },
   emits: ['game-selected'],
   data() {
     return {
