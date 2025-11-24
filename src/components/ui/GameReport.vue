@@ -32,13 +32,13 @@
       <div class="report-metadata">
         <div class="report-badges">
             <span
-            v-if="report.steamdeck_settings?.frame_rate_cap || report.steamdeck_settings?.screen_refresh_rate"
+            v-if="fps"
             class="frame-rate-badge"
             >
-            {{ report.steamdeck_settings.frame_rate_cap || report.steamdeck_settings.screen_refresh_rate }} FPS
+            {{ fps }} FPS
             </span>
-            <span v-if="report.steamdeck_settings?.tdp_limit" class="tdp-badge">
-            {{ report.steamdeck_settings.tdp_limit }} W
+            <span v-if="tdp" class="tdp-badge">
+            {{ tdp }} W
             </span>
             <span
             v-if="report.steamdeck_hardware"
@@ -81,6 +81,18 @@ export default {
   data() {
     return {
       imageError: false,
+    }
+  },
+  computed: {
+    fps:  function () {
+      return (
+        this.report?.steamdeck_settings?.frame_rate_cap ||
+        this.report?.steamdeck_experience?.average_frame_rate ||
+        null
+      )
+    },
+    tdp: function () {
+      return this.report?.steamdeck_settings?.tdp_limit || null
     }
   },
   methods: {
