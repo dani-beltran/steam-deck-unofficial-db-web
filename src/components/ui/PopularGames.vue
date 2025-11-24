@@ -86,8 +86,6 @@ export default {
       isLoading: true,
       error: null,
       localStorageKey: 'popularGames_currentIndex',
-      showAllGames: false,
-      mobileDisplayLimit: 5,
       currentPage: 1,
       pageSize: 20,
       hasMoreGames: true,
