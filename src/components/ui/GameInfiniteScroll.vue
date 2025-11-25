@@ -3,7 +3,7 @@
         <!-- Games List -->
         <div class="scroll-container">
             <div class="scroll-track">
-                <div v-for="(game, index) in games" :key="index" class="scroll-item" :ref="setItemRef(index)">
+                <div v-for="(game, index) in games" :key="index" class="scroll-item">
                     <div class="popular-game-card" @click="onGameClick(game)" role="button" tabindex="0"
                         @keydown.enter="onGameClick(game)" @keydown.space.prevent="onGameClick(game)"
                         :aria-label="`View ${game.name} settings`">
@@ -53,7 +53,6 @@ export default {
   data() {
     return {
       intersectionObserver: null,
-      itemRefs: []
     }
   },
   watch: {
@@ -70,13 +69,6 @@ export default {
     this.disconnectIntersectionObserver()
   },
   methods: {
-    setItemRef(index) {
-      return (el) => {
-        if (el) {
-          this.itemRefs[index] = el
-        }
-      }
-    },
     onGameClick(game) {
       this.$emit('game-selected', game)
     },
