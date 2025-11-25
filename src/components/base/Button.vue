@@ -76,7 +76,7 @@ export default {
 
 /* Variants */
 .btn-primary {
-  background: var(--primary-color-gradient);
+  background: var(--primary-color);
   color: var(--primary-text-color);
   border-radius: 8px;
 }

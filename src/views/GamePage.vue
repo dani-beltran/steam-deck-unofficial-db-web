@@ -3,7 +3,8 @@
     <!-- Back to Home and Steam Button Row -->
     <div class="navigation-row">
       <Button @click="goBack" aria-label="Go back to home" size="small">
-        ← Back to Search
+        <ChevronLeft :size="16" style="margin-right: 0.5em;" aria-hidden="true" />
+        <span>Back to search results</span>
       </Button>
     </div>
 
@@ -46,6 +47,7 @@
 </template>
 
 <script>
+import { ChevronLeft } from 'lucide-vue-next'
 import Button from '../components/base/Button.vue'
 import Spinner from '../components/base/Spinner.vue'
 import AskAICard from '../components/common/AskAICard.vue'
@@ -82,6 +84,7 @@ export default {
     RefreshButton,
     RandomArt,
     AskAICard,
+    ChevronLeft
   },
   props: {
     gameId: {

@@ -52,7 +52,7 @@
             variant="primary" 
             size="medium"
           >
-            Show More ({{ gameSearchResults.length - this.INITIAL_RESULTS_COUNT }} more games)
+            Show more results ({{ gameSearchResults.length - this.INITIAL_RESULTS_COUNT }})
           </Button>
         </div>
       </transition>
