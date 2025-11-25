@@ -34,6 +34,8 @@
 
     <GameDataSources class="game-data-sources" :game="game" />
 
+    <AddReport v-if="game" :game-id="gameId" />
+
     <!-- Processing State -->
     <ProcessingWarning v-if="processingWarning" :game-name="gameTitle" @dismiss="clearProcessingWarning" />
     <div v-if="processingWarning" class="refresh-button-container">
@@ -51,6 +53,7 @@ import ErrorMessage from '../components/common/ErrorMessage.vue'
 import QuickLink from '../components/common/QuickLink.vue'
 import RandomArt from '../components/common/RandomArt.vue'
 import RefreshButton from '../components/common/RefreshButton.vue'
+import AddReport from '../components/ui/AddReport.vue'
 import GameDataSources from '../components/ui/GameDataSources.vue'
 import GameDescription from '../components/ui/GameDescription.vue'
 import GameReportsSection from '../components/ui/GameReportsSection.vue'
@@ -64,6 +67,7 @@ import { sortGameReportsPerRelevance } from '../helpers/report.helper.js'
 export default {
   name: 'GamePage',
   components: {
+    AddReport,
     Button,
     QuickLink,
     GameSettings,
