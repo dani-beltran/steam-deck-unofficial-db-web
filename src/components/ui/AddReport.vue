@@ -9,7 +9,7 @@
         class="source-badge source-sharedeck"
         aria-label="Add report on ShareDeck"
       >
-        sharedeck
+        sharedeck <SquarePen class="icon-square-pen"/>
       </a>
       <a
         :href="`https://www.protondb.com/contribute?appId=${gameId}`"
@@ -18,15 +18,20 @@
         class="source-badge source-protondb"
         aria-label="Add report on ProtonDB"
       >
-        protondb
+        protondb <SquarePen class="icon-square-pen"/>
       </a>
     </div>
   </div>
 </template>
 
 <script>
+import { SquarePen } from 'lucide-vue-next';
+
 export default {
   name: 'AddReport',
+  components: {
+    SquarePen
+  },
   props: {
     gameId: {
       type: String,
@@ -38,7 +43,7 @@ export default {
 
 <style scoped>
 .add-report-card {
-  background: var(--bg-primary);
+  background: var(--bg-card);
   border: 1px solid var(--secondary-border-color);
   border-radius: 8px;
   padding: 16px;
@@ -80,5 +85,12 @@ export default {
 .source-sharedeck {
   background: #fef3c7;
   color: #92400e;
+}
+
+.icon-square-pen {
+  width: 0.75rem;
+  height: 0.75rem;
+  vertical-align: middle;
+  margin-left: 2px;
 }
 </style>
