@@ -5,7 +5,6 @@
       <Button @click="goBack" aria-label="Go back to home" size="small">
         ← Back to Search
       </Button>
-      <UserProfile/>
     </div>
 
     <!-- Loading State -->
