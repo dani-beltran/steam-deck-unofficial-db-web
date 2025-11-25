@@ -27,37 +27,6 @@
       />
     </div>
 
-    <!-- Game Search Results -->
-    <div v-if="gameSearchResults.length > 0 && !gameSearchLoading" class="game-results" role="region" aria-label="Search results">
-      <h3>Found {{ gameSearchResults.length }} Steam games:</h3>
-      <div class="game-grid" role="list" aria-label="List of Steam games with available settings">
-        <transition-group name="game-card" tag="div" class="game-grid-inner">
-          <GameCard
-            v-for="(game, index) in displayedResults" 
-            :key="game.id"
-            :game="game"
-            :is-selected="selectedGameId === game.id"
-            :animation-delay="index >= this.INITIAL_RESULTS_COUNT ? (index - this.INITIAL_RESULTS_COUNT) * 0.1 : 0"
-            @select="selectGameCard"
-            role="listitem"
-          />
-        </transition-group>
-      </div>
-      
-      <!-- Show More Button -->
-      <transition name="show-more">
-        <div v-if="hasMoreResults" class="show-more-container">
-          <Button 
-            @click="handleShowMore" 
-            variant="primary" 
-            size="medium"
-          >
-            Show more results ({{ gameSearchResults.length - this.INITIAL_RESULTS_COUNT }})
-          </Button>
-        </div>
-      </transition>
-    </div>
-
     <!-- Loading State -->
     <Spinner 
       v-if="gameSearchLoading" 
@@ -75,12 +44,10 @@
 
 <script>
 import {
-  trackGameSelect,
   trackSearch,
   trackSearchError,
   trackSearchInput,
   trackSearchResults,
-  trackShowMoreResults,
   trackSuggestionSelect,
 } from '../../services/analytics'
 import apiService from '../../services/backend/apiService.js'
@@ -90,19 +57,17 @@ import Spinner from '../base/Spinner.vue'
 import ErrorMessage from '../common/ErrorMessage.vue'
 import SearchBar from '../common/SearchBar.vue'
 import SearchSuggestions from '../common/SearchSuggestions.vue'
-import GameCard from './GameCard.vue'
 
 export default {
   name: 'GameSearch',
   components: {
     ErrorMessage,
     Spinner,
-    GameCard,
     Button,
     SearchBar,
     SearchSuggestions,
   },
-  emits: ['game-selected'],
+  emits: ['game-selected', 'search-results-updated', 'search-loading', 'search-error'],
   data() {
     return {
       gameName: '',
@@ -110,10 +75,7 @@ export default {
       gameSearchLoading: false,
       gameSearchError: null,
       gameSearchSubmitted: false,
-      selectedGameId: null,
-      showAllResults: false,
       showRecentGames: false,
-      INITIAL_RESULTS_COUNT: 4,
       suggestions: [],
       suggestionsLoading: false,
       showSuggestions: false,
@@ -121,17 +83,6 @@ export default {
       debounceTimer: null,
       inputTrackingTimeout: null,
     }
-  },
-  computed: {
-    displayedResults() {
-      if (this.showAllResults || this.gameSearchResults.length <= this.INITIAL_RESULTS_COUNT) {
-        return this.gameSearchResults
-      }
-      return this.gameSearchResults.slice(0, this.INITIAL_RESULTS_COUNT)
-    },
-    hasMoreResults() {
-      return this.gameSearchResults.length > this.INITIAL_RESULTS_COUNT && !this.showAllResults
-    },
   },
   mounted() {
     // Check if there's a search query in the URL
@@ -222,15 +173,19 @@ export default {
     async searchGameByName() {
       if (!this.gameName.trim()) {
         this.gameSearchError = 'Please enter a game name'
+        this.$emit('search-error', this.gameSearchError)
         return
       }
 
       this.gameSearchSubmitted = true
       this.gameSearchLoading = true
+      this.$emit('search-loading', true)
+      
       this.gameSearchError = null
+      this.$emit('search-error', null)
+      
       this.gameSearchResults = []
-      this.selectedGameId = null
-      this.showAllResults = false
+      this.$emit('search-results-updated', [])
 
       // Ensure suggestions are completely hidden
       this.suggestions = []
@@ -241,21 +196,25 @@ export default {
         const results = await apiService.searchSteamGamesByName(this.gameName.trim())
         const games = results.items || []
         this.gameSearchResults = games
+        this.$emit('search-results-updated', games)
 
         // Track search results
         trackSearchResults(this.gameName.trim(), results.total, games.length > 0, 'game_search')
 
         if (games.length === 0) {
           this.gameSearchError = 'No games found with that name. Try a different search term.'
+          this.$emit('search-error', this.gameSearchError)
         }
       } catch (err) {
         console.error('Error searching for games:', err)
         this.gameSearchError = `Failed to search for games: ${err.message}`
+        this.$emit('search-error', this.gameSearchError)
 
         // Track search error
         trackSearchError(this.gameName.trim(), err.message, 'game_search')
       } finally {
         this.gameSearchLoading = false
+        this.$emit('search-loading', false)
       }
     },
 
@@ -266,11 +225,11 @@ export default {
       // Clear previous search results when user starts typing
       if (this.gameSearchResults.length > 0) {
         this.gameSearchResults = []
-        this.selectedGameId = null
-        this.showAllResults = false
+        this.$emit('search-results-updated', [])
       }
       if (this.gameSearchError) {
         this.gameSearchError = null
+        this.$emit('search-error', null)
       }
 
       // Track search input with debouncing to avoid too many events
@@ -354,16 +313,6 @@ export default {
       }, 150)
     },
 
-    selectGameCard(game) {
-      trackGameSelect(game, 'search_result')
-
-      this.selectedGameId = game.id
-      this.saveRecentSearchedGameId(game.id)
-
-      const searchTerm = this.gameName.trim()
-      this.$emit('game-selected', game, searchTerm)
-    },
-
     saveRecentSearchedGameId(gameId) {
       const storageKey = 'recentSearchedGameIds'
       let recentIds = []
@@ -392,15 +341,7 @@ export default {
 
     clearError() {
       this.gameSearchError = null
-    },
-
-    handleShowMore() {
-      trackShowMoreResults(
-        this.gameName.trim(),
-        this.gameSearchResults.length,
-        this.INITIAL_RESULTS_COUNT
-      )
-      this.showAllResults = true
+      this.$emit('search-error', null)
     },
 
     updateSearchParam(query) {
@@ -447,86 +388,9 @@ export default {
   max-width: 600px;
 }
 
-/* Game Search Results Styles */
-.game-results {
-  margin-top: 30px;
-  width: 100%;
-  max-width: 800px;
-}
-
-.game-results h3 {
-  color: var(--secondary-text-color);
-  margin-bottom: 20px;
-  font-size: 1.2rem;
-}
-
-.game-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-}
-
-.game-grid-inner {
-  display: contents;
-}
-
-/* Animation styles for game cards */
-.game-card-enter-active {
-  transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
-  transition-delay: var(--animation-delay, 0s);
-}
-
-.game-card-enter-from {
-  opacity: 0;
-  transform: translateY(40px) scale(0.9);
-}
-
-.game-card-enter-to {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-
-.game-card-leave-active {
-  transition: all 0.3s ease;
-}
-
-.game-card-leave-to {
-  opacity: 0;
-  transform: scale(0.95);
-}
-
-.show-more-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-/* Show More button transition animations */
-.show-more-enter-active {
-  transition: all 0.4s ease;
-}
-
-.show-more-leave-active {
-  transition: all 0.3s ease;
-}
-
-.show-more-enter-from {
-  opacity: 0;
-  transform: translateY(20px) scale(0.9);
-}
-
-.show-more-leave-to {
-  opacity: 0;
-  transform: translateY(-10px) scale(0.95);
-}
-
 @media (max-width: 768px) {
   .search-title {
     font-size: 1.3rem;
-  }
-
-  .game-grid {
-    grid-template-columns: 1fr;
   }
 }
 
