@@ -3,7 +3,8 @@
     <h2 class="search-title">Search by game</h2>
     <div class="search-wrapper">
       <SearchBar
-        v-model="gameName"
+        :model-value="modelValue"
+        @update:model-value="$emit('update:modelValue', $event)"
         placeholder="Enter Steam game name..."
         :loading="gameSearchLoading"
         @search="handleSearch"
@@ -67,10 +68,15 @@ export default {
     SearchBar,
     SearchSuggestions,
   },
-  emits: ['game-selected', 'search-results-updated', 'search-loading', 'search-error'],
+  emits: ['update:modelValue', 'game-selected', 'search-results-updated', 'search-loading', 'search-error'],
+  props: {
+    modelValue: {
+      type: String,
+      default: '',
+    },
+  },
   data() {
     return {
-      gameName: '',
       gameSearchResults: [],
       gameSearchLoading: false,
       gameSearchError: null,
@@ -85,19 +91,14 @@ export default {
     }
   },
   mounted() {
-    // Check if there's a search query in the URL
-    const urlParams = new URLSearchParams(window.location.search)
-    const searchQuery = urlParams.get('q')
-
-    if (searchQuery) {
-      this.gameName = searchQuery
+    if (this.modelValue) {
       this.searchGameByName()
     }
   },
   methods: {
     // When SearchBar is focused, show recent games as suggestions if input is empty.
     async onSearchBarFocus() {
-      if (this.gameName.trim().length > 0) {
+      if (this.modelValue.trim().length > 0) {
         // If there's input, show suggestions as usual
         this.showSuggestions = this.suggestions.length > 0
         return
@@ -153,12 +154,9 @@ export default {
       clearTimeout(this.debounceTimer)
       this.closeSuggestions()
 
-      // Update URL with search param
-      this.updateSearchParam(this.gameName)
-
       this.searchGameByName()
       // Track the search event
-      trackSearch(this.gameName, 'game_search', {
+      trackSearch(this.modelValue, 'game_search', {
         search_source: submitSource ? submitSource : 'search_bar_button',
       })
     },
@@ -171,7 +169,7 @@ export default {
       }
     },
     async searchGameByName() {
-      if (!this.gameName.trim()) {
+      if (!this.modelValue.trim()) {
         this.gameSearchError = 'Please enter a game name'
         this.$emit('search-error', this.gameSearchError)
         return
@@ -193,13 +191,13 @@ export default {
       this.selectedSuggestionIndex = -1
 
       try {
-        const results = await apiService.searchSteamGamesByName(this.gameName.trim())
+        const results = await apiService.searchSteamGamesByName(this.modelValue.trim())
         const games = results.items || []
         this.gameSearchResults = games
         this.$emit('search-results-updated', games)
 
         // Track search results
-        trackSearchResults(this.gameName.trim(), results.total, games.length > 0, 'game_search')
+        trackSearchResults(this.modelValue.trim(), results.total, games.length > 0, 'game_search')
 
         if (games.length === 0) {
           this.gameSearchError = 'No games found with that name. Try a different search term.'
@@ -211,7 +209,7 @@ export default {
         this.$emit('search-error', this.gameSearchError)
 
         // Track search error
-        trackSearchError(this.gameName.trim(), err.message, 'game_search')
+        trackSearchError(this.modelValue.trim(), err.message, 'game_search')
       } finally {
         this.gameSearchLoading = false
         this.$emit('search-loading', false)
@@ -249,8 +247,8 @@ export default {
 
       // Set new timeout to track input after 1 second of inactivity
       this.inputTrackingTimeout = setTimeout(() => {
-        if (this.gameName && this.gameName.trim().length > 0) {
-          trackSearchInput(this.gameName.trim(), this.gameName.trim().length, 'game_search_input')
+        if (this.modelValue && this.modelValue.trim().length > 0) {
+          trackSearchInput(this.modelValue.trim(), this.modelValue.trim().length, 'game_search_input')
         }
       }, 1000)
     },
@@ -268,7 +266,7 @@ export default {
     },
 
     async fetchSuggestions() {
-      if (!this.gameName.trim() || this.gameName.trim().length < 2) {
+      if (!this.modelValue.trim() || this.modelValue.trim().length < 2) {
         await this.showRecentGamesAsSuggestions()
         return
       }
@@ -276,7 +274,7 @@ export default {
       this.suggestionsLoading = true
 
       try {
-        const suggestions = await apiService.searchSteamGamesByName(this.gameName.trim(), 7)
+        const suggestions = await apiService.searchSteamGamesByName(this.modelValue.trim(), 7)
         // Only show suggestions if the search hasn't been submitted
         this.suggestions = this.gameSearchSubmitted ? [] : suggestions.items || []
         this.showSuggestions = this.suggestions.length > 0
@@ -291,7 +289,7 @@ export default {
     },
 
     async selectSuggestion(suggestion) {
-      trackSuggestionSelect(suggestion.name, this.selectedSuggestionIndex, this.gameName.trim())
+      trackSuggestionSelect(suggestion.name, this.selectedSuggestionIndex, this.modelValue.trim())
       this.closeSuggestions()
       this.saveRecentSearchedGameId(suggestion.id)
       // Route directly to the game page using the suggestion ID
@@ -342,16 +340,6 @@ export default {
     clearError() {
       this.gameSearchError = null
       this.$emit('search-error', null)
-    },
-
-    updateSearchParam(query) {
-      const url = new URL(window.location)
-      if (query?.trim()) {
-        url.searchParams.set('q', query.trim())
-      } else {
-        url.searchParams.delete('q')
-      }
-      window.history.pushState({}, '', url)
     },
   },
   beforeUnmount() {

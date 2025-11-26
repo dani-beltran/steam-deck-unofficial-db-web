@@ -4,6 +4,7 @@
     <!-- Game Name Search Section -->
     <section aria-label="Game Search" class="search-section">
       <GameSearch 
+        v-model="searchTerm"
         @search-results-updated="onSearchResultsUpdated"
         @search-loading="onSearchLoading"
         @search-error="onSearchError"
@@ -48,12 +49,14 @@ export default {
   created() {
     // Set document title for home page
     document.title = 'Steam Deck Settings DB - Game Optimization Settings'
+    
+    const urlParams = new URLSearchParams(window.location.search)
+    this.searchTerm = urlParams.get('q') || ''
   },
   methods: {
     onSearchResultsUpdated(results) {
       this.searchResults = results
-      const urlParams = new URLSearchParams(window.location.search)
-      this.searchTerm = urlParams.get('q') || ''
+      this.updateSearchTermOnUrl()
     },
     onSearchLoading(loading) {
       this.searchLoading = loading
@@ -68,6 +71,15 @@ export default {
         params: { gameId: game.steam_appid ?? game.id },
         query: this.searchTerm ? { q: this.searchTerm } : {},
       })
+    },
+    updateSearchTermOnUrl() {
+      const url = new URL(window.location)
+      if (this.searchTerm?.trim()) {
+        url.searchParams.set('q', this.searchTerm.trim())
+      } else {
+        url.searchParams.delete('q')
+      }
+      window.history.pushState({}, '', url)
     },
   },
 }
