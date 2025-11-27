@@ -61,7 +61,7 @@ export default {
 .container {
   flex: 1;
   max-width: 1200px;
-  width: 100%;
+  width: calc(100% - 40px);
   margin: 0 auto;
   padding: 20px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
@@ -76,5 +76,6 @@ export default {
 @media (max-width: 768px) {
   .container {
     padding: 16px;
+    width: calc(100% - 32px);
   }
 }</style>
