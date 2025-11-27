@@ -80,7 +80,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 110px;
+  margin-bottom: 100px;
 }
 
 .search-title {
@@ -93,6 +93,10 @@ export default {
 @media (max-width: 768px) {
   .search-title {
     font-size: 1.3rem;
+  }
+
+  .search-section {
+    margin-bottom: 60px;
   }
 }
 </style>
