@@ -17,7 +17,7 @@ export default {
 <style scoped>
 .header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 60px;
 }
 
 .logo-container {
