@@ -1,6 +1,6 @@
 <template>
   <div class="loading">
-    <div class="spinner"></div>
+    <div class="spinner" :style="spinnerStyle"></div>
     <p v-if="message">{{ message }}</p>
   </div>
 </template>
@@ -13,6 +13,21 @@ export default {
       type: String,
       default: '',
     },
+    size: {
+      type: [Number, String],
+      default: 40,
+    },
+  },
+  computed: {
+    spinnerStyle() {
+      const sizeValue = typeof this.size === 'number' ? `${this.size}px` : this.size
+      const borderWidth = Math.max(2, Math.round(parseInt(this.size) / 10))
+      return {
+        width: sizeValue,
+        height: sizeValue,
+        borderWidth: `${borderWidth}px`,
+      }
+    },
   },
 }
 </script>
@@ -20,14 +35,12 @@ export default {
 <style scoped>
 .loading {
   text-align: center;
-  padding: 40px;
 }
 
 .spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid var(--bg-card-hover);
-  border-top: 4px solid var(--primary-color-start);
+  border-style: solid;
+  border-color: var(--bg-card-hover);
+  border-top-color: var(--primary-color-start);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 20px;
