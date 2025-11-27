@@ -22,7 +22,12 @@
         :disabled="loading"
         :aria-label="loading ? 'Searching...' : 'Run the search'"
       >
-        <Search class="search-icon" aria-hidden="true" />
+        <Spinner 
+          v-if="loading"
+          class="search-icon" 
+          :size="24"
+        />
+        <Search v-else class="search-icon" aria-hidden="true" />
       </Button>
     </div>
   </div>
@@ -31,12 +36,14 @@
 <script>
 import { Search } from 'lucide-vue-next'
 import Button from '../base/Button.vue'
+import Spinner from '../base/Spinner.vue'
 
 export default {
   name: 'SearchBar',
   components: {
     Button,
     Search,
+    Spinner,
   },
   props: {
     modelValue: {
@@ -116,6 +123,7 @@ export default {
   transition: all 0.2s ease;
   border-radius: 12px 0 0 12px;
   border-right: none;
+  width: 100%;
 }
 
 .search-input:focus {
