@@ -1,23 +1,18 @@
 <template>
   <div class="home">
-    <HomeHeader />
-    <!-- Game Name Search Section -->
+    <section aria-label="Deckudb Home" class="header-section">
+      <HomeHeader />
+    </section>
+
     <section aria-label="Game Search" class="search-section">
+      <h2 class="search-title">Search by game</h2>
       <GameSearch 
         v-model="searchTerm"
-        @search-results-updated="onSearchResultsUpdated"
-        @search-loading="onSearchLoading"
-        @search-error="onSearchError"
-      />
-      
-      <GameSearchResults 
-        :results="searchResults"
-        :search-term="searchTerm"
-        @game-selected="onGameSelected"
+        @search="onSearch"
+        :loading="searching"
       />
     </section>
 
-    <!-- Popular Games Carousel Section -->
     <section aria-label="Popular Games" class="popular-section">
       <PopularGames @game-selected="onGameSelected" />
     </section>
@@ -40,29 +35,23 @@ export default {
   },
   data() {
     return {
-      searchResults: [],
-      searchLoading: false,
-      searchError: null,
       searchTerm: '',
+      searching: false,
     }
   },
   created() {
     // Set document title for home page
-    document.title = 'Steam Deck Settings DB - Game Optimization Settings'
-    
-    const urlParams = new URLSearchParams(window.location.search)
-    this.searchTerm = urlParams.get('q') || ''
+    document.title = 'DeckuDB - Optimize Your Games for Steam Deck'
   },
   methods: {
-    onSearchResultsUpdated(results) {
-      this.searchResults = results
-      this.updateSearchTermOnUrl()
-    },
-    onSearchLoading(loading) {
-      this.searchLoading = loading
-    },
-    onSearchError(error) {
-      this.searchError = error
+    onSearch() {
+      if (!this.searchTerm) return
+      this.searching = true
+      // redirect to search results page with delay
+      setTimeout(() => {
+        this.searching = false
+        this.$router.push({ name: 'SearchResults', query: { q: this.searchTerm } })
+      }, 300)
     },
     onGameSelected(game) {
       // Navigate to the game page
@@ -72,16 +61,8 @@ export default {
         query: this.searchTerm ? { q: this.searchTerm } : {},
       })
     },
-    updateSearchTermOnUrl() {
-      const url = new URL(window.location)
-      if (this.searchTerm?.trim()) {
-        url.searchParams.set('q', this.searchTerm.trim())
-      } else {
-        url.searchParams.delete('q')
-      }
-      window.history.pushState({}, '', url)
-    },
   },
+  
 }
 </script>
 
@@ -90,12 +71,28 @@ export default {
   width: 100%;
 }
 
-.search-section {
-  margin-bottom: 110px;
-}
-
 .popular-section {
   margin-bottom: 20px;
   max-width: 100%;
+}
+
+.search-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 110px;
+}
+
+.search-title {
+  color: var(--secondary-text-color);
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .search-title {
+    font-size: 1.3rem;
+  }
 }
 </style>

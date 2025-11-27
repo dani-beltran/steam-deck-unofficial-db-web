@@ -49,14 +49,9 @@ class ApiService {
       throw new Error('Search term is required')
     }
 
-    try {
-      const searchUrl = `${this.baseUrl}/steam/games?term=${encodeURIComponent(term)}&limit=${limit}`
-      const { data } = await axios.get(searchUrl)
-      return data
-    } catch (err) {
-      console.error('Error searching for games:', err)
-      return []
-    }
+    const searchUrl = `${this.baseUrl}/steam/games?term=${encodeURIComponent(term)}&limit=${limit}`
+    const { data } = await axios.get(searchUrl)
+    return data
   }
 
   async fetchSteamGamesByIds(gameIds) {

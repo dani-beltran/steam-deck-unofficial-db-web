@@ -1,12 +1,10 @@
 <template>
-  <div class="search-section">
-    <h2 class="search-title">Search by game</h2>
     <div class="search-wrapper">
       <SearchBar
         :model-value="modelValue"
         @update:model-value="$emit('update:modelValue', $event)"
-        placeholder="Enter Steam game name..."
-        :loading="gameSearchLoading"
+        placeholder="Enter game name..."
+        :loading="loading"
         @search="handleSearch"
         @input="onGameNameInput"
         @blur="hideSuggestions"
@@ -27,59 +25,41 @@
         @close-suggestions="closeSuggestions"
       />
     </div>
-
-    <!-- Loading State -->
-    <Spinner 
-      v-if="gameSearchLoading" 
-      message="Searching for games..."
-    />
-
-    <!-- Error State -->
-    <ErrorMessage 
-      :message="gameSearchError"
-      @dismiss="clearError"
-      class="error-with-top-margin"
-    />
-  </div>
 </template>
 
 <script>
 import {
   trackSearch,
-  trackSearchError,
   trackSearchInput,
-  trackSearchResults,
   trackSuggestionSelect,
 } from '../../services/analytics'
 import apiService from '../../services/backend/apiService.js'
 import { isMobile } from '../../utils/deviceUtils.js'
 import Button from '../base/Button.vue'
-import Spinner from '../base/Spinner.vue'
-import ErrorMessage from '../common/ErrorMessage.vue'
 import SearchBar from '../common/SearchBar.vue'
 import SearchSuggestions from '../common/SearchSuggestions.vue'
 
 export default {
   name: 'GameSearch',
   components: {
-    ErrorMessage,
-    Spinner,
     Button,
     SearchBar,
     SearchSuggestions,
   },
-  emits: ['update:modelValue', 'game-selected', 'search-results-updated', 'search-loading', 'search-error'],
+  emits: ['update:modelValue', 'search'],
   props: {
     modelValue: {
       type: String,
       default: '',
     },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
       gameSearchResults: [],
-      gameSearchLoading: false,
-      gameSearchError: null,
       gameSearchSubmitted: false,
       showRecentGames: false,
       suggestions: [],
@@ -88,11 +68,6 @@ export default {
       selectedSuggestionIndex: -1,
       debounceTimer: null,
       inputTrackingTimeout: null,
-    }
-  },
-  mounted() {
-    if (this.modelValue) {
-      this.searchGameByName()
     }
   },
   methods: {
@@ -151,15 +126,15 @@ export default {
     },
 
     async handleSearch(submitSource) {
+      this.gameSearchSubmitted = true
       clearTimeout(this.debounceTimer)
-      this.closeSuggestions()
-
-      this.searchGameByName()
       // Track the search event
       trackSearch(this.modelValue, 'game_search', {
         search_source: submitSource ? submitSource : 'search_bar_button',
       })
+      this.$emit('search', this.modelValue)
     },
+
     async handleSearchBarKeydown(event) {
       if (event.key === 'Enter') {
         if (this.selectedSuggestionIndex === -1) {
@@ -168,67 +143,10 @@ export default {
         }
       }
     },
-    async searchGameByName() {
-      if (!this.modelValue.trim()) {
-        this.gameSearchError = 'Please enter a game name'
-        this.$emit('search-error', this.gameSearchError)
-        return
-      }
-
-      this.gameSearchSubmitted = true
-      this.gameSearchLoading = true
-      this.$emit('search-loading', true)
-      
-      this.gameSearchError = null
-      this.$emit('search-error', null)
-      
-      this.gameSearchResults = []
-      this.$emit('search-results-updated', [])
-
-      // Ensure suggestions are completely hidden
-      this.suggestions = []
-      this.showSuggestions = false
-      this.selectedSuggestionIndex = -1
-
-      try {
-        const results = await apiService.searchSteamGamesByName(this.modelValue.trim())
-        const games = results.items || []
-        this.gameSearchResults = games
-        this.$emit('search-results-updated', games)
-
-        // Track search results
-        trackSearchResults(this.modelValue.trim(), results.total, games.length > 0, 'game_search')
-
-        if (games.length === 0) {
-          this.gameSearchError = 'No games found with that name. Try a different search term.'
-          this.$emit('search-error', this.gameSearchError)
-        }
-      } catch (err) {
-        console.error('Error searching for games:', err)
-        this.gameSearchError = `Failed to search for games: ${err.message}`
-        this.$emit('search-error', this.gameSearchError)
-
-        // Track search error
-        trackSearchError(this.modelValue.trim(), err.message, 'game_search')
-      } finally {
-        this.gameSearchLoading = false
-        this.$emit('search-loading', false)
-      }
-    },
 
     onGameNameInput() {
       this.gameSearchSubmitted = false
       this.showRecentGames = false
-
-      // Clear previous search results when user starts typing
-      if (this.gameSearchResults.length > 0) {
-        this.gameSearchResults = []
-        this.$emit('search-results-updated', [])
-      }
-      if (this.gameSearchError) {
-        this.gameSearchError = null
-        this.$emit('search-error', null)
-      }
 
       // Track search input with debouncing to avoid too many events
       this.debounceTrackInput()
@@ -336,11 +254,6 @@ export default {
         console.warn('Error saving recent searched game IDs to localStorage:', e)
       }
     },
-
-    clearError() {
-      this.gameSearchError = null
-      this.$emit('search-error', null)
-    },
   },
   beforeUnmount() {
     // Clean up debounce timer
@@ -356,33 +269,9 @@ export default {
 </script>
 
 <style scoped>
-.search-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 30px;
-}
-
-.search-title {
-  color: var(--secondary-text-color);
-  margin-bottom: 20px;
-  font-size: 1.5rem;
-  font-weight: 600;
-}
-
 .search-wrapper {
   position: relative;
   width: 100%;
   max-width: 600px;
-}
-
-@media (max-width: 768px) {
-  .search-title {
-    font-size: 1.3rem;
-  }
-}
-
-.error-with-top-margin {
-  margin-top: 20px;
 }
 </style>

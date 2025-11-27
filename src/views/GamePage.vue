@@ -1,12 +1,11 @@
 <template>
   <div class="game-page">
-    <!-- Back to Home and Steam Button Row -->
-    <div class="navigation-row">
-      <Button @click="goBack" aria-label="Go back to home" size="small">
-        <ChevronLeft :size="16" style="margin-right: 0.5em;" aria-hidden="true" />
-        <span>Back to search results</span>
-      </Button>
-    </div>
+    <NavigationHeader 
+      class="navigation"
+      v-model:search-term="searchTerm"
+      @search="onSearch"
+      :loading="searchLoading"
+    />
 
     <!-- Loading State -->
     <Spinner v-if="loading" message="Searching for game settings..." />
@@ -65,6 +64,7 @@ import ThumbsRating from '../components/ui/ThumbsRating.vue'
 import UserProfile from '../components/ui/UserProfile.vue'
 import apiService from '../services/backend/apiService.js'
 import { sortGameReportsPerRelevance } from '../helpers/report.helper.js'
+import NavigationHeader from '../components/ui/NavigationHeader.vue'
 
 export default {
   name: 'GamePage',
@@ -84,7 +84,8 @@ export default {
     RefreshButton,
     RandomArt,
     AskAICard,
-    ChevronLeft
+    ChevronLeft,
+    NavigationHeader,
   },
   props: {
     gameId: {
@@ -99,6 +100,7 @@ export default {
       error: null,
       searchPerformed: false,
       processingWarning: false,
+      searchLoading: false,
     }
   },
   computed: {
@@ -130,26 +132,24 @@ export default {
       // Check if backspace key is pressed and not in an input field
       if (event.key === 'Backspace' && !this.isInInputField(event.target)) {
         event.preventDefault()
-        this.goBack()
+        this.$router.back()
       }
+    },
+
+    onSearch() {
+      if (!this.searchTerm) return
+      this.searchLoading = true
+      // redirect to search results page with delay
+      setTimeout(() => {
+        this.searchLoading = false
+        this.$router.push({ name: 'SearchResults', query: { q: this.searchTerm } })
+      }, 300)
     },
 
     isInInputField(target) {
       // Check if the target element is an input field where backspace should work normally
       const inputTypes = ['INPUT', 'TEXTAREA', 'SELECT']
       return inputTypes.includes(target.tagName) || target.contentEditable === 'true'
-    },
-
-    goBack() {
-      // Preserve the search term from the current URL when going back
-      const urlParams = new URLSearchParams(window.location.search)
-      const searchQuery = urlParams.get('q')
-
-      if (searchQuery) {
-        this.$router.push({ name: 'Home', query: { q: searchQuery } })
-      } else {
-        this.$router.push({ name: 'Home' })
-      }
     },
 
     clearError() {
@@ -207,7 +207,7 @@ export default {
 }
 
 .navigation {
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 }
 
 .settings-section {
@@ -223,15 +223,6 @@ export default {
   border: none;
   cursor: pointer;
   padding: 0;
-}
-
-/* Add flex row for navigation buttons */
-.navigation-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
 }
 
 .game-data-sources {
@@ -252,10 +243,9 @@ export default {
   text-align: center;
 }
 
-/* Show on mobile devices */
-@media (min-width: 768px) {
-  .quick-links-only-mobile {
-    display: none;
+@media (max-width: 768px) {
+  .navigation {
+    margin-bottom: 20px;
   }
 }
 </style>
