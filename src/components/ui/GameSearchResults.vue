@@ -8,7 +8,7 @@
           :key="game.id"
           :game="game"
           :is-selected="selectedGameId === game.id"
-          :animation-delay="index >= this.INITIAL_RESULTS_COUNT ? (index - this.INITIAL_RESULTS_COUNT) * 0.1 : 0"
+          :animation-delay="index >= this.initialResultsCount ? (index - this.initialResultsCount) * 0.1 : 0"
           @select="selectGameCard"
           role="listitem"
         />
@@ -23,7 +23,7 @@
           variant="primary" 
           size="medium"
         >
-          Show more results ({{ results.length - this.INITIAL_RESULTS_COUNT }})
+          Show more results ({{ results.length - this.initialResultsCount }})
         </Button>
       </div>
     </transition>
@@ -56,24 +56,27 @@ export default {
     searchTerm: {
       type: String,
       default: '',
-    }
+    },
+    initialResultsCount: {
+      type: Number,
+      default: 4,
+    },
   },
   emits: ['game-selected'],
   data() {
     return {
       showAllResults: false,
-      INITIAL_RESULTS_COUNT: 4,
     }
   },
   computed: {
     displayedResults() {
-      if (this.showAllResults || this.results.length <= this.INITIAL_RESULTS_COUNT) {
+      if (this.showAllResults || this.results.length <= this.initialResultsCount) {
         return this.results
       }
-      return this.results.slice(0, this.INITIAL_RESULTS_COUNT)
+      return this.results.slice(0, this.initialResultsCount)
     },
     hasMoreResults() {
-      return this.results.length > this.INITIAL_RESULTS_COUNT && !this.showAllResults
+      return this.results.length > this.initialResultsCount && !this.showAllResults
     },
   },
   watch: {
@@ -92,7 +95,7 @@ export default {
       trackShowMoreResults(
         this.searchTerm,
         this.results.length,
-        this.INITIAL_RESULTS_COUNT
+        this.initialResultsCount
       )
       this.showAllResults = true
     },

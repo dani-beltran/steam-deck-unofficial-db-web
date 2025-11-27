@@ -11,6 +11,7 @@
       <GameSearchResults 
         :results="searchResults"
         :search-term="searchTerm"
+        :initial-results-count="initialResultsCount"
         @game-selected="onGameSelected"
       />
 
@@ -40,6 +41,12 @@ export default {
       searchLoading: false,
       searchError: null,
       searchTerm: '',
+      isWideScreen: false,
+    }
+  },
+  computed: {
+    initialResultsCount() {
+      return this.isWideScreen ? 8 : 4
     }
   },
   created() {
@@ -48,8 +55,15 @@ export default {
     // Get search term from URL query parameter
     this.searchTerm = this.$route.query.q || ''
     
+    // Check screen width and set up listener
+    this.checkScreenWidth()
+    window.addEventListener('resize', this.checkScreenWidth)
+    
     // Perform initial search if there's a search term
     this.onSearch(this.searchTerm)
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.checkScreenWidth)
   },
   watch: {
     searchTerm() {
@@ -103,6 +117,9 @@ export default {
           query: this.searchTerm?.trim() ? { q: this.searchTerm.trim() } : {},
         })
       }
+    },
+    checkScreenWidth() {
+      this.isWideScreen = window.innerWidth > 768
     },
   },
 }
