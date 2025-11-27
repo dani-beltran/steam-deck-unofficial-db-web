@@ -52,7 +52,7 @@ export default {
   opacity: 0.8;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 576px) {
   .logo-container {
     margin-bottom: 20px;
   }

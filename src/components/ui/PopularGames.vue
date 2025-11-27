@@ -559,7 +559,7 @@ export default {
     }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 576px) {
     .section-title {
         font-size: 1.5rem;
     }
