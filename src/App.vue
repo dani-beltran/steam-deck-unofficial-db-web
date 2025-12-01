@@ -43,14 +43,14 @@ export default {
 
 .app-layout::before {
   content: '';
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background-image: url('./assets/steamdeck_bg_vector.png');
   background-repeat: no-repeat;
-  background-position: center calc(100% - 139px);
+  background-position: center 600px;
   background-size: 92%;
   opacity: 0.1;
   pointer-events: none;
@@ -90,6 +90,28 @@ export default {
   gap: 30px;
 }
 
+@media (max-width: 1200px) {
+  .app-layout::before {
+    background-position: center 880px;
+  }
+}
+
+@media (max-width: 992px) {
+  .app-layout::before {
+    background-position: center 810px;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    gap: 20px;
+  }
+
+  .app-layout::before {
+    background-position: center 760px;
+  }
+}
+
 @media (max-width: 576px) {
   .container {
     padding: 16px;
@@ -99,4 +121,5 @@ export default {
   .app-layout::before {
     opacity: 0;
   }
-}</style>
+}
+</style>
