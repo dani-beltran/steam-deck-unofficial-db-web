@@ -8,7 +8,13 @@
 
     <!-- Search Results Section -->
     <main class="results-section" aria-label="Search Results">
+      <!-- Loading State -->
+      <div v-if="searchLoading" class="loading-state">
+        <Spinner message="Searching games..." />
+      </div>
+
       <GameSearchResults 
+        v-else-if="searchResults.length > 0"
         :results="searchResults"
         :search-term="searchTerm"
         :initial-results-count="initialResultsCount"
@@ -16,7 +22,7 @@
       />
 
       <!-- Empty State -->
-      <div v-if="!searchLoading && searchResults.length === 0" class="empty-state">
+      <div v-else-if="searchError" class="empty-state">
         <p>{{ searchError.title }}</p>
         <p class="empty-hint">{{ searchError.message }}</p>
       </div>
@@ -27,6 +33,7 @@
 <script>
 import NavigationHeader from '../components/ui/NavigationHeader.vue'
 import GameSearchResults from '../components/ui/GameSearchResults.vue'
+import Spinner from '../components/base/Spinner.vue'
 import apiService from '../services/backend/apiService.js'
 
 export default {
@@ -34,6 +41,7 @@ export default {
   components: {
     NavigationHeader,
     GameSearchResults,
+    Spinner,
   },
   data() {
     return {
@@ -140,6 +148,13 @@ export default {
   text-align: center;
   padding: 60px 20px;
   color: var(--secondary-text-color);
+}
+
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
 }
 
 .empty-state p {
