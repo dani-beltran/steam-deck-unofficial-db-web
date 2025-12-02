@@ -116,11 +116,9 @@ export default {
       this.saveCurrentIndex(newIndex)
     },
     popularGames() {
-      if (this.isMobile) {
-        this.$nextTick(() => {
-          this.observeLastCard()
-        })
-      }
+      this.$nextTick(() => {
+        this.observeLastCard()
+      })
     },
   },
   async mounted() {
@@ -151,7 +149,7 @@ export default {
       }
     },
     async loadMoreGames() {
-      if (this.isLoadingMore || !this.hasMoreGames || !this.isMobile) {
+      if (this.isLoadingMore || !this.hasMoreGames) {
         return
       }
       
@@ -175,10 +173,6 @@ export default {
       }
     },
     setupIntersectionObserver() {
-      if (!this.isMobile) {
-        return
-      }
-      
       this.intersectionObserver = new IntersectionObserver(
         (entries) => {
           const lastCard = entries[0]
@@ -198,7 +192,7 @@ export default {
       })
     },
     observeLastCard() {
-      if (!this.intersectionObserver || !this.isMobile) {
+      if (!this.intersectionObserver) {
         return
       }
       
