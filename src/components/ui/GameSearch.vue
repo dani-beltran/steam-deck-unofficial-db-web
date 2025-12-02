@@ -9,7 +9,6 @@
         @input="onGameNameInput"
         @blur="delayedHideSuggestions"
         @focus="onSearchBarFocus"
-        @keydown="handleSearchBarKeydown"
         aria-label="Search for Steam Deck game settings"
       />
       
@@ -130,23 +129,18 @@ export default {
     },
 
     async handleSearch(submitSource) {
+      if (submitSource === 'enter_key' && this.selectedSuggestionIndex !== -1) {
+        // Suggestion selected with enter key, avoid search
+        return
+      }
       this.gameSearchSubmitted = true
       this.hideSuggestions()
       clearTimeout(this.debounceTimer)
       // Track the search event
       trackSearch(this.modelValue, 'game_search', {
-        search_source: submitSource ? submitSource : 'search_bar_button',
+        search_source: submitSource,
       })
       this.$emit('search', this.modelValue)
-    },
-
-    async handleSearchBarKeydown(event) {
-      if (event.key === 'Enter') {
-        if (this.selectedSuggestionIndex === -1) {
-          // No suggestion selected, perform search
-          this.handleSearch('enter_key')
-        }
-      }
     },
 
     onGameNameInput() {

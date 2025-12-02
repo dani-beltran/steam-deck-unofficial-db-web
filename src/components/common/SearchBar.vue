@@ -16,7 +16,7 @@
         ref="searchInput"
       />
       <Button 
-        @click="handleSearch" 
+        @click="handleSearchBtnClick" 
         variant="search" 
         size="large"
         :disabled="loading"
@@ -59,7 +59,7 @@ export default {
       default: false,
     },
   },
-  emits: ['update:modelValue', 'search', 'input', 'keydown', 'blur', 'focus'],
+  emits: ['update:modelValue', 'search', 'input', 'blur', 'focus'],
   computed: {
     searchTerm: {
       get() {
@@ -71,12 +71,9 @@ export default {
     },
   },
   methods: {
-    handleSearch() {
-      // Hide mobile keyboard by blurring input
-      if (this.$refs.searchInput) {
-        this.$refs.searchInput.blur()
-      }
-      this.$emit('search', this.searchTerm)
+    handleSearchBtnClick() {
+      this.hideMobileKeyboard()
+      this.$emit('search', 'search_bar_button')
     },
 
     handleInput() {
@@ -84,7 +81,10 @@ export default {
     },
 
     handleKeyDown(event) {
-      this.$emit('keydown', event)
+      if (event.key === 'Enter') {
+        this.hideMobileKeyboard()
+        this.$emit('search', 'enter_key')
+      }
     },
 
     handleBlur(event) {
@@ -93,6 +93,12 @@ export default {
 
     handleFocus(event) {
       this.$emit('focus', event)
+    },
+
+    hideMobileKeyboard() {
+      if (this.$refs.searchInput) {
+        this.$refs.searchInput.blur()
+      }
     },
   },
 }
