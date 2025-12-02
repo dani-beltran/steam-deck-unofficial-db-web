@@ -54,13 +54,12 @@ const artImageUrl = computed(() => `/art/${selectedArt.file}`)
 }
 .art-image {
   max-width: 100%;
-  max-height: 640px;
+  max-height: 580px;
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.12);
 }
 .caption {
   max-width: 600px;
-  margin-top: 1rem;
   font-size: 1.1rem;
   color: var(--text-primary);
   text-align: center;

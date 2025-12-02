@@ -1,7 +1,8 @@
 <template>
   <div class="processing-warning-container">
-    <div class="mb-4">
-      <h3>{{ gameName }} not found</h3>
+    <div class="game-header">
+      <h3 class="game-name">{{ gameName }}</h3>
+      <span class="not-found-badge">Not Ready</span>
     </div>
     <div class="processing-warning">
       <h3>Game Being Processed <div class="warning-icon">⏳</div> </h3>
@@ -27,6 +28,28 @@ export default {
 <style scoped>
 .processing-warning-container {
   text-align: center;
+}
+
+.game-header {
+  margin-bottom: 1.5rem;
+}
+
+.game-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+}
+
+.not-found-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
 }
 
 .processing-warning p {
