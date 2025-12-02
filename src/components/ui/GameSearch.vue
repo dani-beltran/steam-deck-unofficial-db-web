@@ -7,7 +7,7 @@
         :loading="loading"
         @search="handleSearch"
         @input="onGameNameInput"
-        @blur="hideSuggestions"
+        @blur="delayedHideSuggestions"
         @focus="onSearchBarFocus"
         @keydown="handleSearchBarKeydown"
         aria-label="Search for Steam Deck game settings"
@@ -22,7 +22,7 @@
         :title="showRecentGames ? 'Recent Games Searched' : 'Game Suggestions'"
         @select-suggestion="selectSuggestion"
         @update-selected-index="selectedSuggestionIndex = $event"
-        @close-suggestions="closeSuggestions"
+        @close-suggestions="hideSuggestions"
       />
     </div>
 </template>
@@ -131,12 +131,12 @@ export default {
 
     async handleSearch(submitSource) {
       this.gameSearchSubmitted = true
+      this.hideSuggestions()
       clearTimeout(this.debounceTimer)
       // Track the search event
       trackSearch(this.modelValue, 'game_search', {
         search_source: submitSource ? submitSource : 'search_bar_button',
       })
-      this.showSuggestions = false
       this.$emit('search', this.modelValue)
     },
 
@@ -212,26 +212,23 @@ export default {
     },
 
     async selectSuggestion(suggestion) {
-      trackSuggestionSelect(suggestion.name, this.selectedSuggestionIndex, this.modelValue.trim())
-      this.closeSuggestions()
       this.saveRecentSearchedGameId(suggestion.id)
+      trackSuggestionSelect(suggestion.name, this.selectedSuggestionIndex, this.modelValue.trim())
       // Route directly to the game page using the suggestion ID
       this.$router.push(`/game/${suggestion.id}`)
     },
 
-    closeSuggestions() {
-      this.suggestions = []
+    hideSuggestions() {
       this.showSuggestions = false
-      this.selectedSuggestionIndex = -1
       this.showRecentGames = false
+      this.selectedSuggestionIndex = -1
     },
 
-    hideSuggestions() {
-      // Add a small delay to allow for suggestion clicks
+    delayedHideSuggestions() {
+      // Delay hiding suggestions to allow click events to register
       setTimeout(() => {
-        this.showSuggestions = false
-        this.selectedSuggestionIndex = -1
-      }, 150)
+        this.hideSuggestions()
+      }, 200)
     },
 
     saveRecentSearchedGameId(gameId) {
@@ -269,6 +266,7 @@ export default {
     if (this.inputTrackingTimeout) {
       clearTimeout(this.inputTrackingTimeout)
     }
+    this.suggestions = []
   },
 }
 </script>
