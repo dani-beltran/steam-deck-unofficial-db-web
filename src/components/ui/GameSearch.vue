@@ -132,6 +132,7 @@ export default {
       trackSearch(this.modelValue, 'game_search', {
         search_source: submitSource ? submitSource : 'search_bar_button',
       })
+      this.showSuggestions = false
       this.$emit('search', this.modelValue)
     },
 
