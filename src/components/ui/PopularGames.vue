@@ -4,7 +4,7 @@
 
         <!-- Loading State -->
         <div v-if="isLoading" class="loading-container">
-            <p>Loading popular games...</p>
+            <LoadingDots message="Loading popular games..." :size="10" />
         </div>
 
         <!-- Error State -->
@@ -60,7 +60,7 @@
 
         <!-- Loading More Indicator (Mobile Only) -->
         <div v-if="isMobile && isLoadingMore" class="loading-more-container">
-            <p>Loading more games...</p>
+            <LoadingDots message="Loading more games..." :size="8" />
         </div>
     </section>
 </template>
@@ -68,9 +68,13 @@
 <script>
 import { useSwipe } from '../../composables/swipe/useSwipe.js'
 import apiService from '../../services/backend/apiService.js'
+import LoadingDots from '../base/LoadingDots.vue'
 
 export default {
   name: 'PopularGames',
+  components: {
+    LoadingDots,
+  },
   emits: ['game-selected'],
   data() {
     return {
@@ -83,7 +87,7 @@ export default {
       error: null,
       localStorageKey: 'popularGames_currentIndex',
       currentPage: 1,
-      pageSize: 16,
+      pageSize: 17,
       hasMoreGames: true,
       isLoadingMore: false,
       intersectionObserver: null,
@@ -353,7 +357,6 @@ export default {
     padding: 40px 20px;
 }
 
-.loading-container p,
 .error-container p {
     color: var(--text-secondary);
     font-size: 1rem;
@@ -605,10 +608,5 @@ export default {
     justify-content: center;
     margin-top: 20px;
     padding: 20px;
-}
-
-.loading-more-container p {
-    color: var(--text-secondary);
-    font-size: 0.9rem;
 }
 </style>
