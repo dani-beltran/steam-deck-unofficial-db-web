@@ -54,14 +54,9 @@ export default {
       default: null,
     }
   },
-  data() {
-    return {
-      gameDetails: null,
-    }
-  },
   computed: {
     gameTitle() {
-      return this.game.steam_app?.name || this.gameDetails.name
+      return this.game.steam_app?.name
     },
     gameId() {
       return this.game?.game_id || ''
@@ -156,23 +151,18 @@ export default {
 }
 
 .rating-badge.rating-platinum {
-  background: linear-gradient(135deg, var(--secondary-border-color), #f3f4f6);
-  color: var(--secondary-text-color);
+  background: linear-gradient(135deg, #e5e7eb, #f3f4f6);
+  color: #374151;
 }
 
 .rating-badge.rating-native {
-  background: linear-gradient(135deg, #10b981, #34d399);
-  color: white;
-}
-
-.rating-badge.rating-playable {
-  background: linear-gradient(135deg, #f59e0b, #fbbf24);
-  color: white;
+  background: linear-gradient(135deg, #86efac, #bbf7d0);
+  color: #166534;
 }
 
 .rating-badge.rating-unsupported, .rating-badge.rating-borked {
-  background: linear-gradient(135deg, #ef4444, #f87171);
-  color: white;
+  background: linear-gradient(135deg, #f87171, #fca5a5);
+  color: #991b1b;
 }
 
 .verified-badge {
