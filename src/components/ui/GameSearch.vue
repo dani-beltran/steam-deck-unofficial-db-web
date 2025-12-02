@@ -73,6 +73,10 @@ export default {
   methods: {
     // When SearchBar is focused, show recent games as suggestions if input is empty.
     async onSearchBarFocus() {
+      if (isMobile()) {
+        // Don't show suggestions on mobile devices
+        return
+      }
       if (this.modelValue.trim().length > 0) {
         // If there's input, show suggestions as usual
         this.showSuggestions = this.suggestions.length > 0
