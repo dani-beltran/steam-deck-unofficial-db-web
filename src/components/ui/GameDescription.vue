@@ -31,7 +31,8 @@
       </Tooltip>
       <Tooltip v-if="game.steamdeck_verified" text="Steam Deck verified game">
         <div class="verified-badge">
-          ✓ Verified
+          <svg class='verified-icon' role='presentation' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'><path fill-rule='evenodd' clip-rule='evenodd' d='M10 19C14.9706 19 19 14.9706 19 10C19 5.02944 14.9706 1 10 1C5.02944 1 1 5.02944 1 10C1 14.9706 5.02944 19 10 19ZM8.33342 11.9222L14.4945 5.76667L16.4556 7.72779L8.33342 15.8556L3.26675 10.7833L5.22786 8.82223L8.33342 11.9222Z' fill='#59bf40'></path></svg>
+          Verified
         </div>
       </Tooltip>
     </div>
@@ -166,8 +167,14 @@ export default {
 }
 
 .verified-badge {
-  background: linear-gradient(135deg, #10b981, #34d399);
+  background: rgba(0, 0, 0, 0.6);
   color: white;
+}
+
+.verified-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
 }
 
 .summary-section {
