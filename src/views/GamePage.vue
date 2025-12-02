@@ -8,7 +8,9 @@
     />
 
     <!-- Loading State -->
-    <Spinner v-if="loading" message="Searching for game settings..." />
+     <div v-if="loading" class="loading-spinner">
+      <Spinner message="Searching for game reports..." />
+    </div>
 
     <!-- Error State -->
     <ErrorMessage :message="error" @dismiss="clearError" class="error-with-top-margin" />
@@ -205,6 +207,13 @@ export default {
 
 .error-with-top-margin {
   margin-top: 20px;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
 }
 
 .steam-login-btn {
