@@ -247,18 +247,18 @@ export default {
 }
 
 .source-protondb {
-  background: #dcfce7;
-  color: #166534;
+  background: #fef3c7;
+  color: #c28c04;
 }
 
 .source-sharedeck {
-  background: #fef3c7;
-  color: #92400e;
+  background: #e6f0ff;
+  color: #1a75ff;
 }
 
 .source-steamdeckhq {
   background: #fce7f3;
-  color: #be185d;
+  color: #E0196D;
 }
 
 .hardware-badge {
