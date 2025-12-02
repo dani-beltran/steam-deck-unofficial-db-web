@@ -14,32 +14,31 @@
     <ErrorMessage :message="error" @dismiss="clearError" class="error-with-top-margin" />
 
     <!-- Game ready State -->
-    <GameDescription v-if="game && !loading" :game="game" :loading="loading" />
-
-    <AskAICard 
-      v-if="game" 
-      class="settings-section" 
-      :title="`What is the community saying?`"
-      :animate-text="true"
-      :content="aiCardContent"
-      :type-speed="15"
-      :start-delay="800"
-      @feedback="(feedback) => {
-        submitGameSummaryVote(game.game_id, feedback)
-      }"
-    >
-    </AskAICard>
-        
-    <GameReportsSection v-if="game && game.reports" :reports="game.reports" />
-
-    <AddReport v-if="game" :game-id="gameId" />
-
-    <!-- Processing State -->
-    <ProcessingWarning v-if="processingWarning" :game-name="gameTitle" @dismiss="clearProcessingWarning" />
-    <div v-if="processingWarning" class="refresh-button-container">
-      <RefreshButton :countdown-start="60" />
+     <div v-if="game && !pendingGame && !loading && !error">
+      <GameDescription :game="game" />
+      <AskAICard 
+        class="settings-section" 
+        :title="`What is the community saying?`"
+        :animate-text="true"
+        :content="aiCardContent"
+        :type-speed="15"
+        :start-delay="800"
+        @feedback="(feedback) => {
+          submitGameSummaryVote(game.game_id, feedback)
+        }"
+      >
+      </AskAICard>
+      <GameReportsSection v-if="game.reports" :reports="game.reports" />
+      <AddReport :game-id="gameId" />
     </div>
-    <RandomArt v-if="processingWarning" />
+    <!-- Processing State -->
+    <div v-else-if="!loading && !error">
+      <ProcessingWarning :game-name="gameTitle" />
+      <div class="refresh-button-container">
+        <RefreshButton :countdown-start="60" />
+      </div>
+      <RandomArt />
+    </div>
   </div>
 </template>
 
@@ -149,10 +148,6 @@ export default {
       this.error = null
     },
 
-    clearProcessingWarning() {
-      this.processingWarning = false
-    },
-
     updateDocumentTitle() {
       document.title = `${this.gameTitle} - Steam Deck Settings DB`
     },
@@ -167,13 +162,14 @@ export default {
       this.error = null
       this.game = null
       this.searchPerformed = true
-      this.processingWarning = false
+      this.pendingGame = false
 
       try {
         const res = await apiService.fetchGame(this.gameId)
 
         if (res.status === 'queued') {
-          this.processingWarning = true
+          this.pendingGame = true
+          this.game = res.game
           return
         }
 

@@ -1,7 +1,7 @@
 <template>
   <div class="processing-warning-container">
     <div class="mb-4">
-      <h3>{{ gameName }}: Not found</h3>
+      <h3>{{ gameName }} not found</h3>
     </div>
     <div class="processing-warning">
       <h3>Game Being Processed <div class="warning-icon">⏳</div> </h3>
