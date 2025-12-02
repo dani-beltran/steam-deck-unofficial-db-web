@@ -102,7 +102,6 @@ export default {
 
 .steam-title-link:hover {
   color: #1171d3;
-  text-decoration: underline;
 }
 
 .game-title-section {
