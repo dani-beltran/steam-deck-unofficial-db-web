@@ -57,6 +57,9 @@ export default {
   z-index: -1;
 }
 
+.dark-mode .app-layout::before {
+  filter: invert(100%);
+}
 .skip-link {
   position: absolute;
   top: -40px;
