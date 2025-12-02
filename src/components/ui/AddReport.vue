@@ -78,13 +78,13 @@ export default {
 }
 
 .source-protondb {
-  background: #dcfce7;
-  color: #166534;
+  background: #fef3c7;
+  color: #c28c04;
 }
 
 .source-sharedeck {
-  background: #fef3c7;
-  color: #92400e;
+  background: #e6f0ff;
+  color: #1a75ff;
 }
 
 .icon-square-pen {
