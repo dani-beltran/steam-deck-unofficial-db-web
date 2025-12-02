@@ -14,7 +14,7 @@
     <ErrorMessage :message="error" @dismiss="clearError" class="error-with-top-margin" />
 
     <!-- Game ready State -->
-    <GameDescription :game="game" :loading="loading" />
+    <GameDescription v-if="game && !loading" :game="game" :loading="loading" />
 
     <AskAICard 
       v-if="game" 
@@ -32,8 +32,6 @@
         
     <GameReportsSection v-if="game && game.reports" :reports="game.reports" />
 
-    <GameDataSources class="game-data-sources" :game="game" />
-
     <AddReport v-if="game" :game-id="gameId" />
 
     <!-- Processing State -->
@@ -46,22 +44,15 @@
 </template>
 
 <script>
-import { ChevronLeft } from 'lucide-vue-next'
-import Button from '../components/base/Button.vue'
 import Spinner from '../components/base/Spinner.vue'
 import AskAICard from '../components/common/AskAICard.vue'
 import ErrorMessage from '../components/common/ErrorMessage.vue'
-import QuickLink from '../components/common/QuickLink.vue'
 import RandomArt from '../components/common/RandomArt.vue'
 import RefreshButton from '../components/common/RefreshButton.vue'
 import AddReport from '../components/ui/AddReport.vue'
-import GameDataSources from '../components/ui/GameDataSources.vue'
 import GameDescription from '../components/ui/GameDescription.vue'
 import GameReportsSection from '../components/ui/GameReportsSection.vue'
-import GameSettings from '../components/ui/GameSettings.vue'
 import ProcessingWarning from '../components/ui/ProcessingWarning.vue'
-import ThumbsRating from '../components/ui/ThumbsRating.vue'
-import UserProfile from '../components/ui/UserProfile.vue'
 import apiService from '../services/backend/apiService.js'
 import { sortGameReportsPerRelevance } from '../helpers/report.helper.js'
 import NavigationHeader from '../components/ui/NavigationHeader.vue'
@@ -70,21 +61,14 @@ export default {
   name: 'GamePage',
   components: {
     AddReport,
-    Button,
-    QuickLink,
-    GameSettings,
     GameDescription,
     GameReportsSection,
     ProcessingWarning,
     ErrorMessage,
     Spinner,
-    GameDataSources,
-    UserProfile,
-    ThumbsRating,
     RefreshButton,
     RandomArt,
     AskAICard,
-    ChevronLeft,
     NavigationHeader,
   },
   props: {

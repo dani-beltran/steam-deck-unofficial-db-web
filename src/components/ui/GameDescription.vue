@@ -1,5 +1,5 @@
 <template>
-  <section v-if="game && !loading" class="game-description" aria-label="Game information">
+  <section class="game-description" aria-label="Game information">
     <!-- Game Header with Title and Image -->
     <div class="game-header">
       <GamePreview :game="game" />
@@ -47,11 +47,7 @@ export default {
     game: {
       type: Object,
       default: null,
-    },
-    loading: {
-      type: Boolean,
-      default: false,
-    },
+    }
   },
   data() {
     return {
