@@ -42,6 +42,10 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Loading More Indicator -->
+                    <div v-if="isLoadingMore" class="carousel-item loading-more-container">
+                        <LoadingDots message="Loading more games..." :size="8" />
+                    </div>
                 </div>
             </div>
 
@@ -56,11 +60,6 @@
             <button v-for="(dot, index) in totalSlides" :key="index" class="indicator-dot"
                 :class="{ active: index === currentIndex }" @click="goToSlide(index)"
                 :aria-label="`Go to slide ${index + 1}`"></button>
-        </div>
-
-        <!-- Loading More Indicator (Mobile Only) -->
-        <div v-if="isMobile && isLoadingMore" class="loading-more-container">
-            <LoadingDots message="Loading more games..." :size="8" />
         </div>
     </section>
 </template>
@@ -606,6 +605,7 @@ export default {
 .loading-more-container {
     display: flex;
     justify-content: center;
+    align-items: center;
     margin-top: 20px;
     padding: 20px;
 }
