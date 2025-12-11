@@ -33,6 +33,7 @@ import {
   trackSuggestionSelect,
 } from '../../services/analytics'
 import apiService from '../../services/backend/apiService.js'
+import recentGamesStore from '../../stores/recentGamesStore.js'
 import { isMobile } from '../../utils/deviceUtils.js'
 import Button from '../base/Button.vue'
 import SearchBar from '../common/SearchBar.vue'
@@ -115,17 +116,7 @@ export default {
     },
 
     getRecentSearchedGameIds() {
-      const storageKey = 'recentSearchedGameIds'
-      let recentIds = []
-      try {
-        const stored = localStorage.getItem(storageKey)
-        if (stored) {
-          recentIds = JSON.parse(stored)
-        }
-      } catch (e) {
-        console.warn('Error parsing recent searched game IDs from localStorage:', e)
-      }
-      return Array.isArray(recentIds) ? recentIds : []
+      return recentGamesStore.getRecentGames()
     },
 
     async handleSearch(submitSource) {
@@ -226,29 +217,7 @@ export default {
     },
 
     saveRecentSearchedGameId(gameId) {
-      const storageKey = 'recentSearchedGameIds'
-      let recentIds = []
-      try {
-        const stored = localStorage.getItem(storageKey)
-        if (stored) {
-          recentIds = JSON.parse(stored)
-        }
-      } catch (e) {
-        console.warn('Error parsing recent searched game IDs from localStorage:', e)
-      }
-      // Remove if already present
-      recentIds = recentIds.filter((id) => id !== gameId)
-      // Add to front
-      recentIds.unshift(gameId)
-      // Limit to 10
-      if (recentIds.length > 10) {
-        recentIds = recentIds.slice(0, 10)
-      }
-      try {
-        localStorage.setItem(storageKey, JSON.stringify(recentIds))
-      } catch (e) {
-        console.warn('Error saving recent searched game IDs to localStorage:', e)
-      }
+      recentGamesStore.saveRecentSearchedGameId(gameId)
     },
   },
   beforeUnmount() {

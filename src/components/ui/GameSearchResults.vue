@@ -37,6 +37,7 @@ import {
 } from '../../services/analytics'
 import Button from '../base/Button.vue'
 import GameCard from './GameCard.vue'
+import recentGamesStore from '../../stores/recentGamesStore.js'
 
 export default {
   name: 'GameSearchResults',
@@ -87,6 +88,7 @@ export default {
   },
   methods: {
     selectGameCard(game) {
+      recentGamesStore.saveRecentSearchedGameId(game.id)
       trackGameSelect(game, 'search_result')
       this.$emit('game-selected', game)
     },
