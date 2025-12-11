@@ -16,12 +16,13 @@ export default {
     // Steam Game Details from Steam API appdetails
     game: {
       type: Object,
-      default: null,
+      required: true,
     },
   },
   data() {
     return {
       showTrailer: false,
+      trailerUrl: null
     }
   },
   computed: {
@@ -30,17 +31,9 @@ export default {
         ? `https://store.steampowered.com/app/${this.game.steam_app.steam_appid}/`
         : '#'
     },
-    trailerUrl() {
-      if (this.game?.steam_app?.movies && this.game.steam_app.movies.length > 0) {
-        // Get the first trailer's webm or mp4 URL
-        const trailer = this.game.steam_app.movies[0]
-        if (trailer?.webm?.max) {
-          return trailer.webm.max
-        } else if (trailer?.mp4?.max) {
-          return trailer.mp4.max
-        }
-      }
-    },
+  },
+  async mounted() {
+    this.trailerUrl = await this.getValidTrailerUrl();
   },
   methods: {
     onMouseEnter() {
@@ -60,6 +53,25 @@ export default {
       // Pause video before hiding
       this.$refs.videoElement?.pause()
       this.showTrailer = false
+    },
+
+    async getValidTrailerUrl() {
+      if (this.game?.steam_app?.movies) {
+      // Find the first valid trailer URL
+      for (const movie of this.game.steam_app.movies) {
+        const videoUrl = movie?.webm?.max || movie?.mp4?.max;
+        if (videoUrl) {
+          try {
+            const response = await fetch(videoUrl, { method: 'HEAD' });
+            if (response.status === 200) {
+              return videoUrl;
+            }
+          } catch {
+            // Continue to next movie if fetch fails
+          }
+        }
+      }
+    }
     },
   },
 }
