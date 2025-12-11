@@ -2,7 +2,7 @@
   <section class="game-description" aria-label="Game information">
     <!-- Game Header with Title and Image -->
     <div class="game-header">
-      <GamePreview :game="game" />
+      <GameVideoPreview :game="game" />
       <div class="game-title-section">
         <h1 class="game-title">
           <a :href="steamStoreUrl" target="_blank" rel="noopener noreferrer" class="steam-title-link">
@@ -39,13 +39,13 @@
 
 <script>
 import Tooltip from '../base/Tooltip.vue'
-import GamePreview from './GamePreview.vue'
+import GameVideoPreview from './GameVideoPreview.vue'
 
 export default {
   name: 'GameDescription',
   components: {
     Tooltip,
-    GamePreview,
+    GameVideoPreview,
   },
   props: {
     game: {
