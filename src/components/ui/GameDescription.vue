@@ -68,6 +68,7 @@ export default {
     getRatingTooltip(rating) {
       const tooltips = {
         native: 'Game works natively on linux',
+        silver: 'Game works with minor issues, but generally playable',
         gold: 'Game works flawlessly after a few changes',
         platinum: 'Game works flawlessly out of the box',
         unsupported: 'Game is not supported',
@@ -141,6 +142,11 @@ export default {
   width: 16px;
   height: 16px;
   flex-shrink: 0;
+}
+
+.rating-badge.rating-silver {
+  background: linear-gradient(135deg, #c0c0c0, #e5e7eb);
+  color: #374151;
 }
 
 .rating-badge.rating-gold {
