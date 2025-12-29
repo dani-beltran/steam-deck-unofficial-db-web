@@ -22,7 +22,7 @@
                 local-storage-key="popularGames_currentIndex"
                 prev-aria-label="Previous games"
                 next-aria-label="Next games"
-                @index-changed="setupIntersectionObserver"
+                @last-item-visible="loadMoreGames"
             >
                 <template #item="{ item: game }">
                     <PopularGameCard :game="game" @click="onGameClick(game)" />
@@ -79,23 +79,17 @@ export default {
       pageSize: 17,
       hasMoreGames: true,
       isLoadingMore: false,
-      intersectionObserver: null,
       isMobile: false,
     }
   },
   async mounted() {
     this.isMobile = window.innerWidth < 640
-    window.addEventListener('resize', () => {
-      this.isMobile = window.innerWidth < 640
-    })
-    this.updateCarouselOnResize()
+    this.updateCarouselConf()
     await this.fetchPopularGames()
-    this.setupIntersectionObserver()
-    window.addEventListener('resize', this.updateCarouselOnResize)
+    window.addEventListener('resize', this.onResize)
   },
   beforeUnmount() {
-    window.removeEventListener('resize', this.updateCarouselOnResize)
-    this.disconnectIntersectionObserver()
+    window.removeEventListener('resize', this.onResize)
   },
   methods: {
     async fetchPopularGames() {
@@ -137,55 +131,18 @@ export default {
         this.isLoadingMore = false
       }
     },
-    setupIntersectionObserver() {
-      this.intersectionObserver = new IntersectionObserver(
-        (entries) => {
-          const lastCard = entries[0]
-          if (lastCard.isIntersecting && !this.isLoadingMore && this.hasMoreGames) {
-            this.loadMoreGames()
-          }
-        },
-        {
-          root: null,
-          rootMargin: '100px',
-          threshold: 0.1,
-        }
-      )
-      
-      this.$nextTick(() => {
-        this.observeLastCard()
-      })
-    },
-    observeLastCard() {
-      if (!this.intersectionObserver) {
-        return
-      }
-      
-      // Disconnect all previous observations
-      this.intersectionObserver.disconnect()
-      
-      const cards = this.$el.querySelectorAll('.carousel-item')
-      if (cards.length > 0) {
-        const lastCard = cards[cards.length - 1]
-        this.intersectionObserver.observe(lastCard)
-      }
-    },
-    disconnectIntersectionObserver() {
-      if (this.intersectionObserver) {
-        this.intersectionObserver.disconnect()
-        this.intersectionObserver = null
-      }
-    },
-    updateCarouselOnResize() {
+    updateCarouselConf() {
       const width = window.innerWidth
       this.windowWidth = width
-      if (width < 640) {
-        this.carouselItemsPerSlide = 1
-      } else if (width < 1024) {
+      if (width < 1024) {
         this.carouselItemsPerSlide = 2
       } else {
         this.carouselItemsPerSlide = 3
       }
+    },
+    onResize() {
+      this.isMobile = window.innerWidth < 640
+      this.updateCarouselConf()
     },
     onGameClick(game) {
       this.$emit('game-selected', game)

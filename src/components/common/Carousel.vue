@@ -63,10 +63,11 @@ export default {
       default: 'Next items',
     },
   },
-  emits: ['index-changed'],
+  emits: ['index-changed', 'last-item-visible'],
   data() {
     return {
       currentIndex: 0,
+      intersectionObserver: null,
     }
   },
   computed: {
@@ -98,9 +99,22 @@ export default {
       this.saveCurrentIndex(newIndex)
       this.$emit('index-changed', newIndex)
     },
+    items: {
+      handler() {
+        // Re-observe when items change
+        this.$nextTick(() => {
+          this.observeLastItem()
+        })
+      },
+      deep: true,
+    },
   },
   async mounted() {
     this.restoreCurrentIndex()
+    this.setupIntersectionObserver()
+  },
+  beforeUnmount() {
+    this.disconnectIntersectionObserver()
   },
   methods: {
     nextSlide() {
@@ -134,6 +148,47 @@ export default {
         }
       } catch (err) {
         console.warn('Failed to restore current index from localStorage:', err)
+      }
+    },
+    setupIntersectionObserver() {
+      this.disconnectIntersectionObserver()
+      
+      this.intersectionObserver = new IntersectionObserver(
+        (entries) => {
+          const lastItem = entries[0]
+          if (lastItem.isIntersecting && !this.isLoadingMore) {
+            this.$emit('last-item-visible')
+          }
+        },
+        {
+          root: null,
+          rootMargin: '100px',
+          threshold: 0.1,
+        }
+      )
+      
+      this.$nextTick(() => {
+        this.observeLastItem()
+      })
+    },
+    observeLastItem() {
+      if (!this.intersectionObserver) {
+        return
+      }
+      
+      // Disconnect all previous observations
+      this.intersectionObserver.disconnect()
+      
+      const items = this.$el.querySelectorAll('.carousel-item')
+      if (items.length > 0) {
+        const lastItem = items[items.length - 1]
+        this.intersectionObserver.observe(lastItem)
+      }
+    },
+    disconnectIntersectionObserver() {
+      if (this.intersectionObserver) {
+        this.intersectionObserver.disconnect()
+        this.intersectionObserver = null
       }
     },
   },
