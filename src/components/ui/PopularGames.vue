@@ -14,7 +14,7 @@
         </div>
 
         <!-- Games Carousel (Desktop only) -->
-        <div v-if="popularGames.length > 0 && !isMobile">
+        <div v-else-if="popularGames.length > 0 && !isMobile">
             <Carousel 
                 :items="popularGames" 
                 :items-per-slide="carouselItemsPerSlide"
@@ -35,11 +35,11 @@
         </div>
 
         <!-- Infinite Scroll (Mobile only) -->
-        <div v-if="popularGames.length > 0 && isMobile">
+        <div v-else-if="popularGames.length > 0 && isMobile">
             <InfiniteScrollCollection
                 :items="popularGames"
                 :is-loading-more="isLoadingMore"
-                @last-item-visible="loadMoreGames"  
+                @last-item-visible="infiniteScrollActive ? loadMoreGames() : null"  
             >
                 <template #item="{ item: game }">
                     <PopularGameCard :game="game" @click="onGameClick(game)" />
@@ -49,6 +49,17 @@
                     <LoadingDots message="Loading more games..." :size="8" />
                 </template>
             </InfiniteScrollCollection>
+            <div v-if="!infiniteScrollActive" class="load-more-button-container">
+              <Button 
+                :disabled="isLoadingMore || !hasMoreGames"
+                @click="() => {
+                  this.infiniteScrollActive = true;
+                  this.loadMoreGames();
+                  }" 
+              >
+                Load More
+              </Button>
+            </div>
         </div>
     </section>
 </template>
@@ -59,6 +70,7 @@ import LoadingDots from '../base/LoadingDots.vue'
 import Carousel from '../common/Carousel.vue'
 import InfiniteScrollCollection from '../common/InfiniteScrollCollection.vue';
 import PopularGameCard from './PopularGameCard.vue'
+import Button from '../base/Button.vue'
 
 export default {
   name: 'PopularGames',
@@ -67,6 +79,7 @@ export default {
     Carousel,
     InfiniteScrollCollection,
     PopularGameCard,
+    Button,
   },
   emits: ['game-selected'],
   data() {
@@ -80,6 +93,7 @@ export default {
       hasMoreGames: true,
       isLoadingMore: false,
       isMobile: false,
+      infiniteScrollActive: false,
     }
   },
   async mounted() {
@@ -193,6 +207,11 @@ export default {
 .retry-button:hover {
     background: var(--primary-color-end);
     transform: translateY(-2px);
+}
+
+.load-more-button-container {
+    text-align: center;
+    margin-top: 20px;
 }
 
 /* Responsive Design */
