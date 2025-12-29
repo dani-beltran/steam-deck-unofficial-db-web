@@ -9,7 +9,7 @@
 
             <div class="carousel-track-wrapper">
                 <div class="carousel-track" :style="trackStyle">
-                    <div v-for="(item, index) in displayedItems" :key="index" class="carousel-item">
+                    <div v-for="(item, index) in displayedItems" :key="index" class="carousel-item" :style="itemStyle">
                         <slot name="item" :item="item" :index="index"></slot>
                     </div>
                     <!-- Loading More Indicator -->
@@ -79,6 +79,11 @@ export default {
     },
     maxIndex() {
       return this.totalSlides - 1
+    },
+    itemStyle() {
+      return {
+        flex: `0 0 ${100 / this.itemsPerSlide}%`,
+      }
     },
     trackStyle() {
       const translateX = -(this.currentIndex * 100)
@@ -206,7 +211,6 @@ export default {
 }
 
 .carousel-item {
-    flex: 0 0 33.333%;
     padding: 0 10px;
     box-sizing: border-box;
     min-width: 0;
@@ -240,15 +244,16 @@ export default {
     border-radius: 5px;
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
-    .carousel-item {
-        flex: 0 0 50%;
-        min-width: 0;
-    }
+.loading-more-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    padding: 20px;
 }
 
-@media (max-width: 576px) {
+/* Responsive Design: No carousel for mobile */
+@media (max-width: 640px) {
     .carousel-track {
         flex-direction: column;
         transform: none !important;
@@ -276,13 +281,5 @@ export default {
     .carousel-indicators {
         display: none;
     }
-}
-
-.loading-more-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-    padding: 20px;
 }
 </style>
