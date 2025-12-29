@@ -76,6 +76,7 @@ export default {
     }
   },
   async mounted() {
+    this.updateCarouselOnResize()
     await this.fetchPopularGames()
     this.setupIntersectionObserver()
     window.addEventListener('resize', this.updateCarouselOnResize)
