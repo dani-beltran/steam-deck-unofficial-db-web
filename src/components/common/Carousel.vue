@@ -67,7 +67,6 @@ export default {
   data() {
     return {
       currentIndex: 0,
-      isMobile: false,
     }
   },
   computed: {
@@ -101,27 +100,9 @@ export default {
     },
   },
   async mounted() {
-    this.initCarousel()
     this.restoreCurrentIndex()
-    window.addEventListener('resize', this.updateCarouselOnResize)
-  },
-  beforeUnmount() {
-    window.removeEventListener('resize', this.updateCarouselOnResize)
   },
   methods: {
-    initCarousel() {
-      this.updateCarouselOnResize()
-    },
-    updateCarouselOnResize() {
-      const width = window.innerWidth
-      
-      if (width < 640) {
-        this.currentIndex = 0
-        this.isMobile = true
-      } else {
-        this.isMobile = false
-      }
-    },
     nextSlide() {
       if (this.currentIndex < this.maxIndex) {
         this.currentIndex++
@@ -250,36 +231,5 @@ export default {
     align-items: center;
     margin-top: 20px;
     padding: 20px;
-}
-
-/* Responsive Design: No carousel for mobile */
-@media (max-width: 640px) {
-    .carousel-track {
-        flex-direction: column;
-        transform: none !important;
-        transition: none !important;
-    }
-
-    .carousel-item {
-        flex: 0 0 auto;
-        width: 100%;
-        margin-bottom: 20px;
-    }
-
-    .carousel-item:last-child {
-        margin-bottom: 0;
-    }
-
-    .carousel-button {
-        display: none;
-    }
-
-    .carousel-container {
-        gap: 0;
-    }
-
-    .carousel-indicators {
-        display: none;
-    }
 }
 </style>

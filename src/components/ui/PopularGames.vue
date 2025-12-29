@@ -13,25 +13,43 @@
             <button @click="fetchPopularGames" class="retry-button">Retry</button>
         </div>
 
-        <!-- Games Carousel -->
-        <Carousel 
-            v-else-if="popularGames.length > 0"
-            :items="popularGames" 
-            :items-per-slide="carouselItemsPerSlide"
-            :is-loading-more="isLoadingMore"
-            local-storage-key="popularGames_currentIndex"
-            prev-aria-label="Previous games"
-            next-aria-label="Next games"
-            @index-changed="setupIntersectionObserver"
-        >
-            <template #item="{ item: game }">
-                <PopularGameCard :game="game" @click="onGameClick(game)" />
-            </template>
+        <!-- Games Carousel (Desktop only) -->
+        <div v-if="popularGames.length > 0 && !isMobile">
+            <Carousel 
+                :items="popularGames" 
+                :items-per-slide="carouselItemsPerSlide"
+                :is-loading-more="isLoadingMore"
+                local-storage-key="popularGames_currentIndex"
+                prev-aria-label="Previous games"
+                next-aria-label="Next games"
+                @index-changed="setupIntersectionObserver"
+            >
+                <template #item="{ item: game }">
+                    <PopularGameCard :game="game" @click="onGameClick(game)" />
+                </template>
 
-            <template #loading-more>
-                <LoadingDots message="Loading more games..." :size="8" />
-            </template>
-        </Carousel>
+                <template #loading-more>
+                    <LoadingDots message="Loading more games..." :size="8" />
+                </template>
+            </Carousel>
+        </div>
+
+        <!-- Infinite Scroll (Mobile only) -->
+        <div v-if="popularGames.length > 0 && isMobile">
+            <InfiniteScrollCollection
+                :items="popularGames"
+                :is-loading-more="isLoadingMore"
+                @last-item-visible="loadMoreGames"  
+            >
+                <template #item="{ item: game }">
+                    <PopularGameCard :game="game" @click="onGameClick(game)" />
+                </template>
+
+                <template #loading-more>
+                    <LoadingDots message="Loading more games..." :size="8" />
+                </template>
+            </InfiniteScrollCollection>
+        </div>
     </section>
 </template>
 
@@ -39,6 +57,7 @@
 import apiService from '../../services/backend/apiService.js'
 import LoadingDots from '../base/LoadingDots.vue'
 import Carousel from '../common/Carousel.vue'
+import InfiniteScrollCollection from '../common/InfiniteScrollCollection.vue';
 import PopularGameCard from './PopularGameCard.vue'
 
 export default {
@@ -46,6 +65,7 @@ export default {
   components: {
     LoadingDots,
     Carousel,
+    InfiniteScrollCollection,
     PopularGameCard,
   },
   emits: ['game-selected'],
@@ -60,9 +80,14 @@ export default {
       hasMoreGames: true,
       isLoadingMore: false,
       intersectionObserver: null,
+      isMobile: false,
     }
   },
   async mounted() {
+    this.isMobile = window.innerWidth < 640
+    window.addEventListener('resize', () => {
+      this.isMobile = window.innerWidth < 640
+    })
     this.updateCarouselOnResize()
     await this.fetchPopularGames()
     this.setupIntersectionObserver()
@@ -153,6 +178,7 @@ export default {
     },
     updateCarouselOnResize() {
       const width = window.innerWidth
+      this.windowWidth = width
       if (width < 640) {
         this.carouselItemsPerSlide = 1
       } else if (width < 1024) {
@@ -219,7 +245,7 @@ export default {
     }
 }
 
-@media (max-width: 576px) {
+@media (max-width: 640px) {
     .section-title {
         font-size: 1.5rem;
     }
