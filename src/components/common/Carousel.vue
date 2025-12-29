@@ -7,9 +7,7 @@
                 ‹
             </button>
 
-            <div class="carousel-track-wrapper" @touchstart="handleTouchStart" @touchmove="handleTouchMove"
-                @touchend="handleTouchEnd" @mousedown="handleMouseDown" @mousemove="handleMouseMove"
-                @mouseup="handleMouseUp" @mouseleave="handleMouseLeave">
+            <div class="carousel-track-wrapper">
                 <div class="carousel-track" :style="trackStyle">
                     <div v-for="(item, index) in displayedItems" :key="index" class="carousel-item">
                         <slot name="item" :item="item" :index="index"></slot>
@@ -37,8 +35,6 @@
 </template>
 
 <script>
-import { useSwipe } from '../../composables/swipe/useSwipe.js'
-
 export default {
   name: 'Carousel',
   props: {
@@ -71,7 +67,6 @@ export default {
   data() {
     return {
       currentIndex: 0,
-      swipe: null,
       isMobile: false,
     }
   },
@@ -87,13 +82,10 @@ export default {
     },
     trackStyle() {
       const translateX = -(this.currentIndex * 100)
-      const swipeOffset = this.swipe?.swipeState?.isDragging
-        ? (this.swipe?.swipeState.translateX / window.innerWidth) * 100
-        : 0
 
       return {
-        transform: `translateX(calc(${translateX}% + ${swipeOffset}px))`,
-        transition: this.swipe?.swipeState?.isDragging ? 'none' : 'transform 0.3s ease-in-out',
+        transform: `translateX(${translateX}%)`,
+        transition: 'transform 0.3s ease-in-out',
       }
     },
   },
@@ -114,35 +106,15 @@ export default {
   methods: {
     initCarousel() {
       this.updateCarouselOnResize()
-      if (!this.isMobile) {
-        this.swipe = useSwipe({
-          swipeThreshold: 50,
-          velocityThreshold: 0.3,
-        })
-      }
     },
     updateCarouselOnResize() {
       const width = window.innerWidth
-      const wasMobile = this.isMobile
       
       if (width < 640) {
         this.currentIndex = 0
         this.isMobile = true
       } else {
         this.isMobile = false
-      }
-
-      // Initialize or destroy swipe based on mobile state change
-      if (wasMobile !== this.isMobile) {
-        if (this.isMobile && this.swipe) {
-          this.swipe.resetSwipeState()
-          this.swipe = null
-        } else if (!this.isMobile && !this.swipe) {
-          this.swipe = useSwipe({
-            swipeThreshold: 50,
-            velocityThreshold: 0.3,
-          })
-        }
       }
     },
     nextSlide() {
@@ -157,39 +129,6 @@ export default {
     },
     goToSlide(index) {
       this.currentIndex = index
-    },
-    handleTouchStart(event) {
-      this.swipe?.handleTouchStart(event)
-    },
-    handleTouchMove(event) {
-      this.swipe?.handleTouchMove(event, this.currentIndex, this.totalSlides)
-      // Prevent scrolling when swiping horizontally
-      if (this.swipe?.swipeState.isDragging) {
-        event.preventDefault()
-      }
-    },
-    handleTouchEnd() {
-      const result = this.swipe?.handleTouchEnd(this.currentIndex, this.totalSlides)
-      if (result && result.type === 'change') {
-        this.currentIndex = result.newIndex
-      }
-    },
-    handleMouseDown(event) {
-      this.swipe?.handleMouseDown(event)
-    },
-    handleMouseMove(event) {
-      this.swipe?.handleMouseMove(event, this.currentIndex, this.totalSlides)
-    },
-    handleMouseUp() {
-      const result = this.swipe?.handleMouseEnd(this.currentIndex, this.totalSlides)
-      if (result && result.type === 'change') {
-        this.currentIndex = result.newIndex
-      }
-    },
-    handleMouseLeave() {
-      if (this.swipe?.swipeState.isPointerDown) {
-        this.swipe?.resetSwipeState()
-      }
     },
     saveCurrentIndex(index) {
       try {
@@ -259,18 +198,6 @@ export default {
 .carousel-track-wrapper {
     flex: 1;
     overflow: hidden;
-    cursor: grab;
-    user-select: none;
-}
-
-.carousel-track-wrapper:active {
-    cursor: grabbing;
-}
-
-@media (max-width: 640px) {
-    .carousel-track-wrapper {
-        cursor: default;
-    }
 }
 
 .carousel-track {
