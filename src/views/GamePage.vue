@@ -151,7 +151,7 @@ export default {
     },
 
     updateDocumentTitle() {
-      document.title = `${this.gameTitle} - Steam Deck Settings`
+      document.title = `${this.gameTitle} - Steam Deck Reports`
     },
 
     async loadGame() {
