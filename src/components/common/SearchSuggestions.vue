@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show && suggestions.length > 0" class="suggestions-dropdown">
+  <div v-if="suggestions.length > 0">
     <div class="suggestions-header">
       <span class="suggestions-title">{{ title }}</span>
       <span v-if="loading" class="suggestions-loading">Loading...</span>
@@ -32,6 +32,15 @@
       </li>
     </ul>
   </div>
+  <div v-else>
+    <div class="suggestions-header">
+      <span class="suggestions-title">{{ title }}</span>
+      <span v-if="loading" class="suggestions-loading">Loading...</span>
+    </div>
+    <div class="suggestions-list">
+      <p v-if="!loading" class="no-suggestions">No suggestions available.</p>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -41,10 +50,6 @@ export default {
     suggestions: {
       type: Array,
       default: () => [],
-    },
-    show: {
-      type: Boolean,
-      default: false,
     },
     loading: {
       type: Boolean,
@@ -70,7 +75,7 @@ export default {
     },
 
     handleKeyDown(event) {
-      if (!this.show || this.suggestions.length === 0) return
+      if (this.suggestions.length === 0) return
 
       switch (event.key) {
         case 'ArrowDown': {
@@ -109,21 +114,6 @@ export default {
 </script>
 
 <style scoped>
-.suggestions-dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: var(--bg-card);
-  border: 2px solid var(--secondary-border-color);
-  border-top: none;
-  border-radius: 0 0 12px 12px;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  z-index: 1000;
-  max-height: 400px;
-  overflow-y: auto;
-}
-
 .suggestions-header {
   padding: 12px 16px;
   border-bottom: 1px solid var(--bg-card-hover);
@@ -203,6 +193,12 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.no-suggestions {
+  padding: 16px;
+  text-align: center;
+  color: var(--text-secondary); 
 }
 
 @media (max-width: 768px) {

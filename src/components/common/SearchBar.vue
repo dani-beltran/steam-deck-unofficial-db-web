@@ -1,11 +1,12 @@
 <template>
   <div class="search-container">
-    <div class="input-wrapper">
+    <div class="input-wrapper" :class="{ 'suggestions-visible': showSuggestions }">
       <input 
         v-model="searchTerm" 
         type="text" 
         :placeholder="placeholder" 
         class="search-input"
+        :class="{ 'suggestions-visible': showSuggestions }"
         @input="handleInput"
         @keydown="handleKeyDown"
         @blur="handleBlur"
@@ -19,6 +20,7 @@
         @click="handleSearchBtnClick" 
         variant="search" 
         size="large"
+        :class="{ 'suggestions-visible': showSuggestions }"
         :disabled="loading"
         :aria-label="loading ? 'Searching...' : 'Run the search'"
       >
@@ -29,6 +31,9 @@
         />
         <Search v-else class="search-icon" aria-hidden="true" />
       </Button>
+    </div>
+    <div class="suggestions-dropdown" v-if="showSuggestions">
+      <slot></slot>
     </div>
   </div>
 </template>
@@ -55,6 +60,10 @@ export default {
       default: 'Enter search term...',
     },
     loading: {
+      type: Boolean,
+      default: false,
+    },
+    showSuggestions: {
       type: Boolean,
       default: false,
     },
@@ -116,6 +125,11 @@ export default {
   box-shadow: var(--shadow-md);
   border-radius: 12px;
   overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.input-wrapper.suggestions-visible {
+  border-radius: 12px 12px 0 0;
 }
 
 .search-input {
@@ -130,6 +144,10 @@ export default {
   border-radius: 12px 0 0 12px;
   border-right: none;
   width: 100%;
+}
+
+.search-input.suggestions-visible {
+  border-radius: 12px 0 0 0;
 }
 
 .search-input:focus {
@@ -147,6 +165,10 @@ export default {
   color: white;
 }
 
+.btn-search.suggestions-visible {
+  border-radius: 0 12px 0 0;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -157,6 +179,21 @@ export default {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+.suggestions-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border: 2px solid var(--secondary-border-color);
+  border-top: none;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 @media (max-width: 768px) {

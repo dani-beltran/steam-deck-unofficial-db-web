@@ -5,24 +5,24 @@
         @update:model-value="$emit('update:modelValue', $event)"
         placeholder="Enter game name..."
         :loading="loading"
+        :show-suggestions="showSuggestions"
         @search="handleSearch"
         @input="onGameNameInput"
         @blur="delayedHideSuggestions"
         @focus="onSearchBarFocus"
         aria-label="Search for Steam Deck game settings"
-      />
-      
-      <!-- Suggestions Dropdown -->
-      <SearchSuggestions
-        :suggestions="suggestions"
-        :show="showSuggestions"
-        :loading="suggestionsLoading"
-        :selected-index="selectedSuggestionIndex"
-        :title="showRecentGames ? 'Recent Games Searched' : 'Game Suggestions'"
-        @select-suggestion="selectSuggestion"
-        @update-selected-index="selectedSuggestionIndex = $event"
-        @close-suggestions="hideSuggestions"
-      />
+      >
+        <!-- Suggestions Dropdown -->
+        <SearchSuggestions
+          :suggestions="suggestions"
+          :loading="suggestionsLoading"
+          :selected-index="selectedSuggestionIndex"
+          :title="showRecentGames ? 'Recent Games Searched' : 'Game Suggestions'"
+          @select-suggestion="selectSuggestion"
+          @update-selected-index="selectedSuggestionIndex = $event"
+          @close-suggestions="hideSuggestions"
+        />
+      </SearchBar>
     </div>
 </template>
 
