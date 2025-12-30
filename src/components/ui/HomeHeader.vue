@@ -4,7 +4,7 @@
       <img src="@assets/decku-logo-text.png" alt="Decku Logo" class="logo" />
     </div>
     <h1 class="title">Steam Deck Unofficial Database</h1>
-    <p class="subtitle">The definitive Steam Deck configuration database! Optimize every game for best performance on the Deck.</p>
+    <p class="subtitle">The definitive aggregator of community reports! Optimize every game for best performance on the Deck.</p>
   </header>
 </template>
 
